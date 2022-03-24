@@ -1,10 +1,8 @@
-package com.example.demo;
+package com.example.demo.controller;
 
-import com.fasterxml.jackson.annotation.JsonAnySetter;
-import com.fasterxml.jackson.annotation.JsonGetter;
-import com.fasterxml.jackson.annotation.JsonSetter;
+import com.example.demo.model.Student;
+import com.example.demo.repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,7 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @RestController
-public class Example {
+public class StudentController {
 
     @Autowired
     private StudentRepository studentRepository;
