@@ -3,16 +3,10 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import {BrowserRouter} from 'react-router-dom';
 
 ReactDOM.render(
   <React.StrictMode>
-    <BrowserRouter>
-      <App />  
-    </BrowserRouter>
-    
-    {/* App을 BrowserRouter로 감싸서 자유롭게 화면 이동 구현 */}
-    
+    <App />
   </React.StrictMode>,
   document.getElementById('root')
 );
