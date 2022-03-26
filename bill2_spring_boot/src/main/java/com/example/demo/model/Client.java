@@ -18,7 +18,7 @@ public class Client {
 
     @Id
     private String client_id;
-    @Column(nullable = false)
+    @NotNull
     private int age;
     private int trustpoint;
     private String password;
