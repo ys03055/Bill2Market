@@ -20,10 +20,14 @@ public class Client {
     private String client_id;
     @NotNull
     private int age;
-    private int trustpoint;
+    private int trust_point;
     private String password;
     private String name;
-    private String nick_name;
+    private String nickname;
     private String address;
     private String phone_number;
     private String email;
+
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
