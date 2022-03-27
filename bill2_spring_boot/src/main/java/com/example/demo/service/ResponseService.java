@@ -33,7 +33,6 @@ public class ResponseService {
         ListResult<T> result = new ListResult<T>();
         result.setList(list);
         this.setSuccessResult(result);
-        result.setSuccess(true);
         return result;
     }
 
