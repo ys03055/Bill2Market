@@ -18,7 +18,7 @@ public class ClientPrincipal implements UserDetails {
 
     public static ClientPrincipal create(Client client) {
         return new ClientPrincipal(
-                client.getClientId(),
+                client.getClient_id(),
                 client.getPassword(),
                 Role.USER,
                 Collections.singletonList(new SimpleGrantedAuthority(Role.USER.getKey())));
