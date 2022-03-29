@@ -36,7 +36,7 @@ jobs:
       run: mkdir ./artifacts/
 
     - name: zip artifacts
-      run: zip -r ./artifacts/build.zip ./app/* appspec.yml
+      run: zip -r ./artifacts/bill2_build.zip .
     
     - name: deploy to s3
       uses: jakejarvis/s3-sync-action@master
