@@ -1,32 +1,22 @@
-import logo from './logo.svg';
 import './App.css';
-import {useEffect, useState} from "react";
-// import Axios from "axios";
+import "antd/dist/antd.css";   //antd 라이브러리 불러오기
+import MainPage from "./Main/Main"
+import {BrowserRouter, Route, Routes} from "react-router-dom";
+import LoginPage from "./login/login";
+import SignUpPage from "./signUp/signUp";
 
 function App() {
-    const [user,setUser] = useState([]);
-    useEffect(() => {
-      fetch("/api/example").then((response) => {
-          return response.json();
-        })
-        .then(function (data) {
-          setUser(data);
-        });
-  }, []);
-
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo"/>
-          <p>
-            asdasda
-          </p>
-          <ul>
-             {user.map((text, index) => <li key={`${index}-${text}`}>{text}</li>)}
-          </ul>
-        </header>
-      </div>
-   );
+        <div>
+            <BrowserRouter>
+                        <Routes>
+                            <Route path = "/*" element={<MainPage />} />
+                            <Route path = "/login" element={<LoginPage />} />
+                            <Route path = "/signUp" element={<SignUpPage />} />
+                        </Routes>
+            </BrowserRouter>
+        </div>
+    );
 }
 
 export default App;
