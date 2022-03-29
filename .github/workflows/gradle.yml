@@ -31,3 +31,21 @@ jobs:
     
     - name: Build with Gradle
       run: bill2_spring_boot/gradlew build
+    
+    - name: make artifacts dir
+      run: mkdir ./artifacts/
+
+    - name: zip artifacts
+      run: zip -r ./artifacts/build.zip ./app/* appspec.yml
+    
+    - name: deploy to s3
+      uses: jakejarvis/s3-sync-action@master
+      with:
+        args: --acl public-read --follow-symlinks --delete
+      env:
+        AWS_S3_BUCKET: ${{secrets.AWS_PRODUCTION_BUCKET_NAME}}
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_IAM_MANAGER_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_IAM_MANAGER_SECRET_ACCESS_KEY }}
+        AWS_REGION: ap-northeast-2
+        SOURCE_DIR: './artifacts'
+        DEST_DIR: 'backend/'
