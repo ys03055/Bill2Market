@@ -11,13 +11,4 @@ import java.util.List;
 @SpringBootTest
 class DemoApplicationTests {
 
-	@Autowired
-	StudentRepository studentRepository;
-
-	@Test
-	void contextLoads() {
-		List<Student> list = studentRepository.findAll();
-		System.out.println(list.get(0).getSecondName());
-	}
-
 }
