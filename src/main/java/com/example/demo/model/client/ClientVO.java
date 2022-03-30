@@ -26,7 +26,8 @@ public class ClientVO {
     private String client_address;
     private String photo_url;
     private int sns_type;
-    private Point client_location;
+    private double client_longtitude;
+    private double client_latitude;
     private Date birthdate;
 
     @Column(nullable = false, columnDefinition = "TINYINT(1)")
