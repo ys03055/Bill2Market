@@ -34,5 +34,6 @@ public class Item {
     private int price;
     private int deposit;
     private int views;
-    private Point item_location;
+    private double item_latitude;
+    private double item_longtitude;
 }
