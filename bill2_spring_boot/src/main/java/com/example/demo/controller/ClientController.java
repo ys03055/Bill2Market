@@ -25,7 +25,7 @@ public class ClientController {
     public CommonResult myInfo(){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         return responseService.getSingleResult(
-                clientRepository.findById(auth.getName()).orElseThrow(ClientNotFoundException::new));
+                clientRepository.findByClientId(auth.getName()).orElseThrow(ClientNotFoundException::new));
     }
 
 }
