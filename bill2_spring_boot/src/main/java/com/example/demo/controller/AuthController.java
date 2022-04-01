@@ -50,5 +50,10 @@ public class AuthController {
         return responseService.getSuccessfulResult();
     }
 
+    @ApiOperation(value = "토큰 검증", notes = "현재 가지고 있는 토큰이 유효한지 확인한다.")
+    @PostMapping("/valid")
+    public CommonResult tokenValid(String token){
+        return responseService.getSingleResult(jwtTokenProvider.validateToken(token));
+    }
 
 }
