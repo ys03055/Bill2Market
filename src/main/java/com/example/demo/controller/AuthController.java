@@ -30,23 +30,30 @@ public class AuthController {
     @ApiOperation(value = "로그인", notes = "회원 로그인 기능")
     @PostMapping("/login")
     public CommonResult login(@RequestBody LoginRequest loginRequest){
-        Client client = clientRepository.findById(loginRequest.getClientId()).orElseThrow(ClientNotFoundException::new);
+        Client client = clientRepository.findByClientId(loginRequest.getClientId()).orElseThrow(ClientNotFoundException::new);
         if (!passwordEncoder.matches(loginRequest.getPassword(), client.getPassword())) throw new PasswordMisMatchException();
-        return responseService.getSingleResult(jwtTokenProvider.createToken(client.getClient_id(), client.getRole()));
+        return responseService.getSingleResult(jwtTokenProvider.createToken(client.getClientId(), client.getRole()));
     }
 
     @ApiOperation(value = "임시 회원가입", notes = "회원가입 기능")
     @PostMapping("/signup")
-    public CommonResult signUp(String clientId, String password, String nickName){
+    public CommonResult signUp(String clientId, String password, String nickName, double x, double y){
         Client client = Client.builder()
-                    .client_id(clientId)
+                    .clientId(clientId)
                     .password(passwordEncoder.encode(password))
                     .nickname(nickName)
+                    .clientLatitude(y)
+                    .clientLongitude(x)
                     .role(Role.USER)
                     .build();
         clientRepository.save(client);
         return responseService.getSuccessfulResult();
     }
 
+    @ApiOperation(value = "토큰 검증", notes = "현재 가지고 있는 토큰이 유효한지 확인한다.")
+    @PostMapping("/valid")
+    public CommonResult tokenValid(String token){
+        return responseService.getSingleResult(jwtTokenProvider.validateToken(token));
+    }
 
 }

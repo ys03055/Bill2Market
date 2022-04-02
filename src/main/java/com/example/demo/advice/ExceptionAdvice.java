@@ -5,6 +5,7 @@ import com.example.demo.exception.client.CAccessDeniedException;
 import com.example.demo.exception.client.CAuthenticationEntryPointException;
 import com.example.demo.exception.client.ClientNotFoundException;
 import com.example.demo.exception.client.PasswordMisMatchException;
+import com.example.demo.exception.item.ItemNotFoundException;
 import com.example.demo.model.response.CommonResult;
 import com.example.demo.service.ResponseService;
 import lombok.RequiredArgsConstructor;
@@ -49,4 +50,9 @@ public class ExceptionAdvice {
         return responseService.getFailResult(ExceptionList.ACCESS_DENIED.getCode(), ExceptionList.ACCESS_DENIED.getMessage());
     }
 
+    @ExceptionHandler(ItemNotFoundException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    protected  CommonResult itemNotFoundException(){
+        return responseService.getFailResult(ExceptionList.ITEM_NOT_FOUND.getCode(), ExceptionList.ITEM_NOT_FOUND.getMessage());
+    }
 }

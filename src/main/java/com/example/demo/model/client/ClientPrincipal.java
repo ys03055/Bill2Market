@@ -18,10 +18,10 @@ public class ClientPrincipal implements UserDetails {
 
     public static ClientPrincipal create(Client client) {
         return new ClientPrincipal(
-                client.getClient_id(),
+                client.getClientId(),
                 client.getPassword(),
-                Role.USER,
-                Collections.singletonList(new SimpleGrantedAuthority(Role.USER.getKey())));
+                client.getRole(),
+                Collections.singletonList(new SimpleGrantedAuthority(client.getRole().getKey())));
     }
 
     @Override
