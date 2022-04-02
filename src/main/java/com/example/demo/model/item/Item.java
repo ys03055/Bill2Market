@@ -53,8 +53,8 @@ public class Item {
     private String categoryBig;
     @Column(name = "category_middle")
     private String categoryMiddle;
-    @Column(name = "category_smail")
-    private String categorySmail;
+    @Column(name = "category_small")
+    private String categorySmall;
     @Column(name = "item_title")
     private String itemTitle;
     @Column(name = "item_content")
