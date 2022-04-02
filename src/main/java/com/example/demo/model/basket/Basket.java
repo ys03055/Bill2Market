@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.IdClass;
 
 @Data
 @ToString
@@ -11,6 +12,7 @@ import javax.persistence.Id;
 @NoArgsConstructor
 @Builder
 @Entity(name="Basket")
+@IdClass(BasketPK.class)
 public class Basket {
     @Id
     private int client_index;

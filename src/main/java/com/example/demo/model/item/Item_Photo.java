@@ -14,8 +14,9 @@ import javax.persistence.Id;
 @Entity(name="Item_Photo")
 public class Item_Photo {
     @Id
-    private int item_id;
+    private int item_photo_index;
 
     @Column(nullable = false)
+    private int item_id;
     private String item_photo;
 }

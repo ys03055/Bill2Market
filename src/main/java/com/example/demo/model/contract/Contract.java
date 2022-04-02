@@ -5,6 +5,7 @@ import lombok.*;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.IdClass;
 import java.sql.Date;
 import java.sql.Time;
 
@@ -16,15 +17,13 @@ import java.sql.Time;
 @Entity(name="Contract")
 public class Contract {
     @Id
+    @Column(name = "contract_id")
     private int contract_id;
-    @Id
-    private int chat_id;
-
-    @Column(nullable = false, columnDefinition = "TINYINT(1)")
-    private boolean contract_status;
 
     @Column(nullable = false)
+    private int chat_id;
     private Date contract_date;
     private Date start_date;
     private Date end_date;
+    private int contract_status;
 }

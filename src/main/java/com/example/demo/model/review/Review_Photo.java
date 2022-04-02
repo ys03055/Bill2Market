@@ -14,8 +14,9 @@ import javax.persistence.Id;
 @Entity(name="Review_Photo")
 public class Review_Photo {
     @Id
-    private int contract_id;
+    private int review_photo_index;
 
     @Column(nullable = false)
+    private int contract_id;
     private String review_photo;
 }

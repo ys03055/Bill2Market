@@ -23,11 +23,8 @@ public class ClientVO {
     private String phone_number;
     private String client_name;
     private String nickname;
-    private String client_address;
-    private String photo_url;
+    private String client_photo;
     private int sns_type;
-    private double client_longtitude;
-    private double client_latitude;
     private Date birthdate;
 
     @Column(nullable = false, columnDefinition = "TINYINT(1)")

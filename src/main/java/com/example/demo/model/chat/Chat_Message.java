@@ -1,31 +1,30 @@
-package com.example.demo.model.review;
+package com.example.demo.model.chat;
 
 import lombok.*;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.sql.Date;
-import java.sql.Time;
 
 @Data
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Entity(name="Review")
-
-public class Review {
+@Entity(name="Chat_Message")
+public class Chat_Message {
     @Id
-    private int contract_id;
+    private int message_id;
 
     @Column(nullable = false)
+    private int chat_id;
+    private int from_index;
+    private int to_index;
+    private String chat_content;
     private Date create_date;
     private Date update_date;
-    private int review_score;
-    private String type;
-    private String review_title;
-    private String review_content;
 
     @Column(nullable = false, columnDefinition = "TINYINT(1)")
-    private String review_status;
+    private boolean read_status;
 }
