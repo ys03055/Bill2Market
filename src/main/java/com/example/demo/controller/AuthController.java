@@ -35,7 +35,7 @@ public class AuthController {
     public CommonResult login(@RequestBody LoginRequest loginRequest){
         Client client = clientRepository.findByClientId(loginRequest.getClientId()).orElseThrow(ClientNotFoundException::new);
         if (!passwordEncoder.matches(loginRequest.getPassword(), client.getPassword())) throw new PasswordMisMatchException();
-        return responseService.getSingleResult(jwtTokenProvider.createToken(client.getClientId(), client.getRole()));
+        return responseService.getSingleResult(jwtTokenProvider.createToken(client.getClientIndex(), client.getRole()));
     }
 
     @ApiOperation(value = "회원가입", notes = "회원가입 기능")

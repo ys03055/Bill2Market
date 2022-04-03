@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface ClientRepository extends JpaRepository<Client, String> {
+public interface ClientRepository extends JpaRepository<Client, Integer> {
     Optional<Client> findByClientId (@Param("clientId") String clientId);
 
 }
