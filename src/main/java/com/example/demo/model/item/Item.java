@@ -1,7 +1,6 @@
 package com.example.demo.model.item;
 
 import lombok.*;
-
 import javax.persistence.*;
 import java.sql.Date;
 import java.util.ArrayList;
@@ -11,11 +10,13 @@ import java.util.List;
 
 
 @Getter
+
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Entity(name="Item")
+
 @NamedNativeQuery(
     name = "SimpleItemSliceByLocation",
     query = "SELECT item.item_id, item_title, item_address, price, p1.item_photo " +
@@ -88,5 +89,6 @@ public class Item {
     @JoinColumn(name = "item_id")
     @Builder.Default
     private List<ItemPhoto> photos = new ArrayList<ItemPhoto>();
+
 
 }
