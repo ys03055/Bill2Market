@@ -11,7 +11,9 @@ import com.example.demo.model.client.Role;
 import com.example.demo.model.client.SignupRequest;
 import com.example.demo.model.response.CommonResult;
 import com.example.demo.repository.ClientRepository;
+import com.example.demo.service.Client.ClientService;
 import com.example.demo.service.ResponseService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +31,7 @@ public class AuthController {
     private final PasswordEncoder passwordEncoder;
     private final ClientRepository clientRepository;
     private final ResponseService responseService;
+    private final ClientService clientService;
 
     @ApiOperation(value = "로그인", notes = "회원 로그인 기능")
     @PostMapping("/login")
@@ -47,5 +50,11 @@ public class AuthController {
                 || signupRequest.getPhoneNumber() == null) throw new InputNullException(); //입력창에 Null값이 있을 시 InputNullException 오류
         clientRepository.save(signupRequest.toEntity(passwordEncoder));
         return responseService.getSuccessfulResult();
+    }
+
+    @ApiOperation(value = "Naver 로그인", notes = "Naver 로그인 기능")
+    @PostMapping("/naver-login")
+    public CommonResult naverLogin(@RequestParam("access_token")String accessToken){
+        return clientService.getClientFromNaver(accessToken);
     }
 }
