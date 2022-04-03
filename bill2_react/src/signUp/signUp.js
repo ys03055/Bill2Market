@@ -1,5 +1,5 @@
 import React , {useState} from "react";
-import { Form, Input, Select,Button,  Divider,} from 'antd';
+import { Form, Input, DatePicker ,Button,  Divider,} from 'antd';
 import "./signUp.css";
 // import Post from "./address.js";
 // import { SearchOutlined } from '@ant-design/icons';
@@ -14,6 +14,8 @@ function SignUpPage () {
 
     const navigate = useNavigate();
 
+
+
     const onSubmit = (values) => {
         console.log(clientId+ " " + password + " " + nickname + " ");
         axios.post("http://localhost:8080/auth/signup ", {
@@ -21,7 +23,7 @@ function SignUpPage () {
             password: password,
             clientName: clientName,
             nickname: nickname,
-            // birthdate: birthdate,
+            birthdate: birthdate,
             phoneNumber: phoneNumber,
             email: email
         })
@@ -45,7 +47,7 @@ function SignUpPage () {
     // const [confirm_password, setConfirmPassword] = useState('');
     const [clientName, setClientName] = useState('');
     const [nickname, setNickName] = useState('');
-    // const [birthdate, setBirthdate] = useState('');
+    const [birthdate, setBirthdate] = useState('');
     // const [clientAddress, setClientAddress] = useState('');
     const [phoneNumber, setPhoneNumber] = useState('');
     const [email, setEmail] = useState('');
@@ -72,9 +74,9 @@ function SignUpPage () {
     const onNickNameHandler = (event) => {
         setNickName(event.currentTarget.value)
     }
-    // const onBirthDateHandler = (event) => {
-    //   setBirthdate(event.currentTarget.value)
-    // }
+    const onBirthDateHandler = (event) => {
+        setBirthdate(event.currentTarget.value)
+    }
     // const onClientAddressHandler = (event) => {
     //   setClientAddress(event.currentTarget.value)
     // }
@@ -92,11 +94,9 @@ function SignUpPage () {
 
         console.log('clientId', clientId)
         console.log('password', password)
-        // console.log('confirm_password', confirm_password)
         console.log('ClientName', clientName)
         console.log('nickname', nickname)
-        // console.log('birthdate',birthdate)
-        // console.log('Address', clientAddress)
+        console.log('birthdate',birthdate)
         console.log('PhoneNumber', phoneNumber)
         console.log('email', email)
 
@@ -231,17 +231,19 @@ function SignUpPage () {
                     <Input value={nickname} onChange= {onNickNameHandler}/>
                 </Form.Item>
 
-                {/*<Form.Item*/}
+                <Form.Item
 
-                {/*    name = "birthdate"*/}
-                {/*    label="생년월일"*/}
-                {/*    rules = {[{    //입력이 안되면 메세지 뜨는 속성*/}
-                {/*      required :true,*/}
-                {/*      message : "생년월일를 입력해주세요!" },*/}
-                {/*    ]}*/}
-                {/*>*/}
-                {/*  <Input type="number" value={birthdate} onChange= {onBirthDateHandler}/>*/}
-                {/*</Form.Item>*/}
+                   name = "birthdate"
+                   label="생년월일"
+                   tooltip="2000-10-18처럼 '-'을 넣어주세요."
+                   rules = {[{    //입력이 안되면 메세지 뜨는 속성*/}
+                     required :true,
+                    message : "생년월일를 입력해주세요!" },
+                   ]}
+                >
+                    <Input value={birthdate} onChange= {onBirthDateHandler} />
+
+                </Form.Item>
 
 
 
