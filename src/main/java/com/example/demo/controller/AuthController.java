@@ -33,7 +33,6 @@ public class AuthController {
     @ApiOperation(value = "로그인", notes = "회원 로그인 기능")
     @PostMapping("/login")
     public CommonResult login(@RequestBody LoginRequest loginRequest){
-        System.out.println(loginRequest.getClientId());
         Client client = clientRepository.findByClientId(loginRequest.getClientId()).orElseThrow(ClientNotFoundException::new);
         if (!passwordEncoder.matches(loginRequest.getPassword(), client.getPassword())) throw new PasswordMisMatchException();
         return responseService.getSingleResult(jwtTokenProvider.createToken(client.getClientId(), client.getRole()));
