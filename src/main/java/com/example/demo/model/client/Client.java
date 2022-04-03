@@ -1,6 +1,7 @@
 package com.example.demo.model.client;
 
 import lombok.*;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
 import java.sql.Date;
@@ -11,14 +12,14 @@ import java.sql.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Entity(name="Client")
+@Entity(name="Client2")
 public class Client {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long client_index;
-    @Column(nullable = false, name = "client_id")
+    private int client_index;
+    @Column(name = "client_id")
     private String clientId;
-    @Column
+    @Column(name = "password")
     private String password;
     @Column
     private String email;
@@ -32,12 +33,6 @@ public class Client {
     private String clientName;
     @Column
     private String nickname;
-    @Column(name = "client_address")
-    private String clientAddress;
-    @Column(name = "client_longitude")
-    private double clientLongitude;
-    @Column(name = "client_latitude")
-    private double clientLatitude;
     @Column
     private int subscribe;
     @Column

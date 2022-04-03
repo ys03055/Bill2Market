@@ -1,11 +1,7 @@
 package com.example.demo.advice;
 
 import com.example.demo.exception.ExceptionList;
-import com.example.demo.exception.client.CAccessDeniedException;
-import com.example.demo.exception.client.CAuthenticationEntryPointException;
-import com.example.demo.exception.client.ClientNotFoundException;
-import com.example.demo.exception.client.PasswordMisMatchException;
-import com.example.demo.exception.item.ItemNotFoundException;
+import com.example.demo.exception.client.*;
 import com.example.demo.model.response.CommonResult;
 import com.example.demo.service.ResponseService;
 import lombok.RequiredArgsConstructor;
@@ -50,9 +46,16 @@ public class ExceptionAdvice {
         return responseService.getFailResult(ExceptionList.ACCESS_DENIED.getCode(), ExceptionList.ACCESS_DENIED.getMessage());
     }
 
-    @ExceptionHandler(ItemNotFoundException.class)
+    @ExceptionHandler(InputNullException.class) //빈 값 입력 예외 사항 처리
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    protected  CommonResult itemNotFoundException(){
-        return responseService.getFailResult(ExceptionList.ITEM_NOT_FOUND.getCode(), ExceptionList.ITEM_NOT_FOUND.getMessage());
+    protected CommonResult InputNullException(){
+        return responseService.getFailResult(ExceptionList.INPUT_NULL.getCode(), ExceptionList.INPUT_NULL.getMessage());
     }
+
+    @ExceptionHandler(ExistIdException.class) //이미 존재하는 아이디 예외 사항 처리
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    protected CommonResult ExistIdException(){
+        return responseService.getFailResult(ExceptionList.EXIST_ID.getCode(), ExceptionList.EXIST_ID.getMessage());
+    }
+
 }
