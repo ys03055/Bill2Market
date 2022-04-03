@@ -20,7 +20,7 @@ public class ItemController {
     private final ItemService itemService;
 
     @ApiOperation(value = "기본 물품 리스트 조회", notes = "사용자와의 거리에 따른 물품 리스트를 조회한다.")
-    @GetMapping("/items")
+    @PostMapping("/items")
     public CommonResult itemList(@RequestBody ItemSearchRequest itemSearchRequest){
         return responseService.getSingleResult(itemService.findItemList(itemSearchRequest));
     }

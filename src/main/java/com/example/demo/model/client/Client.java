@@ -15,8 +15,9 @@ import java.sql.Date;
 @Entity(name="Client2")
 public class Client {
     @Id
+    @Column(name = "client_index")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int client_index;
+    private Integer clientIndex;
     @Column(name = "client_id")
     private String clientId;
     @Column(name = "password")
