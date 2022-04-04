@@ -2,6 +2,7 @@ package com.example.demo.advice;
 
 import com.example.demo.exception.ExceptionList;
 import com.example.demo.exception.client.*;
+import com.example.demo.exception.common.HttpFailException;
 import com.example.demo.model.response.CommonResult;
 import com.example.demo.service.ResponseService;
 import lombok.RequiredArgsConstructor;
@@ -56,6 +57,12 @@ public class ExceptionAdvice {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     protected CommonResult ExistIdException(){
         return responseService.getFailResult(ExceptionList.EXIST_ID.getCode(), ExceptionList.EXIST_ID.getMessage());
+    }
+
+    @ExceptionHandler(HttpFailException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    protected CommonResult HttpFailException(){
+        return responseService.getFailResult(ExceptionList.HTTP_FAIL.getCode(), ExceptionList.EXIST_ID.getMessage());
     }
 
 }

@@ -20,7 +20,7 @@ public class Client {
     private Integer clientIndex;
     @Column(name = "client_id")
     private String clientId;
-    @Column(name = "password")
+    @Column
     private String password;
     @Column
     private String email;
