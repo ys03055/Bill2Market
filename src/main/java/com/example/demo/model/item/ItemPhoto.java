@@ -9,12 +9,12 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Entity(name="Item_Photo_test")
+@Entity(name="Item_Photo")
 public class ItemPhoto {
     @Id
     @Column(name = "photo_index")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer photo_index;
+    private Integer photoIndex;
 
     @Column(name = "item_id")
     private Integer itemId;

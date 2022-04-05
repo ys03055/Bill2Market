@@ -19,10 +19,11 @@ import java.util.List;
 
 @NamedNativeQuery(
     name = "SimpleItemSliceByLocation",
-    query = "SELECT item.item_id, item_title, item_address, price, p1.item_photo " +
+    query = "SELECT item.item_id, item_title, item_address, price, deposit, p1.item_photo, item_status, create_date, " +
+            "EXISTS(SELECT item_id FROM basket WHERE basket.item_id = item.item_id AND basket.client_index = 1) AS is_basket " +
             "FROM item " +
-            "LEFT JOIN item_photo_test AS p1 on item.item_id = p1.item_id " +
-            "LEFT JOIN item_photo_test AS p2 ON p1.item_id = p2.item_id " +
+            "LEFT JOIN item_photo AS p1 on item.item_id = p1.item_id " +
+            "LEFT JOIN item_photo AS p2 ON p1.item_id = p2.item_id " +
             "AND p1.photo_index > p2.photo_index " +
             "WHERE p2.photo_index IS NULL " +
             "AND ST_DISTANCE_SPHERE( POINT(:client_longitude, :client_latitude), POINT(item_longitude, item_latitude)) <= 1000 " +
@@ -38,7 +39,11 @@ import java.util.List;
                         @ColumnResult(name = "item_title", type = String.class),
                         @ColumnResult(name = "item_address", type = String.class),
                         @ColumnResult(name = "price", type = Integer.class),
-                        @ColumnResult(name = "item_photo", type = String.class)
+                        @ColumnResult(name = "deposit", type = Integer.class),
+                        @ColumnResult(name = "item_photo", type = String.class),
+                        @ColumnResult(name = "item_status", type = ItemStatus.class),
+                        @ColumnResult(name = "create_date", type = java.util.Date.class),
+                        @ColumnResult(name = "is_basket", type = Boolean.class)
                 }
         )
 )
@@ -60,8 +65,9 @@ public class Item {
     private String itemTitle;
     @Column(name = "item_content")
     private String itemContent;
+    @Enumerated(EnumType.STRING)
     @Column(name = "item_status")
-    private String itemStatus;
+    private ItemStatus itemStatus;
     @Column(name = "contract_status")
     private String contractStatus;
     @Column(name = "create_date")

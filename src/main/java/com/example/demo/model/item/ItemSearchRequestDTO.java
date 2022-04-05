@@ -3,7 +3,7 @@ package com.example.demo.model.item;
 import lombok.Data;
 
 @Data
-public class ItemSearchRequest {
+public class ItemSearchRequestDTO {
 
     private double longitude;
     private double latitude;
