@@ -26,16 +26,16 @@ public class BasketController {
     }
 
     @ApiOperation(value = "찜하기", notes = "사용자가 해당 물품을 찜한다.")
-    @PostMapping("/{item-id}")
-    public CommonResult addBasket(@PathVariable("item-id") Integer itemId){
+    @PostMapping("")
+    public CommonResult addBasket(Integer itemId){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         basketService.saveBasket(Integer.parseInt(auth.getName()), itemId);
         return responseService.getSuccessfulResult();
     }
 
     @ApiOperation(value = "찜하기 취소", notes = "사용자가 해당 물품의 찜하기를 취소한다.")
-    @DeleteMapping("/{item-id}")
-    public CommonResult deleteBasket(@PathVariable("item-id") Integer itemId){
+    @DeleteMapping("")
+    public CommonResult deleteBasket(Integer itemId){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         basketService.deleteBasket(Integer.parseInt(auth.getName()), itemId);
         return responseService.getSuccessfulResult();
