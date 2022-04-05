@@ -2,20 +2,21 @@ package com.example.demo.model.basket;
 
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.IdClass;
+import javax.persistence.*;
+import java.io.Serializable;
 
 @Data
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 @Entity(name="Basket")
-@IdClass(BasketPK.class)
-public class Basket {
-    @Id
-    private int client_index;
-    @Id
-    private int item_id;
+public class Basket implements Serializable {
+
+    @EmbeddedId
+    private BasketPK basketPK;
+
+    public Basket(int clientIndex, int itemId){
+        this.basketPK = new BasketPK(clientIndex, itemId);
+    }
+
 }
