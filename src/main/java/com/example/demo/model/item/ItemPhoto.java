@@ -9,7 +9,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Entity(name="Item_Photo_test")
+@Entity(name="Item_Photo")
 public class ItemPhoto {
     @Id
     @Column(name = "photo_index")

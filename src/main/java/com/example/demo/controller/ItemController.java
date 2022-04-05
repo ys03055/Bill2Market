@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.exception.item.ItemNotFoundException;
+import com.example.demo.model.item.ItemPhotoSaveRequest;
 import com.example.demo.model.item.ItemSearchRequest;
 import com.example.demo.model.item.ItemSaveRequest;
 import com.example.demo.model.response.CommonResult;
@@ -10,6 +11,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
 
 @Api(tags = {"3. Item"})
 @RequiredArgsConstructor
@@ -33,8 +36,9 @@ public class ItemController {
     
     @ApiOperation(value = "임시 게시물 저장", notes = "임시 게시물 저장")
     @PostMapping("/item")
-    public CommonResult itemSave(@RequestBody ItemSaveRequest itemSaveRequest){
-        itemService.saveItem(itemSaveRequest);
+    public CommonResult itemSave(@RequestPart(value = "item") ItemSaveRequest itemSaveRequest,
+                                 @RequestPart(value = "itemPhotos") ItemPhotoSaveRequest itemPhotoSaveRequest) throws IOException {
+        itemService.saveItem(itemSaveRequest, itemPhotoSaveRequest);
         return responseService.getSuccessfulResult();
     }
 
