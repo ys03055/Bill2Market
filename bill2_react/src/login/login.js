@@ -1,12 +1,14 @@
 import { Form, Input, Button, Checkbox, Divider, Modal } from 'antd';  //ant design form 사용
 import { UserOutlined, LockOutlined } from '@ant-design/icons';  //터미널에서 npm install antd 입력 후 설치
 import "./login.css";
-import {Link, useLocation } from "react-router-dom"
+import {Link, useLocation, useNavigate } from "react-router-dom"
 import React, {useEffect} from "react";
 import axios from "axios";
 import ReactModal from 'react-modal';
 
 function LoginPage () {
+    const location = useLocation();
+    const navigate = useNavigate();
 
     const onSubmit = (values) => {
         const data = {
@@ -27,6 +29,8 @@ function LoginPage () {
         axios(option)
             .then(res=>{
                 localStorage.setItem('token', res.data.data);
+                getNickName() //login완료시 닉네임 가져오기
+                navigate('/Main/Main');
             }).catch(res=>{
             alert(res.response.data.message);
         });
@@ -35,8 +39,6 @@ function LoginPage () {
     const onSubmitFailed = (errorInfo) => {  //exception 발생 시 에러 원인 불러오기
         console.log("로그인에 실패했습니다",errorInfo);  //서버로 요청하는 값
     };
-
-    const location = useLocation();
 
     const initializeNaverLogin = () => {
         if (!location.hash){
@@ -63,7 +65,7 @@ function LoginPage () {
 
             axios(option)
                 .then(res=>{
-                    if(!res.data.success || res.data.code == 1){ // 회원가입, 닉네임 입력 필요
+                    if(!res.data.success || res.data.code === 1){ // 회원가입, 닉네임 입력 필요
                         // const NicknameModal = () =>{
                         //     return(
                         //         <Modal open={true}>
@@ -97,6 +99,23 @@ function LoginPage () {
             });
         }
     };
+
+    const getNickName = () => { //닉네임을 가져오는 함수
+
+        axios.get("http://localhost:8080/client/me", {
+            headers: {
+                Authorization: 'Bearer ' + localStorage.getItem("token")
+            }
+        }).then(response => {
+            console.log(response.data);
+            localStorage.setItem('nickName', response.data.data.nickname)
+        })
+            .catch(error => {
+                console.log(error.response.data);
+            })
+
+
+    }
 
     useEffect(() => {
         initializeNaverLogin();
@@ -164,11 +183,9 @@ function LoginPage () {
                 {/* 아이디 기억하기 체크 박스 */}
 
                 <Form.Item>
-                    <Link className='LoginMainPage' to={'/MainPage'} >
                         <Button type="primary" htmlType="submit" className='login_button'>
                             로그인
                         </Button>
-                    </Link>
                 </Form.Item>
                 {/* 로그인 버튼 구현 */}
 

@@ -1,4 +1,4 @@
-import React, {Fragment, Component} from "react";
+import React, {Fragment, Component, useState, useEffect} from "react";
 import "./header.css";
 import {NavLink, Link} from "react-router-dom";
 import {Cascader} from "antd";
@@ -58,13 +58,60 @@ function HeaderPage()  {
             ],
         },
     ];
-    function onChange(value) {
+
+    const [logged, setLogged] = useState(false); //현재 로그 상태에 따라서 로그인상태인지 아웃상태인지 판단
+
+
+    const onChange = (value) => {
         console.log(value);
 
     }
 
+    const onload = () => { //자동 새로고침 nickName값이 바로 안들어감
+        if(!window.location.hash) {
+            window.location = window.location + '#loaded';
+            window.location.reload();
+        }
+    }
 
-        
+    const isLogin = () => { //로그아웃 상태 일 때 로그인이 필요한 기능이라는 alert 메세지
+        if (logged === false) {
+            alert("로그인 이후 사용 가능합니다.")
+        }
+    }
+
+    const tokenRemove = () => { //저장되어있는 모든 토큰 값을 삭제
+        localStorage.removeItem('token');
+        localStorage.removeItem('nickName');
+    }
+
+    const onLogin = () => { //로그인일 경우 logged를 true로 설정
+        setLogged(true);
+
+    }
+
+    const onLogout = () => { //로그아웃일 경우 logged를 false로 설정, 및 모든 토큰값 삭제
+        tokenRemove();
+        setLogged(false);
+    }
+
+    useEffect(() => { // useEffect를 사용하여 초기값을 설정하고, login과 logout일 때를 분리
+        const token = localStorage.getItem('token');
+
+        if (token === null) {
+            onLogout();
+            console.log("로그아웃 상태!")
+
+        } else {
+            onLogin();
+            console.log("로그인 상태!")
+            onload();
+        }
+    })
+
+
+    const nick = localStorage.getItem('nickName'); // return안에서 nickName을 끌어오기위해서 변수 생성
+
     return (
         <Fragment>
          {/* NavLink 이미지 클릭시 화면이동 */}
@@ -75,20 +122,29 @@ function HeaderPage()  {
 
           </div>
             <div className="links">
-                <Link to={"/login"} className="link_text">
-                    로그인/회원가입
-                </Link>
-                {/* 마이페이지 화면과 연결 */}
-                {/* <Link to={""} className="link_text">
-                    마이페이지
-                </Link> */}
-                <a href='' className="link_text" onClick={()=>{console.log('the link')}}>마이페이지</a>
+                {logged === false ?
+                    <span className="link_text"> </span>
+                    :
+                    <span className="link_text"> {nick} 님 환영합니다.</span>
+                }
+
+                {logged === false ?
+                    <Link to='/login' className="link_text">로그인/회원가입</Link>
+                    :
+                    <Link to='/' onClick={onLogout} className="link_text">로그아웃</Link>
+                }
+
+                {/*???님 환영합니다.*/}
+                <Link to='/' onClick={isLogin} className="link_text">마이페이지</Link>
             </div>
 
             <div className="links_button">
-                <a href=''><img src={require("./HeaderImage/sell.png")} height="40px" width="40px" /> 글쓰기</a>
-                <a href=''><img src={require("./HeaderImage/chat.png")} height="40px" width="40px"/> 채팅</a>
-                <a href=''><img src={require("./HeaderImage/bell.png")} height="40px" width="40px"/> 알림</a>
+                <Link to='/' onClick={isLogin}><img src={require("./HeaderImage/sell.png")} height="40px"
+                                                         width="40px"/> 글쓰기</Link>
+                <Link to='/' onClick={isLogin}><img src={require("./HeaderImage/chat.png")} height="40px"
+                                                         width="40px"/> 채팅</Link>
+                <Link to='/' onClick={isLogin}><img src={require("./HeaderImage/bell.png")} height="40px"
+                                                         width="40px"/> 알림</Link>
             </div>
 
 
