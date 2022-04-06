@@ -9,6 +9,8 @@ import com.example.demo.service.item.ItemService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @Api(tags = {"3. Item"})
@@ -23,7 +25,8 @@ public class ItemController {
     @ApiOperation(value = "기본 물품 리스트 조회", notes = "사용자와의 거리에 따른 물품 리스트를 조회한다.")
     @GetMapping("")
     public CommonResult itemList(ItemSearchRequestDTO itemSearchRequestDTO){
-        return responseService.getSingleResult(itemService.findItemList(itemSearchRequestDTO));
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        return responseService.getSingleResult(itemService.findItemList(itemSearchRequestDTO, Integer.parseInt(auth.getName())));
     }
 
     @ApiOperation(value = "기본 물품 상세 조회", notes = "번호에 맞는 물품을 조회한다.")

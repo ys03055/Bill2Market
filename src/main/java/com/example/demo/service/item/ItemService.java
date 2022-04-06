@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public interface ItemService {
 
-    public Slice<SimpleItem> findItemList(ItemSearchRequestDTO itemSearchRequestDTO);
+    public Slice<SimpleItem> findItemList(ItemSearchRequestDTO itemSearchRequestDTO, Integer clientIndex);
     public void saveItem(ItemSaveRequest itemSaveRequest);
     public Optional<Item> findItemOne(Integer itemIndex);
 

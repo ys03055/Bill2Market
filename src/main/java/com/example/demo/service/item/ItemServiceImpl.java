@@ -21,8 +21,9 @@ public class ItemServiceImpl implements ItemService{
     private final ClientRepository clientRepository;
 
     @Override
-    public Slice<SimpleItem> findItemList(ItemSearchRequestDTO itemSearchRequestDTO) {
-        return itemRepository.findAllByLocation(itemSearchRequestDTO.getLongitude(), itemSearchRequestDTO.getLatitude(), PageRequest.of(itemSearchRequestDTO.getPage(), 10));
+    public Slice<SimpleItem> findItemList(ItemSearchRequestDTO itemSearchRequestDTO, Integer clientIndex) {
+        return itemRepository.findAllByLocation(itemSearchRequestDTO.getLongitude(), itemSearchRequestDTO.getLatitude(),
+                clientIndex, PageRequest.of(itemSearchRequestDTO.getPage(), 10));
     }
 
     @Override

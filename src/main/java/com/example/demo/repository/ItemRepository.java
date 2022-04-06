@@ -12,5 +12,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ItemRepository extends JpaRepository<Item, Integer> {
     @Query(name = "SimpleItemSliceByLocation", nativeQuery = true)
-    public Slice<SimpleItem> findAllByLocation(@Param("client_longitude") double clientLongitude, @Param("client_latitude") double clientLatitude, Pageable pageable);
+    public Slice<SimpleItem> findAllByLocation(@Param("client_longitude") double clientLongitude, @Param("client_latitude") double clientLatitude, @Param("client_index") int clientIndex, Pageable pageable);
 }
