@@ -20,7 +20,7 @@ import java.util.List;
 @NamedNativeQuery(
     name = "SimpleItemSliceByLocation",
     query = "SELECT item.item_id, item_title, item_address, price, deposit, p1.item_photo, item_status, create_date, " +
-            "EXISTS(SELECT item_id FROM basket WHERE basket.item_id = item.item_id AND basket.client_index = :client_index) AS is_basket " +
+            "EXISTS(SELECT item_id FROM basket WHERE basket.item_id = item.item_id AND basket.client_index = 1) AS is_basket " +
             "FROM item " +
             "LEFT JOIN item_photo AS p1 on item.item_id = p1.item_id " +
             "LEFT JOIN item_photo AS p2 ON p1.item_id = p2.item_id " +
