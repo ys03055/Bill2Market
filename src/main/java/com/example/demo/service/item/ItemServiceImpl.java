@@ -27,8 +27,8 @@ public class ItemServiceImpl implements ItemService{
     private ItemPhotoServiceImpl itemPhotoService;
 
     @Override
-    public Slice<SimpleItem> findItemList(ItemSearchRequest itemSearchRequest) {
-        return itemRepository.findAllByLocation(itemSearchRequest.getLongitude(), itemSearchRequest.getLatitude(), PageRequest.of(itemSearchRequest.getPage(), 10));
+    public Slice<SimpleItem> findItemList(ItemSearchRequestDTO itemSearchRequestDTO) {
+        return itemRepository.findAllByLocation(itemSearchRequestDTO.getLongitude(), itemSearchRequestDTO.getLatitude(), PageRequest.of(itemSearchRequestDTO.getPage(), 10));
     }
 
     @Override

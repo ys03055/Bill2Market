@@ -7,8 +7,7 @@ import java.io.IOException;
 import java.util.Optional;
 
 public interface ItemService {
-
-    public Slice<SimpleItem> findItemList(ItemSearchRequest itemSearchRequest);
+    public Slice<SimpleItem> findItemList(ItemSearchRequestDTO itemSearchRequestDTO);
     public void saveItem(ItemSaveRequest itemSaveRequest, ItemPhotoSaveRequest itemPhotoSaveRequest) throws IOException;
     public Optional<Item> findItemOne(Integer itemIndex);
 
