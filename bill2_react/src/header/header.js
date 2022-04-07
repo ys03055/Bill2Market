@@ -1,7 +1,8 @@
-import React, {Fragment, Component, useState, useEffect} from "react";
+import React, {Fragment, useState, useEffect} from "react";
 import "./header.css";
 import {NavLink, Link} from "react-router-dom";
 import {Cascader} from "antd";
+import axios from "axios";
 
 
 function HeaderPage()  {
@@ -60,18 +61,11 @@ function HeaderPage()  {
     ];
 
     const [logged, setLogged] = useState(false); //현재 로그 상태에 따라서 로그인상태인지 아웃상태인지 판단
-
+    const [nickName, setNickName] = useState('');
 
     const onChange = (value) => {
         console.log(value);
 
-    }
-
-    const onload = () => { //자동 새로고침 nickName값이 바로 안들어감
-        if(!window.location.hash) {
-            window.location = window.location + '#loaded';
-            window.location.reload();
-        }
     }
 
     const isLogin = () => { //로그아웃 상태 일 때 로그인이 필요한 기능이라는 alert 메세지
@@ -95,6 +89,23 @@ function HeaderPage()  {
         setLogged(false);
     }
 
+    const getNickName = () => { //닉네임을 가져오는 함수
+
+        axios.get("/client/me", {
+            headers: {
+                Authorization: 'Bearer ' + localStorage.getItem("token")
+            }
+        }).then(response => {
+            localStorage.setItem('nickName', response.data.data.nickname)
+            setNickName(localStorage.getItem('nickName'))
+        })
+            .catch(error => {
+                console.log(error.response.data);
+            })
+
+
+    }
+
     useEffect(() => { // useEffect를 사용하여 초기값을 설정하고, login과 logout일 때를 분리
         const token = localStorage.getItem('token');
 
@@ -105,12 +116,10 @@ function HeaderPage()  {
         } else {
             onLogin();
             console.log("로그인 상태!")
-            onload();
+            getNickName()
         }
     })
 
-
-    const nick = localStorage.getItem('nickName'); // return안에서 nickName을 끌어오기위해서 변수 생성
 
     return (
         <Fragment>
@@ -125,7 +134,7 @@ function HeaderPage()  {
                 {logged === false ?
                     <span className="link_text"> </span>
                     :
-                    <span className="link_text"> {nick} 님 환영합니다.</span>
+                    <span className="link_text"> {nickName} 님 환영합니다.</span>
                 }
 
                 {logged === false ?

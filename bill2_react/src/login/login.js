@@ -29,7 +29,6 @@ function LoginPage () {
         axios(option)
             .then(res=>{
                 localStorage.setItem('token', res.data.data);
-                getNickName() //login완료시 닉네임 가져오기
                 navigate('/Main/Main');
             }).catch(res=>{
             alert(res.response.data.message);
@@ -100,22 +99,7 @@ function LoginPage () {
         }
     };
 
-    const getNickName = () => { //닉네임을 가져오는 함수
 
-        axios.get("http://localhost:8080/client/me", {
-            headers: {
-                Authorization: 'Bearer ' + localStorage.getItem("token")
-            }
-        }).then(response => {
-            console.log(response.data);
-            localStorage.setItem('nickName', response.data.data.nickname)
-        })
-            .catch(error => {
-                console.log(error.response.data);
-            })
-
-
-    }
 
     useEffect(() => {
         initializeNaverLogin();
@@ -215,19 +199,19 @@ function LoginPage () {
                 </Divider>
                 {/* 보기 쉽게 구분선 구현 */}
 
-                <a className='underbar'>
+                <div className='underbar'>
 
                     {/* <Link className='findId_Link' to={'/findIdPage'}> */}
-                    <a href="">아이디찾기</a>
+                    <Link to="">아이디찾기</Link>
                     {/* </Link> */}
 
                     {/* <Link className='findPassword_Link' to={'/findPasswordPage'}> */}
-                    <a href="">비밀번호찾기</a>
+                    <Link to="">비밀번호찾기</Link>
                     {/* </Link> */}
                     <Link className='signUp_Link' to={'/signup'}>
-                        <a>회원가입</a>
+                        회원가입
                     </Link>
-                </a>
+                </div>
 
                 {/* 화면에 띄어쓰기 어떻게 보여주는지 몰라서 야매로 일단 화면에 띄웠습니다 ㅠㅠ */}
                 {/* 아시면 제발 알려주세요. */}
