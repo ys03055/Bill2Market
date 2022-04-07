@@ -4,12 +4,14 @@ package com.example.demo.controller;
 import com.example.demo.exception.client.ClientNotFoundException;
 import com.example.demo.exception.client.ExistIdException;
 import com.example.demo.exception.client.ExistNicknameException;
+import com.example.demo.exception.client.InputNullException;
 import com.example.demo.model.client.Client;
 import com.example.demo.model.client.SignupRequest;
 import com.example.demo.model.response.CommonResult;
 import com.example.demo.repository.ClientRepository;
 import com.example.demo.service.Client.ClientService;
 import com.example.demo.service.ResponseService;
+import com.querydsl.core.util.StringUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -38,6 +40,7 @@ public class ClientController {
     @GetMapping("/clients/id-check")
     public CommonResult checkId(@RequestParam String clientId){
         if(clientRepository.findByClientId(clientId).isPresent()) throw new ExistIdException(); //이미 존재하는 ID exception
+        if(StringUtils.isNullOrEmpty(clientId)) throw new InputNullException(); //사용자가 ID 미입력 후 중복확인 버튼 클릭 했을 경우 exception처리
         return responseService.getSuccessfulResult();
     }
 
@@ -45,6 +48,7 @@ public class ClientController {
     @GetMapping("/clients/nickname-check")
     public CommonResult checkNickname(@RequestParam String nickname){//이미 존재하는 Nickname있을 때 exception처리
         if(clientRepository.findByNickname(nickname).isPresent()) throw new ExistNicknameException();
+        if(StringUtils.isNullOrEmpty(nickname)) throw new InputNullException(); //사용자가 닉네임 미입력 후 중복확인 버튼 클릭 했을 경우 exception처리
         return responseService.getSuccessfulResult();
     }
 

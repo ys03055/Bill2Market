@@ -1,10 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.config.jwt.JwtTokenProvider;
-import com.example.demo.exception.client.ClientNotFoundException;
-import com.example.demo.exception.client.ExistIdException;
-import com.example.demo.exception.client.InputNullException;
-import com.example.demo.exception.client.PasswordMisMatchException;
+import com.example.demo.exception.client.*;
 import com.example.demo.model.client.Client;
 import com.example.demo.model.client.LoginRequest;
 import com.example.demo.model.client.Role;
@@ -32,7 +29,6 @@ public class AuthController {
     private final ClientRepository clientRepository;
     private final ResponseService responseService;
     private final ClientService clientService;
-    private final ClientController clientController;
 
     @ApiOperation(value = "로그인", notes = "회원 로그인 기능")
     @PostMapping("/login")
@@ -45,6 +41,8 @@ public class AuthController {
     @ApiOperation(value = "회원가입", notes = "회원가입 기능")
     @PostMapping("/signup")
     public CommonResult signUp(@RequestBody SignupRequest signupRequest){
+        if(clientRepository.findByClientId(signupRequest.getClientId()).isPresent()) throw new ExistIdException();
+        if(clientRepository.findByNickname(signupRequest.getNickname()).isPresent()) throw new ExistNicknameException();
         if(signupRequest.getClientId() ==null || signupRequest.getPassword() == null ||signupRequest.getClientName() == null
                 || signupRequest.getNickname() == null || signupRequest.getEmail() == null
                 || signupRequest.getPhoneNumber() == null) throw new InputNullException(); //입력창에 Null값이 있을 시 InputNullException 오류
