@@ -65,4 +65,11 @@ public class ExceptionAdvice {
         return responseService.getFailResult(ExceptionList.HTTP_FAIL.getCode(), ExceptionList.EXIST_ID.getMessage());
     }
 
+    @ExceptionHandler(ExistNicknameException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    protected CommonResult ExistNicknameException(){//이미 존재하는 닉네임 예외 사항 처리
+        return responseService.getFailResult(ExceptionList.EXIST_NICKNAME.getCode(), ExceptionList.EXIST_NICKNAME.getMessage());
+    }
+
+
 }

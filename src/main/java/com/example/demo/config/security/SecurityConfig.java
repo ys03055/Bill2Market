@@ -45,6 +45,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
                 .antMatchers("/exception/*").permitAll()
                 .antMatchers("/auth/*", "/clients/{client-index}/nickname").permitAll()
+                .antMatchers("/clients/nickname-check", "/clients/id-check").permitAll() //권한 해제
                 .anyRequest().authenticated();
 
         http.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);

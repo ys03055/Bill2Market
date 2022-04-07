@@ -14,7 +14,8 @@ public enum ExceptionList {
     ACCESS_DENIED(-1003, "권한이 부족하여 해당 기능을 이용하실 수 없습니다."),
     INPUT_NULL(-1004, "입력하지 않은 값이 있습니다."),
     EXIST_ID(-1005, "이미 존재하는 아이디입니다."),
-    HTTP_FAIL(-1006, "외부 서버와 연결에 실패했습니다.");
+    HTTP_FAIL(-1006, "외부 서버와 연결에 실패했습니다."),
+    EXIST_NICKNAME(-1010, "현재 존재하는 닉네임입니다.");
 
     private final int code;
     private final String message;

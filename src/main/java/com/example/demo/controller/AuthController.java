@@ -32,6 +32,7 @@ public class AuthController {
     private final ClientRepository clientRepository;
     private final ResponseService responseService;
     private final ClientService clientService;
+    private final ClientController clientController;
 
     @ApiOperation(value = "로그인", notes = "회원 로그인 기능")
     @PostMapping("/login")
@@ -44,7 +45,6 @@ public class AuthController {
     @ApiOperation(value = "회원가입", notes = "회원가입 기능")
     @PostMapping("/signup")
     public CommonResult signUp(@RequestBody SignupRequest signupRequest){
-        if(clientRepository.findByClientId(signupRequest.getClientId()).isPresent()) throw new ExistIdException(); //이미 존재하는 ID exception
         if(signupRequest.getClientId() ==null || signupRequest.getPassword() == null ||signupRequest.getClientName() == null
                 || signupRequest.getNickname() == null || signupRequest.getEmail() == null
                 || signupRequest.getPhoneNumber() == null) throw new InputNullException(); //입력창에 Null값이 있을 시 InputNullException 오류
