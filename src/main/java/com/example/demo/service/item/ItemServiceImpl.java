@@ -37,12 +37,8 @@ public class ItemServiceImpl implements ItemService{
         List<String> photoUrls = itemPhotoService.upload(itemPhotoSaveRequest, "itemPhoto");
         boolean isMain = true;
         for(String url: photoUrls) {
-            if(isMain) {
-                itemPhotoRepository.save(ItemPhoto.builder().itemId(item.getItemId()).itemPhoto(url).isMain(true).build());
-                isMain = false;
-            } else {
-                itemPhotoRepository.save(ItemPhoto.builder().itemId(item.getItemId()).itemPhoto(url).isMain(false).build());
-            }
+            itemPhotoRepository.save(ItemPhoto.builder().itemId(item.getItemId()).itemPhoto(url).isMain(isMain).build());
+            isMain = false;
         }
 
     }
