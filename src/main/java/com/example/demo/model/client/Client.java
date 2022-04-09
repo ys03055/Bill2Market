@@ -8,9 +8,9 @@ import java.sql.Date;
 
 
 import com.example.demo.model.item.OwnerInfo;
-import lombok.;
+import lombok.*;
 
-import javax.persistence.;
+import javax.persistence.*;
 import java.sql.Date;
 
 
