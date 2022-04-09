@@ -4,6 +4,7 @@ import com.example.demo.model.client.Role;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -17,6 +18,7 @@ import java.security.Key;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Slf4j
 @RequiredArgsConstructor
 @Component
 public class JwtTokenProvider {
@@ -62,7 +64,7 @@ public class JwtTokenProvider {
             if(claims == null) return false;
             return claims.getExpiration().after(new Date());
         }catch(Exception e) {
-            e.printStackTrace();
+            log.info("JWT 토큰 검증에 실패하였습니다.");
             return false;
         }
     }
@@ -73,8 +75,17 @@ public class JwtTokenProvider {
                     .setSigningKey(key)
                     .build()
                     .parseClaimsJws(token);
-        } catch (Exception e) {
-            throw e;
+        } catch (SecurityException e) {
+            log.info("잘못된 JWT 서명입니다.");
+        } catch (MalformedJwtException e) {
+            log.info("잘못된 JWT 토큰입니다.");
+        } catch (ExpiredJwtException e) {
+            log.info("JWT 토큰이 만료되었습니다.");
+        } catch (UnsupportedJwtException e) {
+            log.info("지원되지 않는 JWT 토큰입니다..");
+        } catch (IllegalArgumentException e) {
+            log.info("JWT 토큰 압축이 정상적으로 이루어지지 않았습니다.");
         }
+        return null;
     }
 }
