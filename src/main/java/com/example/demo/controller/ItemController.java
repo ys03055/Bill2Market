@@ -2,7 +2,6 @@ package com.example.demo.controller;
 
 import com.example.demo.exception.item.ItemNotFoundException;
 import com.example.demo.model.item.ItemSearchRequestDTO;
-import com.example.demo.model.item.ItemPhotoSaveRequest;
 import com.example.demo.model.item.ItemSaveRequest;
 import com.example.demo.model.response.CommonResult;
 import com.example.demo.service.ResponseService;
@@ -10,9 +9,13 @@ import com.example.demo.service.item.ItemService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @Api(tags = {"3. Item"})
 @RequiredArgsConstructor
@@ -38,7 +41,9 @@ public class ItemController {
     @ApiOperation(value = "임시 게시물 저장", notes = "임시 게시물 저장")
     @PostMapping("/item")
     public CommonResult itemSave(@RequestPart(value = "item") ItemSaveRequest itemSaveRequest,
-                                 @RequestPart(value = "itemPhotos") ItemPhotoSaveRequest itemPhotoSaveRequest) throws IOException {
+                                 @RequestPart(value = "itemPhoto") List<MultipartFile> itemPhotoSaveRequest) throws IOException {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        itemSaveRequest.setOwnerId(Integer.parseInt(auth.getName()));
         itemService.saveItem(itemSaveRequest, itemPhotoSaveRequest);
         return responseService.getSuccessfulResult();
     }

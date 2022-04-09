@@ -32,10 +32,15 @@ public class ItemServiceImpl implements ItemService{
     }
 
     @Override
-    public void saveItem(ItemSaveRequest itemSaveRequest, ItemPhotoSaveRequest itemPhotoSaveRequest) throws IOException {
+    public void saveItem(ItemSaveRequest itemSaveRequest, List<MultipartFile> itemPhotoSaveRequest) throws IOException {
         Item item = itemRepository.save(itemSaveRequest.toEntity());
-        List<String> photoUrls = itemPhotoService.upload(itemPhotoSaveRequest.getItemPhotos(), "itemPhoto");
-        for(String url: photoUrls) itemPhotoRepository.save(ItemPhoto.builder().itemId(item.getItemId()).itemPhoto(url).build());
+        List<String> photoUrls = itemPhotoService.upload(itemPhotoSaveRequest, "itemPhoto");
+        boolean isMain = true;
+        for(String url: photoUrls) {
+            itemPhotoRepository.save(ItemPhoto.builder().itemId(item.getItemId()).itemPhoto(url).isMain(isMain).build());
+            isMain = false;
+        }
+
     }
 
     @Override

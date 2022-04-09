@@ -12,7 +12,7 @@ import java.sql.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Entity(name="Client2")
+@Entity(name="Client")
 public class Client {
     @Id
     @Column(name = "client_index")
