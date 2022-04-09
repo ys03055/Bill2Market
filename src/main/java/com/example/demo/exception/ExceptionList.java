@@ -17,7 +17,8 @@ public enum ExceptionList {
     HTTP_FAIL(-1006, "외부 서버와 연결에 실패했습니다."),
     ITEM_NOT_FOUND(-1007, "해당 물품이 존재하지 않습니다."),
     BASKET_NOT_FOUND(-1008, "해당 찜이 존재하지 않습니다."),
-    DUPLICATE_BASKET(-1009, "이미 찜이 되어있는 물품입니다.");
+    DUPLICATE_BASKET(-1009, "이미 찜이 되어있는 물품입니다."),
+    EXIST_NICKNAME(-1010, "현재 존재하는 닉네임입니다.");
 
     private final int code;
     private final String message;
