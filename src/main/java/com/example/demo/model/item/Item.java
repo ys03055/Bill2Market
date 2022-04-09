@@ -2,33 +2,30 @@ package com.example.demo.model.item;
 
 import lombok.*;
 import javax.persistence.*;
-import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 
 
 
 @Getter
-
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Entity(name="Item")
-
 @NamedNativeQuery(
-    name = "SimpleItemSliceByLocation",
-    query = "SELECT item.item_id, item_title, item_address, price, deposit, p1.item_photo, item_status, create_date, " +
-            "EXISTS(SELECT item_id FROM basket WHERE basket.item_id = item.item_id AND basket.client_index = 1) AS is_basket " +
-            "FROM item " +
-            "LEFT JOIN item_photo AS p1 on item.item_id = p1.item_id " +
-            "LEFT JOIN item_photo AS p2 ON p1.item_id = p2.item_id " +
-            "AND p1.photo_index > p2.photo_index " +
-            "WHERE p2.photo_index IS NULL " +
-            "AND ST_DISTANCE_SPHERE( POINT(:client_longitude, :client_latitude), POINT(item_longitude, item_latitude)) <= 1000 " +
-            "ORDER BY ST_Distance_Sphere( POINT(:client_longitude, :client_latitude), POINT(item_longitude, item_latitude))",
-    resultSetMapping = "SimpleItemMapping"
+        name = "SimpleItemSliceByLocation",
+        query = "SELECT Item.item_id, Item_Photo.item_photo_index, item_title, price, deposit, item_address, Item_Photo.item_photo, contract_status, create_date, " +
+                "IF(Basket.item_id = Item.item_id, TRUE, FALSE) AS is_like " +
+                "FROM Item LEFT JOIN Item_Photo " +
+                "ON Item.item_id = Item_Photo.item_id " +
+                "AND Item_Photo.is_main = 1 " +
+                "LEFT JOIN Basket ON Basket.client_index = :client_index " +
+                "WHERE ST_Distance_Sphere(POINT(:client_longitude, :client_latitude), POINT(item_longitude, item_latitude)) <= 10000 " +
+                "GROUP BY item_id ORDER BY ST_Distance_Sphere(POINT(:client_longitude, :client_latitude), POINT(item_longitude, item_latitude))",
+        resultSetMapping = "SimpleItemMapping"
 )
 @SqlResultSetMapping(
         name = "SimpleItemMapping",
@@ -36,14 +33,15 @@ import java.util.List;
                 targetClass = SimpleItem.class,
                 columns = {
                         @ColumnResult(name = "item_id", type = Integer.class),
+                        @ColumnResult(name = "item_photo_index", type = Integer.class),
                         @ColumnResult(name = "item_title", type = String.class),
                         @ColumnResult(name = "item_address", type = String.class),
                         @ColumnResult(name = "price", type = Integer.class),
                         @ColumnResult(name = "deposit", type = Integer.class),
                         @ColumnResult(name = "item_photo", type = String.class),
-                        @ColumnResult(name = "item_status", type = ItemStatus.class),
+                        @ColumnResult(name = "contract_status", type = String.class),
                         @ColumnResult(name = "create_date", type = java.util.Date.class),
-                        @ColumnResult(name = "is_basket", type = Boolean.class)
+                        @ColumnResult(name = "is_like", type = Boolean.class)
                 }
         )
 )
@@ -67,8 +65,8 @@ public class Item {
     private String itemContent;
     @Column(name = "item_quality")
     private String itemQuality;
-    @Enumerated(EnumType.STRING)
     @Column(name = "contract_status")
+    @Enumerated(EnumType.STRING)
     private ContractStatus contractStatus;
     @Column(name = "create_date")
     private Date createDate;
@@ -95,6 +93,5 @@ public class Item {
     @JoinColumn(name = "item_id")
     @Builder.Default
     private List<ItemPhoto> photos = new ArrayList<ItemPhoto>();
-
 
 }
