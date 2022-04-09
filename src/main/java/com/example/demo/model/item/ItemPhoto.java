@@ -22,4 +22,6 @@ public class ItemPhoto {
     @Column(name = "item_photo")
     private String itemPhoto;
 
+    @Column(name = "is_main")
+    private Boolean isMain;
 }

@@ -53,8 +53,8 @@ public class Item {
     @Column(name = "item_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer itemId;
-    @Column(name = "owner_index")
-    private Integer ownerIndex;
+    @Column(name = "owner_id")
+    private Integer ownerId;
     @Column(name = "category_big")
     private String categoryBig;
     @Column(name = "category_middle")
@@ -65,11 +65,11 @@ public class Item {
     private String itemTitle;
     @Column(name = "item_content")
     private String itemContent;
+    @Column(name = "item_quality")
+    private String itemQuality;
     @Enumerated(EnumType.STRING)
-    @Column(name = "item_status")
-    private ItemStatus itemStatus;
     @Column(name = "contract_status")
-    private String contractStatus;
+    private ContractStatus contractStatus;
     @Column(name = "create_date")
     private Date createDate;
     @Column(name = "update_date")
