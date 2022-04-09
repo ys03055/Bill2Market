@@ -13,8 +13,9 @@ import java.util.Optional;
 public interface ClientRepository extends JpaRepository<Client, Integer> {
     Optional<Client> findByClientId (@Param("clientId") String clientId);
     Client findByPhoneNumber(String phone_number);
-
+  
     @Query(name = "ownerInfo", nativeQuery = true)
     public Optional<OwnerInfo> findOwnerInfoByClientIndex(@Param("client_index") Integer clientIndex);
+    Optional<Client> findByNickname(@Param("nickname") String nickname);
 
 }
