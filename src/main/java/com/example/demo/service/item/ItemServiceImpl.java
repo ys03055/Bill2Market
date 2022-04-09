@@ -1,16 +1,18 @@
 package com.example.demo.service.item;
 
-import com.example.demo.model.item.ItemSearchRequest;
-import com.example.demo.model.item.Item;
-import com.example.demo.model.item.ItemSaveRequest;
-import com.example.demo.model.item.SimpleItem;
+import com.example.demo.model.item.*;
 import com.example.demo.repository.ClientRepository;
+import com.example.demo.repository.ItemPhotoRepository;
 import com.example.demo.repository.ItemRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -19,15 +21,21 @@ public class ItemServiceImpl implements ItemService{
 
     private final ItemRepository itemRepository;
     private final ClientRepository clientRepository;
+    private final ItemPhotoRepository itemPhotoRepository;
+
+    @Autowired
+    private ItemPhotoServiceImpl itemPhotoService;
 
     @Override
-    public Slice<SimpleItem> findItemList(ItemSearchRequest itemSearchRequest) {
-        return itemRepository.findAllByLocation(itemSearchRequest.getLongitude(), itemSearchRequest.getLatitude(), PageRequest.of(itemSearchRequest.getPage(), 10));
+    public Slice<SimpleItem> findItemList(ItemSearchRequestDTO itemSearchRequestDTO) {
+        return itemRepository.findAllByLocation(itemSearchRequestDTO.getLongitude(), itemSearchRequestDTO.getLatitude(), PageRequest.of(itemSearchRequestDTO.getPage(), 10));
     }
 
     @Override
-    public void saveItem(ItemSaveRequest itemSaveRequest) {
-        itemRepository.save(itemSaveRequest.toEntity());
+    public void saveItem(ItemSaveRequest itemSaveRequest, ItemPhotoSaveRequest itemPhotoSaveRequest) throws IOException {
+        Item item = itemRepository.save(itemSaveRequest.toEntity());
+        List<String> photoUrls = itemPhotoService.upload(itemPhotoSaveRequest.getItemPhotos(), "itemPhoto");
+        for(String url: photoUrls) itemPhotoRepository.save(ItemPhoto.builder().itemId(item.getItemId()).itemPhoto(url).build());
     }
 
     @Override
