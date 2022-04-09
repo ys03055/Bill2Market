@@ -54,8 +54,8 @@ public class Item {
     @Column(name = "item_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer itemId;
-    @Column(name = "owner_index")
-    private Integer ownerIndex;
+    @Column(name = "owner_id")
+    private Integer ownerId;
     @Column(name = "category_big")
     private String categoryBig;
     @Column(name = "category_middle")

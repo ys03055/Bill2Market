@@ -91,6 +91,6 @@ public class ClientServiceImpl implements ClientService{
     @Override
     public Slice<ReviewResponseDTO> getReviewByOwnerIndex(Integer itemId, Integer page) {
         Item item = itemRepository.findById(itemId).orElseThrow(ItemNotFoundException::new);
-        return reviewRepository.findSliceByClientIndex(item.getOwnerIndex(), PageRequest.of(page,10));
+        return reviewRepository.findSliceByClientIndex(item.getOwnerId(), PageRequest.of(page,10));
     }
 }

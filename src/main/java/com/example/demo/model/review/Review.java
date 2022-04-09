@@ -3,8 +3,7 @@ package com.example.demo.model.review;
 import lombok.*;
 
 import javax.persistence.*;
-import java.sql.Date;
-import java.sql.Time;
+import java.util.Date;
 
 @Data
 @ToString

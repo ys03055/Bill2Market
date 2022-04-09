@@ -43,7 +43,7 @@ public class ItemServiceImpl implements ItemService{
     public ItemDetailResponseDTO findItemOne(Integer itemId, Integer clientIndex) {
         Item item = itemRepository.findById(itemId).orElseThrow(ItemNotFoundException::new);
         return ItemDetailResponseDTO.builder()
-                .ownerInfo(clientRepository.findOwnerInfoByClientIndex(item.getOwnerIndex()).orElseThrow(ClientNotFoundException::new))
+                .ownerInfo(clientRepository.findOwnerInfoByClientIndex(item.getOwnerId()).orElseThrow(ClientNotFoundException::new))
                 .item(item)
                 .basketCount(basketRepository.countByItemId(itemId))
                 .isLike(basketRepository.existsBasketByBasketPK(itemId, clientIndex) == 1? true : false)
