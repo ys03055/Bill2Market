@@ -1,8 +1,9 @@
 package com.example.demo.model.item;
 
-public enum ContractStatus{
+public enum ItemStatus {
 
     RENTAL,
     RESERVATION,
-    GENERAL
+    GENERAL;
+
 }

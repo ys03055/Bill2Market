@@ -12,14 +12,13 @@ import java.util.Date;
 public class SimpleItem {
 
     private Integer itemId;
-    private Integer itemPhotoIndex;
     private String itemTitle;
     private String itemAddress;
     private Integer price;
     private Integer deposit;
     private String itemPhoto;
-    private String contractStatus;
+    private ItemStatus itemStatus;
     private Date createDate;
-    private Boolean isLike;
+    private Boolean isBasket;
 
 }

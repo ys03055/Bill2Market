@@ -9,9 +9,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface BasketRepository extends JpaRepository<Basket, BasketPK> {
-    @Query(value = "SELECT COUNT(client_index) FROM Basket WHERE item_id = :item_id", nativeQuery = true)
-    public long countByItemId(@Param("item_id") Integer itemId);
-
-    @Query(value = "SELECT EXISTS(SELECT item_id FROM Basket WHERE item_id = :item_id AND client_index = :client_index)", nativeQuery = true)
-    public int existsBasketByBasketPK(@Param("item_id") Integer itemId, @Param("client_index") Integer clientIndex);
+    @Query(value = "SELECT COUNT(client_index) FROM basket WHERE item_id = :item_id", nativeQuery = true)
+    public long countByItemId(@Param("item_id") int itemId);
 }
