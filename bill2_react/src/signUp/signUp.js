@@ -5,8 +5,8 @@ import "./signUp.css";
 // import { SearchOutlined } from '@ant-design/icons';
 import axios from "axios";
 import {useNavigate} from "react-router-dom"
-import NicknameModal from "./snsSignUp"
-import snsSignUp from "./snsSignUp";
+// import NicknameModal from "./snsSignUp"
+// import snsSignUp from "./snsSignUp";
 // import ReactDom from 'react-dom';
 // import LoginPage from '../login/login'
 
