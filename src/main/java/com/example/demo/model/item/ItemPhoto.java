@@ -12,9 +12,9 @@ import javax.persistence.*;
 @Entity(name="Item_Photo")
 public class ItemPhoto {
     @Id
-    @Column(name = "item_photo_index")
+    @Column(name = "photo_index")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer itemPhotoIndex;
+    private Integer photoIndex;
 
     @Column(name = "item_id")
     private Integer itemId;
@@ -23,6 +23,5 @@ public class ItemPhoto {
     private String itemPhoto;
 
     @Column(name = "is_main")
-    private Integer isMain;
-
+    private Boolean isMain;
 }

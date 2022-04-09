@@ -1,7 +1,7 @@
 package com.example.demo.model.item;
 
-import lombok.*;
-import javax.persistence.*;
+import lombok.;
+import javax.persistence.;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -93,5 +93,7 @@ public class Item {
     @JoinColumn(name = "item_id")
     @Builder.Default
     private List<ItemPhoto> photos = new ArrayList<ItemPhoto>();
+
+}
 
 }

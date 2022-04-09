@@ -1,8 +1,8 @@
 package com.example.demo.model.review;
 
-import lombok.*;
+import lombok.;
 
-import javax.persistence.*;
+import javax.persistence.;
 import java.util.Date;
 
 @Data
