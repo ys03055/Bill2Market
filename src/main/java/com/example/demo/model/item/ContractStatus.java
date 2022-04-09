@@ -1,9 +1,10 @@
 package com.example.demo.model.item;
 
-public enum ItemStatus {
+import java.io.Serializable;
+
+public enum ContractStatus{
 
     RENTAL,
     RESERVATION,
-    GENERAL;
-
+    GENERAL
 }
