@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 @Api(tags = {"2. Client"})
 @RequiredArgsConstructor
 @RestController
+@RequestMapping("/clients")
 public class ClientController {
 
     private final ClientRepository clientRepository;
@@ -29,7 +30,7 @@ public class ClientController {
     private final ClientService clientService;
 
     @ApiOperation(value = "사용자 정보", notes = "사용자 정보를 조회한다.")
-    @GetMapping("/clients/me")
+    @GetMapping("/me")
     public CommonResult myInfo(){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         return responseService.getSingleResult(
@@ -37,7 +38,7 @@ public class ClientController {
     }
 
     @ApiOperation(value = "ID중복 체크", notes = "회원가입 시 ID중복 체크")
-    @GetMapping("/clients/id-check")
+    @GetMapping("/id-check")
     public CommonResult checkId(@RequestParam String clientId){
         if(clientRepository.findByClientId(clientId).isPresent()) throw new ExistIdException(); //이미 존재하는 ID exception
         if(StringUtils.isNullOrEmpty(clientId)) throw new InputNullException(); //사용자가 ID 미입력 후 중복확인 버튼 클릭 했을 경우 exception처리
@@ -45,7 +46,7 @@ public class ClientController {
     }
 
     @ApiOperation(value = "닉네임 중복 체크", notes = "회원가입 시 닉네임 중복 체크")
-    @GetMapping("/clients/nickname-check")
+    @GetMapping("/nickname-check")
     public CommonResult checkNickname(@RequestParam String nickname){//이미 존재하는 Nickname있을 때 exception처리
         if(clientRepository.findByNickname(nickname).isPresent()) throw new ExistNicknameException();
         if(StringUtils.isNullOrEmpty(nickname)) throw new InputNullException(); //사용자가 닉네임 미입력 후 중복확인 버튼 클릭 했을 경우 exception처리
@@ -53,12 +54,18 @@ public class ClientController {
     }
 
     @ApiOperation(value = "닉네임 설정", notes = "SNS 회원가입 시 사용자의 닉네임을 설정한다.")
-    @PutMapping("/clients/{client-index}/nickname")
+    @PutMapping("/{client-index}/nickname")
     public CommonResult setNickname(@PathVariable("client-index") Integer clientIndex, @RequestParam("nickname")String nickname){
         System.out.println(clientIndex);
         System.out.println(nickname);
         clientService.setNickname(clientIndex, nickname);
         return responseService.getSuccessfulResult();
+    }
+
+    @ApiOperation(value = "게시자 리뷰 목록 조회", notes = "게시자의 리뷰들 목록을 가져온다.")
+    @GetMapping("/{item-id}/review")
+    public CommonResult clientReviewList(@PathVariable("item-id") Integer itemId, @RequestParam Integer page){
+        return responseService.getSingleResult(clientService.getReviewByOwnerIndex(itemId, page));
     }
 
 }

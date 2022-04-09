@@ -2,11 +2,15 @@ package com.example.demo.service.Client;
 
 import com.example.demo.config.jwt.JwtTokenProvider;
 import com.example.demo.exception.common.HttpFailException;
+import com.example.demo.exception.item.ItemNotFoundException;
 import com.example.demo.model.client.Client;
 import com.example.demo.model.client.Role;
+import com.example.demo.model.item.Item;
 import com.example.demo.model.response.CommonResult;
+import com.example.demo.model.review.ReviewResponseDTO;
 import com.example.demo.repository.ClientRepository;
 import com.example.demo.repository.ItemRepository;
+import com.example.demo.repository.ReviewRepository;
 import com.example.demo.service.ResponseService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +20,8 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
@@ -25,9 +31,12 @@ import java.util.Map;
 @RequiredArgsConstructor
 @Service
 public class ClientServiceImpl implements ClientService{
+
     private final ClientRepository clientRepository;
     private final ResponseService responseService;
     private final JwtTokenProvider jwtTokenProvider;
+    private final ReviewRepository reviewRepository;
+    private final ItemRepository itemRepository;
 
     @Override
     public void setNickname(int clientIndex, String nickName) {
@@ -78,5 +87,11 @@ public class ClientServiceImpl implements ClientService{
             e.printStackTrace();
             throw new HttpFailException();
         }
+    }
+
+    @Override
+    public Slice<ReviewResponseDTO> getReviewByOwnerIndex(Integer itemId, Integer page) {
+        Item item = itemRepository.findById(itemId).orElseThrow(ItemNotFoundException::new);
+        return reviewRepository.findSliceByClientIndex(item.getOwnerId(), PageRequest.of(page,10));
     }
 }
