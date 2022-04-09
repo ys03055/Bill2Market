@@ -95,5 +95,3 @@ public class Item {
     private List<ItemPhoto> photos = new ArrayList<ItemPhoto>();
 
 }
-
-}
