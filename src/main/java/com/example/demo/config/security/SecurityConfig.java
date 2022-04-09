@@ -5,7 +5,6 @@ import com.example.demo.config.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -46,8 +45,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
                 .antMatchers("/exception/*").permitAll()
                 .antMatchers("/auth/*", "/clients/{client-index}/nickname").permitAll()
-                .antMatchers("/items/{item-id}", "/items/{item-id}/review", "/clients/{item-id}/review").permitAll()
-                .antMatchers(HttpMethod.GET, "/items").permitAll()
                 .antMatchers("/clients/nickname-check", "/clients/id-check").permitAll() //권한 해제
                 .anyRequest().authenticated();
 

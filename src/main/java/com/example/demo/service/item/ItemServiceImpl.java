@@ -1,10 +1,9 @@
 package com.example.demo.service.item;
 
-import com.example.demo.exception.client.ClientNotFoundException;
-import com.example.demo.exception.item.ItemNotFoundException;
 import com.example.demo.model.item.*;
-import com.example.demo.model.review.ReviewResponseDTO;
-import com.example.demo.repository.*;
+import com.example.demo.repository.ClientRepository;
+import com.example.demo.repository.ItemPhotoRepository;
+import com.example.demo.repository.ItemRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -22,14 +21,14 @@ public class ItemServiceImpl implements ItemService{
 
     private final ItemRepository itemRepository;
     private final ClientRepository clientRepository;
-    private final BasketRepository basketRepository;
-    private final ReviewRepository reviewRepository;
     private final ItemPhotoRepository itemPhotoRepository;
-    private final ItemPhotoServiceImpl itemPhotoService;
+
+    @Autowired
+    private ItemPhotoServiceImpl itemPhotoService;
 
     @Override
-    public Slice<SimpleItem> findItemList(ItemSearchRequestDTO itemSearchRequestDTO, Integer clientIndex) {
-        return itemRepository.findAllByLocation(itemSearchRequestDTO.getLongitude(), itemSearchRequestDTO.getLatitude(), clientIndex, PageRequest.of(itemSearchRequestDTO.getPage(), 10));
+    public Slice<SimpleItem> findItemList(ItemSearchRequestDTO itemSearchRequestDTO) {
+        return itemRepository.findAllByLocation(itemSearchRequestDTO.getLongitude(), itemSearchRequestDTO.getLatitude(), PageRequest.of(itemSearchRequestDTO.getPage(), 10));
     }
 
     @Override
@@ -40,19 +39,8 @@ public class ItemServiceImpl implements ItemService{
     }
 
     @Override
-    public ItemDetailResponseDTO findItemOne(Integer itemId, Integer clientIndex) {
-        Item item = itemRepository.findById(itemId).orElseThrow(ItemNotFoundException::new);
-        return ItemDetailResponseDTO.builder()
-                .ownerInfo(clientRepository.findOwnerInfoByClientIndex(item.getOwnerId()).orElseThrow(ClientNotFoundException::new))
-                .item(item)
-                .basketCount(basketRepository.countByItemId(itemId))
-                .isLike(basketRepository.existsBasketByBasketPK(itemId, clientIndex) == 1? true : false)
-                .build();
-    }
-
-    @Override
-    public Slice<ReviewResponseDTO> findItemReview(Integer itemId, Integer page) {
-        return reviewRepository.findSliceByItemId(itemId, PageRequest.of(page, 10));
+    public Optional<Item> findItemOne(Integer itemIndex) {
+        return itemRepository.findById(itemIndex);
     }
 
 }
