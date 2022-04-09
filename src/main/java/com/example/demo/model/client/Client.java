@@ -12,13 +12,13 @@ import java.sql.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Entity(name="Client2")
+@Entity(name="Client")
 @NamedNativeQuery(
         name = "ownerInfo",
         query = "SELECT nickname, ROUND(AVG(Review.review_score),1) AS trust_point " +
-                "FROM Client2 LEFT JOIN Review " +
-                "ON Client2.client_index = Review.review_target AND Review.review_type IN(0, 1) " +
-                "WHERE Client2.client_index = :client_index",
+                "FROM Client LEFT JOIN Review " +
+                "ON Client.client_index = Review.review_target AND Review.review_type IN(0, 1) " +
+                "WHERE Client.client_index = :client_index",
         resultSetMapping = "ownerInfoMapping"
 )
 @SqlResultSetMapping(

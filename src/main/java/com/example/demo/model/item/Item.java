@@ -1,6 +1,5 @@
 package com.example.demo.model.item;
 
-import io.swagger.models.auth.In;
 import lombok.*;
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -18,14 +17,12 @@ import java.util.List;
 @Entity(name="Item")
 @NamedNativeQuery(
         name = "SimpleItemSliceByLocation",
-        query = "SELECT Item.item_id, Item_Photo1.item_photo_index, item_title, price, deposit, item_address, Item_Photo1.item_photo, contract_status, create_date, " +
+        query = "SELECT Item.item_id, Item_Photo.item_photo_index, item_title, price, deposit, item_address, Item_Photo.item_photo, contract_status, create_date, " +
                 "IF(Basket.item_id = Item.item_id, TRUE, FALSE) AS is_like " +
-                "FROM Item left JOIN Item_Photo AS Item_Photo1 " +
-                "ON Item.item_id = Item_Photo1.item_id " +
-                "INNER JOIN Item_Photo AS Item_Photo2 " +
-                "ON Item_Photo2.item_id = Item_Photo1.item_id " +
-                "AND Item_Photo1.item_photo_index > Item_Photo2.item_photo_index " +
-                "left JOIN Basket ON Basket.client_index = :client_index  " +
+                "FROM Item LEFT JOIN Item_Photo " +
+                "ON Item.item_id = Item_Photo.item_id " +
+                "AND Item_Photo.is_main = 1 " +
+                "LEFT JOIN Basket ON Basket.client_index = :client_index " +
                 "WHERE ST_Distance_Sphere(POINT(:client_longitude, :client_latitude), POINT(item_longitude, item_latitude)) <= 10000 " +
                 "GROUP BY item_id ORDER BY ST_Distance_Sphere(POINT(:client_longitude, :client_latitude), POINT(item_longitude, item_latitude))",
         resultSetMapping = "SimpleItemMapping"

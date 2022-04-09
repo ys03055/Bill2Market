@@ -16,7 +16,7 @@ import java.util.Date;
                 name = "ReviewByItemId",
                 query = "SELECT review_score, review_title, review_content, create_date, nickname AS 'writer' " +
                         "FROM Review " +
-                        "LEFT JOIN Client2 " +
+                        "LEFT JOIN Client " +
                         "ON review_writer = client_index " +
                         "WHERE :item_id = review_item " +
                         "AND Review.review_type = '2'",
@@ -26,9 +26,9 @@ import java.util.Date;
                 name = "ReviewByOwnerId",
                 query = "SELECT review_score, review_title, review_content, create_date, Writer.nickname AS 'writer' " +
                         "FROM Review " +
-                        "LEFT JOIN Client2 AS Target " +
+                        "LEFT JOIN Client AS Target " +
                         "ON review_target = Target.client_index " +
-                        "INNER JOIN Client2 AS Writer " +
+                        "INNER JOIN Client AS Writer " +
                         "ON review_writer = Writer.client_index " +
                         "WHERE :client_index = Target.client_index " +
                         "AND review_type = '0'",
