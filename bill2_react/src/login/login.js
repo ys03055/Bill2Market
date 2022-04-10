@@ -1,10 +1,10 @@
 import { Form, Input, Button, Checkbox, Divider, Modal } from 'antd';  //ant design form 사용
 import { UserOutlined, LockOutlined } from '@ant-design/icons';  //터미널에서 npm install antd 입력 후 설치
 import "./login.css";
-import {Link, useLocation } from "react-router-dom"
-import React, {useEffect} from "react";
+import {Link, useLocation, useNavigate} from "react-router-dom"
+import React, {useEffect, useState} from "react";
 import axios from "axios";
-import ReactModal from 'react-modal';
+
 
 function LoginPage () {
 
@@ -32,11 +32,14 @@ function LoginPage () {
         });
     };
 
+
+
     const onSubmitFailed = (errorInfo) => {  //exception 발생 시 에러 원인 불러오기
         console.log("로그인에 실패했습니다",errorInfo);  //서버로 요청하는 값
     };
 
     const location = useLocation();
+    const navigate = useNavigate();
 
     const initializeNaverLogin = () => {
         if (!location.hash){
@@ -50,7 +53,7 @@ function LoginPage () {
         }else{
             const token = location.hash.split('=')[1].split('&')[0];
 
-            console.log(token);
+
             let option = {
                 url : '/auth/naver-login',
                 method: 'POST',
@@ -63,35 +66,20 @@ function LoginPage () {
 
             axios(option)
                 .then(res=>{
-                    if(!res.data.success || res.data.code == 1){ // 회원가입, 닉네임 입력 필요
-                        // const NicknameModal = () =>{
-                        //     return(
-                        //         <Modal open={true}>
-                        //             <div>모달입니다.</div>
-                        //         </Modal>
-                        //     );
-                        // }
 
-                        // option = {
-                        //     url: '/clients/' + sessionStorage.getItem("client_index") + '/nickname',
-                        //     method: 'UPDATE',
-                        //     header: {
-                        //         'Accept': 'application/json',
-                        //         'Content-Type': 'application/json',
-                        //     },
-                        //     data: "nickname=" // + [입력받은 닉네임]
-                        // }
-                        // axios(option).then(res2=>{
-                        //
-                        // }).catch(res2=>{
-                        //     alert(res2.response.data.message);
-                        // });
+                    if (!res.data.success || res.data.code == 1) { //  닉네임 입력 필요
+                        sessionStorage.setItem('client_index', res.data.clientIndex)
+                        navigate("/SnsSignUp")
 
-                    }else{ // 로그인 성공
+                    } else { // 로그인 성공
                         sessionStorage.setItem('client_index', res.data.clientIndex)
                         localStorage.setItem('token', res.data.token);
-                        window.history.push("/*");
-                    }
+                        console.log(sessionStorage.getItem('client_index'));
+                        navigate("/Main")
+
+
+                        }
+
                 }).catch(res=>{
                 alert(res.response.data.message);
             });
