@@ -40,8 +40,7 @@ public class ClientServiceImpl implements ClientService{
 
     @Override
     public void setNickname(int clientIndex, String nickName) {
-        Client client = new Client();
-        client.setClientIndex(clientIndex);
+        Client client = clientRepository.findByClientIndex(clientIndex);
         client.setNickname(nickName);
         clientRepository.save(client);
     }
