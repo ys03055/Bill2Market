@@ -1,9 +1,6 @@
 package com.example.demo.service;
 
-import com.example.demo.model.response.CommonResult;
-import com.example.demo.model.response.ListResult;
-import com.example.demo.model.response.LoginResponse;
-import com.example.demo.model.response.SingleResult;
+import com.example.demo.model.response.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.stereotype.Service;
@@ -52,8 +49,9 @@ public class ResponseService {
         return result;
     }
 
-    public CommonResult getNeedNickname(){
-        CommonResult result = new CommonResult();
+    public <T> NeedNicknameResponse<T> getNeedNickname(T clientIndex){
+        NeedNicknameResponse<T> result = new NeedNicknameResponse<>();
+        result.setClientIndex(clientIndex);
         this.setNeedNicknameResult(result);
         return result;
     }

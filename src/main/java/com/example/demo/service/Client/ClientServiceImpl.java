@@ -1,6 +1,7 @@
 package com.example.demo.service.Client;
 
 import com.example.demo.config.jwt.JwtTokenProvider;
+import com.example.demo.exception.client.ClientNotFoundException;
 import com.example.demo.exception.common.HttpFailException;
 import com.example.demo.exception.item.ItemNotFoundException;
 import com.example.demo.model.client.Client;
@@ -40,7 +41,7 @@ public class ClientServiceImpl implements ClientService{
 
     @Override
     public void setNickname(int clientIndex, String nickName) {
-        Client client = clientRepository.findByClientIndex(clientIndex);
+        Client client = clientRepository.findById(clientIndex).orElseThrow(ClientNotFoundException::new);
         client.setNickname(nickName);
         clientRepository.save(client);
     }
@@ -74,7 +75,7 @@ public class ClientServiceImpl implements ClientService{
                             .role(Role.USER)
                             .build();
                     clientRepository.save(client);
-                    return responseService.getNeedNickname();
+                    return responseService.getNeedNickname(clientRepository.findByPhoneNumber(clientInfo.get("mobile")));
                 }else{ // 로그인
                     Map<String, Object> loginMap = new HashMap<>();
                     return responseService.getLoginResponse(jwtTokenProvider.createToken(client.getClientIndex(), client.getRole()), client.getClientIndex());
