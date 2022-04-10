@@ -74,8 +74,8 @@ public class ClientServiceImpl implements ClientService{
                             .snsType(2)
                             .role(Role.USER)
                             .build();
-                    clientRepository.save(client);
-                    return responseService.getNeedNickname(clientRepository.findByPhoneNumber(clientInfo.get("mobile")));
+                    int tmpIndex = clientRepository.save(client).getClientIndex();
+                    return responseService.getNeedNickname(tmpIndex);
                 }else{ // 로그인
                     Map<String, Object> loginMap = new HashMap<>();
                     return responseService.getLoginResponse(jwtTokenProvider.createToken(client.getClientIndex(), client.getRole()), client.getClientIndex());
