@@ -19,6 +19,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'io.springfox:springfox-boot-starter:3.0.0'
 	implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: '3.0.0'
+	implementation 'com.google.code.gson:gson:2.9.0'
 	implementation 'org.mariadb.jdbc:mariadb-java-client:2.7.4'
 
 	implementation group: 'com.querydsl', name: 'querydsl-jpa', version: '5.0.0'
