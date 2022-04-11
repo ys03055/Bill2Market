@@ -148,7 +148,7 @@ function HeaderPage()  {
             </div>
 
             <div className="links_button">
-                <Link to='/' onClick={isLogin}><img src={require("./HeaderImage/sell.png")} height="40px"
+                <Link to='/write' onClick={isLogin}><img src={require("./HeaderImage/sell.png")} height="40px"
                                                          width="40px"/> 글쓰기</Link>
                 <Link to='/' onClick={isLogin}><img src={require("./HeaderImage/chat.png")} height="40px"
                                                          width="40px"/> 채팅</Link>

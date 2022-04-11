@@ -21,8 +21,6 @@ public class ItemSaveRequestDTO {
     private double itemLatitude;
     private double itemLongitude;
     private Integer ownerId;
-    private Date startDate;
-    private Date endDate;
     private ContractStatus contractStatus;
 
 

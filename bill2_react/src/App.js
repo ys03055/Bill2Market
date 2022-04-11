@@ -5,7 +5,7 @@ import Routers from "./Routers";
 function App() {
     return (
       <div>
-          <Routers/> //라우터 따로 분리
+          <Routers/>
          </div>
    );
 }

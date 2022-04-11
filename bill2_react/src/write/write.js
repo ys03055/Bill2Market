@@ -145,8 +145,8 @@ function WritePage() {
              itemContent : content,
              price : price,
              deposit : deposit,
-             startDate : startDate.format("YYYY-MM-DD hh-mm-ss"),
-             endDate : endDate.format("YYYY-MM-DD hh-mm-ss"),
+             // startDate : startDate.format("YYYY-MM-DD hh-mm-ss"),
+             // endDate : endDate.format("YYYY-MM-DD hh-mm-ss"),
              itemAddress : address,
              itemQuality : quality,
              contractStatus : "RENTAL"

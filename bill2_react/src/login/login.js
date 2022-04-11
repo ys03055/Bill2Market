@@ -41,9 +41,6 @@ function LoginPage () {
         console.log("로그인에 실패했습니다",errorInfo);  //서버로 요청하는 값
     };
 
-    const location = useLocation();
-    const navigate = useNavigate();
-
     const initializeNaverLogin = () => {
         if (!location.hash){
             const naverLogin = new window.naver.LoginWithNaverId({
