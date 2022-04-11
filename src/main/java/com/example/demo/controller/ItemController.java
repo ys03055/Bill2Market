@@ -52,7 +52,7 @@ public class ItemController {
 
     @ApiOperation(value = "게시물 저장", notes = "게시물 저장")
     @PostMapping("")
-    public CommonResult itemSave(@RequestPart(value = "item") ItemSaveRequest itemSaveRequest,
+    public CommonResult itemSave(@RequestPart(value = "item") ItemSaveRequestDTO itemSaveRequest,
                                  @RequestPart(value = "itemPhoto") List<MultipartFile> itemPhotoSaveRequest) throws IOException {
         itemService.saveItem(itemSaveRequest, itemPhotoSaveRequest);
         return responseService.getSuccessfulResult();
