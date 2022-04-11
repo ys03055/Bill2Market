@@ -1,9 +1,12 @@
 package com.example.demo.controller;
 
+import com.example.demo.exception.client.ClientNotFoundException;
 import com.example.demo.exception.item.ItemNotFoundException;
+import com.example.demo.model.item.Item;
+import com.example.demo.model.item.ItemSaveRequestDTO;
 import com.example.demo.model.item.ItemSearchRequestDTO;
-import com.example.demo.model.item.ItemSaveRequest;
 import com.example.demo.model.response.CommonResult;
+import com.example.demo.repository.ClientRepository;
 import com.example.demo.service.ResponseService;
 import com.example.demo.service.item.ItemService;
 import io.swagger.annotations.Api;
@@ -23,6 +26,7 @@ import java.util.List;
 @RequestMapping("/items")
 public class ItemController {
 
+    private final ClientRepository clientRepository;
     private final ResponseService responseService;
     private final ItemService itemService;
 
@@ -45,13 +49,11 @@ public class ItemController {
     public CommonResult itemReview(@PathVariable("item-id") Integer itemId, @RequestParam Integer page){
         return responseService.getSingleResult(itemService.findItemReview(itemId, page));
     }
-    
-    @ApiOperation(value = "임시 게시물 저장", notes = "임시 게시물 저장")
+
+    @ApiOperation(value = "게시물 저장", notes = "게시물 저장")
     @PostMapping("")
-    public CommonResult itemSave(@RequestPart(value = "item") ItemSaveRequest itemSaveRequest,
+    public CommonResult itemSave(@RequestPart(value = "item") ItemSaveRequestDTO itemSaveRequest,
                                  @RequestPart(value = "itemPhoto") List<MultipartFile> itemPhotoSaveRequest) throws IOException {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        itemSaveRequest.setOwnerId(Integer.parseInt(auth.getName()));
         itemService.saveItem(itemSaveRequest, itemPhotoSaveRequest);
         return responseService.getSuccessfulResult();
     }
