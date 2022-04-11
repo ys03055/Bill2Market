@@ -7,6 +7,8 @@ import axios from "axios";
 
 
 function LoginPage () {
+    const location = useLocation();
+    const navigate = useNavigate();
 
     const onSubmit = (values) => {
         const data = {
@@ -27,6 +29,7 @@ function LoginPage () {
         axios(option)
             .then(res=>{
                 localStorage.setItem('token', res.data.data);
+                navigate('/Main/Main');
             }).catch(res=>{
             alert(res.response.data.message);
         });
@@ -72,6 +75,7 @@ function LoginPage () {
                         navigate("/SnsSignUp")
 
                     } else { // 로그인 성공
+
                         sessionStorage.setItem('client_index', res.data.clientIndex)
                         localStorage.setItem('token', res.data.token);
                         console.log(sessionStorage.getItem('client_index'));
@@ -85,6 +89,8 @@ function LoginPage () {
             });
         }
     };
+
+
 
     useEffect(() => {
         initializeNaverLogin();
@@ -152,11 +158,9 @@ function LoginPage () {
                 {/* 아이디 기억하기 체크 박스 */}
 
                 <Form.Item>
-                    <Link className='LoginMainPage' to={'/MainPage'} >
                         <Button type="primary" htmlType="submit" className='login_button'>
                             로그인
                         </Button>
-                    </Link>
                 </Form.Item>
                 {/* 로그인 버튼 구현 */}
 
@@ -186,19 +190,19 @@ function LoginPage () {
                 </Divider>
                 {/* 보기 쉽게 구분선 구현 */}
 
-                <a className='underbar'>
+                <div className='underbar'>
 
                     {/* <Link className='findId_Link' to={'/findIdPage'}> */}
-                    <a href="">아이디찾기</a>
+                    <Link to="">아이디찾기</Link>
                     {/* </Link> */}
 
                     {/* <Link className='findPassword_Link' to={'/findPasswordPage'}> */}
-                    <a href="">비밀번호찾기</a>
+                    <Link to="">비밀번호찾기</Link>
                     {/* </Link> */}
                     <Link className='signUp_Link' to={'/signup'}>
-                        <a>회원가입</a>
+                        회원가입
                     </Link>
-                </a>
+                </div>
 
                 {/* 화면에 띄어쓰기 어떻게 보여주는지 몰라서 야매로 일단 화면에 띄웠습니다 ㅠㅠ */}
                 {/* 아시면 제발 알려주세요. */}
