@@ -1,8 +1,11 @@
 package com.example.demo.advice;
 
 import com.example.demo.exception.ExceptionList;
+import com.example.demo.exception.basket.BasketNotFoundException;
+import com.example.demo.exception.basket.DuplicateBasketException;
 import com.example.demo.exception.client.*;
 import com.example.demo.exception.common.HttpFailException;
+import com.example.demo.exception.item.ItemNotFoundException;
 import com.example.demo.model.response.CommonResult;
 import com.example.demo.service.ResponseService;
 import lombok.RequiredArgsConstructor;
@@ -71,5 +74,22 @@ public class ExceptionAdvice {
         return responseService.getFailResult(ExceptionList.EXIST_NICKNAME.getCode(), ExceptionList.EXIST_NICKNAME.getMessage());
     }
 
+    @ExceptionHandler(ItemNotFoundException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    protected CommonResult itemNotFoundException(){
+        return responseService.getFailResult(ExceptionList.ITEM_NOT_FOUND.getCode(), ExceptionList.ITEM_NOT_FOUND.getMessage());
+    }
+
+    @ExceptionHandler(DuplicateBasketException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    protected CommonResult duplicateBasketException(){
+        return responseService.getFailResult(ExceptionList.DUPLICATE_BASKET.getCode(), ExceptionList.DUPLICATE_BASKET.getMessage());
+    }
+
+    @ExceptionHandler(BasketNotFoundException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    protected CommonResult basketNotFoundException(){
+        return responseService.getFailResult(ExceptionList.BASKET_NOT_FOUND.getCode(), ExceptionList.BASKET_NOT_FOUND.getMessage());
+    }
 
 }

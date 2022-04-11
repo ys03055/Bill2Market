@@ -4,13 +4,13 @@ import com.example.demo.exception.client.ClientNotFoundException;
 import com.example.demo.exception.client.InputNullException;
 import com.example.demo.model.Document;
 import com.example.demo.model.KakaoAddress;
-import com.example.demo.model.item.*;
-import com.example.demo.repository.ClientRepository;
-import com.example.demo.repository.ItemPhotoRepository;
-import com.example.demo.repository.ItemRepository;
 import com.google.gson.Gson;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import com.example.demo.exception.item.ItemNotFoundException;
+import com.example.demo.model.item.*;
+import com.example.demo.model.review.ReviewResponseDTO;
+import com.example.demo.repository.*;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.geo.Point;
@@ -22,12 +22,11 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
-
 import java.io.IOException;
 import java.net.URI;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.web.multipart.MultipartFile;
 
 @RequiredArgsConstructor
 @Service
@@ -35,6 +34,9 @@ public class ItemServiceImpl implements ItemService{
 
     private final ItemPhotoServiceImpl itemPhotoServiceImpl;
     private final ItemPhotoRepository itemPhotoRepository;
+    private final ClientRepository clientRepository;
+    private final BasketRepository basketRepository;
+    private final ReviewRepository reviewRepository;
     private final ItemRepository itemRepository;
     private final Gson gson;
     private final RestTemplate restTemplate;
@@ -72,12 +74,10 @@ public class ItemServiceImpl implements ItemService{
         return point;
     }
 
-
     @Override
-    public Slice<SimpleItem> findItemList(ItemSearchRequest itemSearchRequest) {
-        return itemRepository.findAllByLocation(itemSearchRequest.getLongitude(), itemSearchRequest.getLatitude(), PageRequest.of(itemSearchRequest.getPage(), 10));
+    public Slice<SimpleItem> findItemList(ItemSearchRequestDTO itemSearchRequestDTO, Integer clientIndex) {
+        return itemRepository.findAllByLocation(itemSearchRequestDTO.getLongitude(), itemSearchRequestDTO.getLatitude(), clientIndex, PageRequest.of(itemSearchRequestDTO.getPage(), 10));
     }
-
 
 
     @Override
@@ -89,17 +89,29 @@ public class ItemServiceImpl implements ItemService{
         Point point = getAddressPoint(itemSaveRequestDTO.getItemAddress());
         Item item = itemRepository.save(itemSaveRequestDTO.toEntity(point));
         List<String> photoUrls = itemPhotoServiceImpl.upload(itemPhotoSaveRequest, "itemPhoto");
+
         boolean isMain = true;
         for(String url: photoUrls) {
             itemPhotoRepository.save(ItemPhoto.builder().itemId(item.getItemId()).itemPhoto(url).isMain(isMain).build());
             isMain = false;
         }
+
     }
 
+    @Override
+    public ItemDetailResponseDTO findItemOne(Integer itemId, Integer clientIndex) {
+        Item item = itemRepository.findById(itemId).orElseThrow(ItemNotFoundException::new);
+        return ItemDetailResponseDTO.builder()
+                .ownerInfo(clientRepository.findOwnerInfoByClientIndex(item.getOwnerId()).orElseThrow(ClientNotFoundException::new))
+                .item(item)
+                .basketCount(basketRepository.countByItemId(itemId))
+                .isLike(basketRepository.existsBasketByBasketPK(itemId, clientIndex) == 1? true : false)
+                .build();
+    }
 
     @Override
-    public Optional<Item> findItemOne(Integer itemIndex) {
-        return itemRepository.findById(itemIndex);
+    public Slice<ReviewResponseDTO> findItemReview(Integer itemId, Integer page) {
+        return reviewRepository.findSliceByItemId(itemId, PageRequest.of(page, 10));
     }
 
 }

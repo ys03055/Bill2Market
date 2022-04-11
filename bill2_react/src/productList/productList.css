@@ -1,0 +1,8 @@
+.card{
+
+}
+.card >.cards{
+    display: flex;
+    flaot : left;
+
+}

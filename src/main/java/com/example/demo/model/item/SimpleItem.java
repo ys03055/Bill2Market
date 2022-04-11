@@ -1,24 +1,25 @@
 package com.example.demo.model.item;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.ToString;
 
+import java.util.Date;
+
+@AllArgsConstructor
 @ToString
 @Data
 public class SimpleItem {
 
     private Integer itemId;
+    private Integer itemPhotoIndex;
     private String itemTitle;
     private String itemAddress;
     private Integer price;
+    private Integer deposit;
     private String itemPhoto;
-
-    public SimpleItem(Integer itemId, String itemTitle, String itemAddress, Integer price, String itemPhoto){
-        this.itemId = itemId;
-        this.itemTitle = itemTitle;
-        this.itemAddress = itemAddress;
-        this.price = price;
-        this.itemPhoto = itemPhoto;
-    }
+    private String contractStatus;
+    private Date createDate;
+    private Boolean isLike;
 
 }
