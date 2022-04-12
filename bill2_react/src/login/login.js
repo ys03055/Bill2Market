@@ -1,8 +1,8 @@
-import { Form, Input, Button, Checkbox, Divider, Modal } from 'antd';  //ant design form 사용
+import { Form, Input, Button, Checkbox, Divider } from 'antd';  //ant design form 사용
 import { UserOutlined, LockOutlined } from '@ant-design/icons';  //터미널에서 npm install antd 입력 후 설치
 import "./login.css";
 import {Link, useLocation, useNavigate} from "react-router-dom"
-import React, {useEffect, useState} from "react";
+import React, {useEffect,} from "react";
 import axios from "axios";
 
 
@@ -28,7 +28,7 @@ function LoginPage () {
 
         axios(option)
             .then(res=>{
-                localStorage.setItem('token', res.data.data);
+                sessionStorage.setItem('token', res.data.data);
                 navigate('/Main/Main');
             }).catch(res=>{
             alert(res.response.data.message);
@@ -117,15 +117,9 @@ function LoginPage () {
                 {/* 회원가입 화면 구현하면 링크 넣을 예정 */}
 
                 <Form.Item
-
                     name ="id" //values에 들어갈 key 값
-                    rules = {[{    //입력이 안되면 메세지 뜨는 속성
-                        required :true,
-                        message : "아이디를 입력해주세요!"
-                    },
-                    ]}
+                    rules = {[{required :true, message : "아이디를 입력해주세요!"},]}
                 >
-
                     <Input
                         prefix={<UserOutlined className="site-form-item-icon" />} //아이디 입력창 옆 아이콘
                         placeholder="아이디를 입력하세요." />
@@ -135,11 +129,7 @@ function LoginPage () {
 
                 <Form.Item
                     name ="password"  //values에 들어갈 key 값
-                    rules = {[{
-                        required :true,  //비밀번호 미입력시 메세지 뜨는 속성
-                        message : "비밀번호를 입력해주세요!"
-                    },
-                    ]}
+                    rules = {[{required :true, message : "비밀번호를 입력해주세요!"},]}
                 >
                     <Input
                         prefix={<LockOutlined className="site-form-item-icon" />} //비밀번호 입력창 옆 아이콘
@@ -164,13 +154,12 @@ function LoginPage () {
                 <Divider>
                 </Divider>
                 {/* 보기 쉽게 구분선 구현 */}
-                <div className='sns_login'>
 
+                <div className='sns_login'>
                     {/* <a href={KAKAO_AUTH_URL}> */}
                     <div className='kakao_btn'>
                     </div>
                     {/* </a> */}
-
                     {/* 카카오 로그인 사진 클릭 시 로그인되는 거 구현 예정 */}
 
 
@@ -178,7 +167,6 @@ function LoginPage () {
                     <div id='naverIdLogin'>
                     </div>
                     {/* </a> */}
-
                     {/* 네이버 로그인 사진 클릭 시 로그인되는 거 구현 예정 */}
 
                 </div>
@@ -196,16 +184,14 @@ function LoginPage () {
                     {/* <Link className='findPassword_Link' to={'/findPasswordPage'}> */}
                     <Link to="">비밀번호찾기</Link>
                     {/* </Link> */}
+
                     <Link className='signUp_Link' to={'/signup'}>
                         회원가입
                     </Link>
+
                 </div>
 
-                {/* 화면에 띄어쓰기 어떻게 보여주는지 몰라서 야매로 일단 화면에 띄웠습니다 ㅠㅠ */}
-                {/* 아시면 제발 알려주세요. */}
-
             </Form>
-
 
         </div>
 

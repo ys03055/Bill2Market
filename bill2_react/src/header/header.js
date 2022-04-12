@@ -75,8 +75,8 @@ function HeaderPage()  {
     }
 
     const tokenRemove = () => { //저장되어있는 모든 토큰 값을 삭제
-        localStorage.removeItem('token');
-        localStorage.removeItem('nickName');
+        sessionStorage.removeItem('token');
+        sessionStorage.removeItem('nickName');
     }
 
     const onLogin = () => { //로그인일 경우 logged를 true로 설정
@@ -91,13 +91,13 @@ function HeaderPage()  {
 
     const getNickName = () => { //닉네임을 가져오는 함수
 
-        axios.get("/client/me", {
+        axios.get("/clients/me", {
             headers: {
-                Authorization: 'Bearer ' + localStorage.getItem("token")
+                Authorization: 'Bearer ' + sessionStorage.getItem("token")
             }
         }).then(response => {
-            localStorage.setItem('nickName', response.data.data.nickname)
-            setNickName(localStorage.getItem('nickName'))
+            sessionStorage.setItem('nickName', response.data.data.nickname)
+            setNickName(sessionStorage.getItem('nickName'))
         })
             .catch(error => {
                 console.log(error.response.data);
@@ -107,7 +107,7 @@ function HeaderPage()  {
     }
 
     useEffect(() => { // useEffect를 사용하여 초기값을 설정하고, login과 logout일 때를 분리
-        const token = localStorage.getItem('token');
+        const token = sessionStorage.getItem('token');
 
         if (token === null) {
             onLogout();
