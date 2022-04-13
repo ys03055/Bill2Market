@@ -3,15 +3,17 @@ package com.example.demo.model.item;
 import lombok.Data;
 import org.springframework.data.geo.Point;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 
 @Data
 public class ItemSaveRequestDTO {
 
-    private String categoryBig;
-    private String categoryMiddle;
-    private String categorySmall;
+    private int categoryBig;
+    private int categoryMiddle;
+    private int categorySmall;
     private String itemTitle;
     private String itemContent;
     private String itemQuality;
@@ -21,12 +23,22 @@ public class ItemSaveRequestDTO {
     private double itemLatitude;
     private double itemLongitude;
     private Integer ownerId;
-    private Date startDate;
-    private Date endDate;
+    private String startDate;
+    private String endDate;
     private ContractStatus contractStatus;
 
 
-    public Item toEntity(Point point){
+    public Item toEntity(Point point) {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh-mm-ss");
+        Date startDate = null;
+        Date endDate = null;
+        try {
+            startDate = formatter.parse(getStartDate());
+            endDate = formatter.parse(getEndDate());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
         return Item.builder()
                 .itemLongitude(point.getX())
                 .itemLatitude(point.getY())
@@ -42,6 +54,8 @@ public class ItemSaveRequestDTO {
                 .itemAddress(itemAddress)
                 .views(0)
                 .contractStatus(contractStatus)
+                .startDate(startDate)
+                .endDate(endDate)
                 .build();
     }
 }

@@ -1,6 +1,7 @@
 package com.example.demo.model.item;
 
 import lombok.*;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Date;
@@ -45,7 +46,7 @@ import java.util.List;
                 }
         )
 )
-public class Item {
+public class Item extends BaseEntity{
 
     @Id
     @Column(name = "item_id")
@@ -54,11 +55,11 @@ public class Item {
     @Column(name = "owner_id")
     private Integer ownerId;
     @Column(name = "category_big")
-    private String categoryBig;
+    private int categoryBig;
     @Column(name = "category_middle")
-    private String categoryMiddle;
+    private int categoryMiddle;
     @Column(name = "category_small")
-    private String categorySmall;
+    private int categorySmall;
     @Column(name = "item_title")
     private String itemTitle;
     @Column(name = "item_content")
@@ -68,10 +69,6 @@ public class Item {
     @Column(name = "contract_status")
     @Enumerated(EnumType.STRING)
     private ContractStatus contractStatus;
-    @Column(name = "create_date")
-    private Date createDate;
-    @Column(name = "update_date")
-    private Date updateDate;
     @Column
     private int price;
     @Column
