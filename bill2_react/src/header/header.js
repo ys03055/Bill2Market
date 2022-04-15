@@ -87,12 +87,15 @@ function HeaderPage()  {
     const onLogout = () => { //로그아웃일 경우 logged를 false로 설정, 및 모든 토큰값 삭제
         tokenRemove();
         setLogged(false);
+        window.location.replace("/")
+
     }
 
     const getNickName = () => { //닉네임을 가져오는 함수
 
-        axios.get("/client/me", {
+        axios.get("/clients/me", {
             headers: {
+
                 Authorization: 'Bearer ' + localStorage.getItem("token")
             }
         }).then(response => {
@@ -110,7 +113,7 @@ function HeaderPage()  {
         const token = localStorage.getItem('token');
 
         if (token === null) {
-            onLogout();
+            setLogged(false);
             console.log("로그아웃 상태!")
 
         } else {
