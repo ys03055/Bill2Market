@@ -3,15 +3,13 @@ package com.example.demo.model.item;
 import lombok.Data;
 import org.springframework.data.geo.Point;
 
-import java.util.Date;
-
 
 @Data
 public class ItemSaveRequestDTO {
 
-    private String categoryBig;
-    private String categoryMiddle;
-    private String categorySmall;
+    private Integer categoryBig;
+    private Integer categoryMiddle;
+    private Integer categorySmall;
     private String itemTitle;
     private String itemContent;
     private String itemQuality;
