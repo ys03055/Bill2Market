@@ -2,6 +2,8 @@ import MainPage from "./Main/Main"
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import LoginPage from "./login/login";
 import SignUpPage from "./signUp/signUp";
+import SnsSignUpPage from "./signUp/snsSignUp";
+import WritePage from "./write/write";
 
 function Routers() {
     return (
@@ -10,7 +12,9 @@ function Routers() {
                 <Routes>
                     <Route path = "/*" element={<MainPage />} />
                     <Route path = "/login" element={<LoginPage />} />
+                    <Route path = "/snsSignUp" element={<SnsSignUpPage />} />
                     <Route path = "/signUp" element={<SignUpPage />} />
+                    <Route path = "/write" element={<WritePage />} />
                 </Routes>
             </BrowserRouter>
         </div>
