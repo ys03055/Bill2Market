@@ -7,6 +7,7 @@ import axios from "axios";
 import ImgCrop from "antd-img-crop";
 import DaumPostCode from "react-daum-postcode";
 import {UploadOutlined} from "@ant-design/icons";
+import {useNavigate} from "react-router-dom";
 
 
 
@@ -34,29 +35,33 @@ function WritePage() {
     //모달창 키고 끄기
     const [isModalVisible, setIsModalVisible] = useState(false);
 
+    const navigate = useNavigate();
+
     const setTitleChange = (e) => {  // <- input 값으로 text 변경 함수
         setTitle(e.target.value);
     };
+
     const setContentChange = (e) => {  // <- input 값으로 text 변경 함수
         setContent(e.target.value);
     };
+
     const setPriceChange = (e) => {  // <- input 값으로 text 변경 함수
         setPrice(e.target.value);
     };
+
     const setDepositChange = (e) => {  // <- input 값으로 text 변경 함수
         setDeposit(e.target.value);
     };
+
+    const itemQualityHandleChange = (e) => { // <- input 값으로 text 변경 함수
+        setQuality(e.target.value)
+    }
 
     const onPictureChange = ({ fileList: newFileList }) => {
         setImageList(newFileList);
     };
 
-    // const onPictureChange = ({ fileList: newFileList }) => {
-    //
-    // };
-
-
-    const getAddress = (data) => {
+    const getAddress = (data) => { //daum 주소찾기 API를 이용하여 주소 가져오기
 
         let fullAddress = data.address;
         let extraAddress = '';
@@ -69,10 +74,6 @@ function WritePage() {
             setAddress(fullAddress)
         }
         console.log(fullAddress)
-    }
-
-    const itemQualityHandleChange = (e) => {
-        setQuality(e.target.value)
     }
 
     const showModal = () => {
@@ -105,12 +106,12 @@ function WritePage() {
 
     };
 
-    // const pictureAlert = () =>{
-    //     if (imageList.length === 0){
-    //         alert("적어도 한장 이상의 사진을 게시해주세요!")
-    //     }
-    //     console.log(imageList)
-    // }
+    const pictureAlert = () =>{
+        if (imageList.length === 0){
+            alert("적어도 한장 이상의 사진을 게시해주세요!")
+        }
+        console.log(imageList)
+    }
 
     const disabledDate = (startDate) =>{
         return startDate && startDate < moment().startOf('day');
@@ -120,7 +121,7 @@ function WritePage() {
         return endDate && endDate < startDate;
     }
 
-    const test = () => {
+    const test = () => { //신경 안쓰셔도 됩니다
         // console.log(big)
         // console.log(middle)
         // console.log(small)
@@ -136,17 +137,15 @@ function WritePage() {
     }
 
 
-
-
     const onSubmit = () => {
-        const token = localStorage.getItem("token")
+
         const data = {
              itemTitle : title,
              itemContent : content,
              price : price,
              deposit : deposit,
-             // startDate : startDate.format("YYYY-MM-DD hh-mm-ss"),
-             // endDate : endDate.format("YYYY-MM-DD hh-mm-ss"),
+             startDate : startDate.format("YYYY-MM-DD hh-mm-ss"),
+             endDate : endDate.format("YYYY-MM-DD hh-mm-ss"),
              itemAddress : address,
              itemQuality : quality,
              contractStatus : "RENTAL"
@@ -155,15 +154,11 @@ function WritePage() {
         formData.append('item', new Blob([ JSON.stringify(data) ], {type : "application/json"}));
         imageList.forEach(image => formData.append("itemPhoto", image.originFileObj))
 
-
-        // formData.append("itemPhoto", imageList[0])
-
-        console.log(localStorage.getItem("token"))
         const option = {
             url : '/items',
             method: 'POST',
             headers: {
-                Authorization: 'Bearer ' + token,
+                Authorization: 'Bearer ' + sessionStorage.getItem("token"),
                 'Content-Type': 'multipart/form-data'
             },
             data: formData
@@ -172,24 +167,12 @@ function WritePage() {
 
         axios(option)
             .then(res=>{
-                console.log(res.data)
+                console.log(res.data);
+                navigate('/Main/Main');
             }).catch(res=>{
             alert(res.response.data.message);
         });
     };
-
-    //     axios.post("/items", {
-    //         headers: {
-    //             Authorization: 'Bearer ' + token,
-    //             'Content-Type': 'multipart/form-data'
-    //         },data: formData
-    //     })
-    //         .then(res=>{
-    //             console.log(res.data)
-    //         }).catch(res=>{
-    //         alert(res.response.data.message);
-    //     });
-    // };
 
     const onSubmitFailed = (errorInfo) => {  //exception 발생 시 에러 원인 불러오기
         console.log("물품 등록에 실패했습니다",errorInfo);  //서버로 요청하는 값
@@ -198,7 +181,6 @@ function WritePage() {
     return (
         <div>
             <header><HeaderPage/></header>
-
 
             <Form className="write_container"
                   onFinish={onSubmit}
@@ -209,15 +191,17 @@ function WritePage() {
 
                 <div className="write_wrap">
                     <span>제목</span>
+
                     <Form.Item
                         className="title"
                         name = "title"
-                        rules={[{required: true, message: '제목을 입력해주세요!'}]}
-                        >
+                        rules={[{required: true, message: '제목을 입력해주세요!'}]}>
+
                         <Input
                             placeholder="제목을 입력해주세요"
                             onChange={setTitleChange}
                         />
+
                     </Form.Item>
                 </div>
 
@@ -238,40 +222,47 @@ function WritePage() {
                             maxLength={200}
                             onChange = {setContentChange}
                         />
+
                     </Form.Item>
                 </div>
 
 
                 <div className="write_wrap">
                     <span>대여금</span>
+
                     <Form.Item className="write_money"
                                name = "price"
                                rules={[{required: true, message: '대여금을 입력해주세요!'}]}>
+
                         <Input
                             type="number" placeholder="대여금을 입력해주세요"
                             onChange = {setPriceChange}
                         />
+
                     </Form.Item>
                 </div>
 
                 <div className="write_wrap">
                     <span>보증금</span>
+
                     <Form.Item className="write_money"
                                name = "deposit"
                                rules={[{required: true, message: '보증금을 입력해주세요!'}]}>
+
                         <Input type="number" placeholder="보증금을 입력해주세요"
                                onChange = {setDepositChange}
                         />
+
                     </Form.Item>
                 </div>
 
 
 
                 <div className="write_wrap">
+
                     <span>카테고리</span>
-                    <Form.Item
-                        name="cate"
-                    >
+
+                    <Form.Item name="cate">
 
                     </Form.Item>
                 </div>
@@ -279,12 +270,12 @@ function WritePage() {
 
                 <div className="write_wrap">
                     <span>사진</span>
+
                     <Form.Item
                         className = "itemPhoto"
-                        name="itemPhoto">
-
+                        name="itemPhoto"
+                    >
                         <ImgCrop rotate>
-
 
                         <Upload
                         listType="picture"
@@ -293,58 +284,56 @@ function WritePage() {
                         onChange={onPictureChange}
                         beforeUpload={() => false}
                         >
-                            <Button icon={<UploadOutlined />}>Upload</Button>
+
+                        <Button icon={<UploadOutlined />}>Upload</Button>
+
                         </Upload>
                             </ImgCrop>
 
-                        {/*<Input type="file"*/}
-                        {/*accept="image/jpg, image/png, image/jpeg"*/}
-                        {/*       onChange={onPictureChange}*/}
-                        {/*>*/}
-                        {/*</Input>*/}
                     </Form.Item>
                 </div>
 
 
                 <div className="write_wrap">
                     <span>주소 찾기</span>
-                    <Form.Item
-                        name = "address"
-                        >
+
+                    <Form.Item name = "address">
+
                         <Button type="primary" onClick={showModal}>
                             주소 찾기
                         </Button>
+
                         <Modal title="현재 주소 찾기"
                                visible={isModalVisible}
                                onOk={modalClose}
                                onCancel={modalClose}
                                >
-                            <DaumPostCode
-                                onComplete={getAddress}
-                            />
+                            <DaumPostCode onComplete={getAddress}/>
                             {address}
                         </Modal>
+
                         <br/>
                         {address}
+
                     </Form.Item>
                 </div>
 
                 <div className="write_wrap">
                     <span>대여 기간</span>
-                    <Form.Item
-                        name="date"
-
-                    >
+                    <Form.Item name="date">
                         <span>시작일</span>
+
                         <br/>
                         <DatePicker
                             selected={startDate}
                             onChange={date => setStartDate(date)}
                             disabledDate={disabledDate}
                         />
-                    <br/>
+                        <br/>
+
                         <span>종료일</span>
                         <br/>
+
                         <DatePicker
                             selected={endDate}
                             onChange={date => setEndDate(date)}
@@ -355,17 +344,18 @@ function WritePage() {
 
                 <div className="write_wrap">
                     <span>품질</span>
-                    <Form.Item
-                        name="quality"
 
-                    >
-                        <label>상</label>
+                    <Form.Item name="quality">
+
+                        <label name = "">상</label>
                         <Input
                             type="radio"
                             value="상"
                             checked={quality === "상"}
                             onChange={itemQualityHandleChange}
                         />
+
+                        <br/>
                         <label>중</label>
                         <Input
                             type="radio"
@@ -373,6 +363,8 @@ function WritePage() {
                             checked={quality === "중"}
                             onChange={itemQualityHandleChange}
                         />
+
+                        <br/>
                         <label>하</label>
                         <Input
                             type="radio"
@@ -380,6 +372,7 @@ function WritePage() {
                             checked={quality === "하"}
                             onChange={itemQualityHandleChange}
                         />
+
                     </Form.Item>
                 </div>
 
@@ -414,7 +407,7 @@ function WritePage() {
                 {/*</div>*/}
 
                 <Form.Item>
-                    <Button type="primary" htmlType="submit" className="button" onClick={test}> 빌려주기 </Button>
+                    <Button type="primary" htmlType="submit" className="button" onClick={test} onClick={pictureAlert} > 빌려주기 </Button>
                 </Form.Item>
 
             </Form>
