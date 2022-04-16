@@ -23,6 +23,7 @@ dependencies {
 	implementation 'org.mariadb.jdbc:mariadb-java-client:2.7.4'
 
 	implementation group: 'com.querydsl', name: 'querydsl-jpa', version: '5.0.0'
+	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-elasticsearch'
 
 	runtimeOnly 'com.h2database:h2'
 
