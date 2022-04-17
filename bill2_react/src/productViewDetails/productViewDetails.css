@@ -1,0 +1,44 @@
+.productViewDetailsPage_container {
+    padding-left: 30%;
+    width : 1000px;
+}
+.productViewDetails_Header {
+    justify-content: center;
+    display: flex;
+    font-size: 22px;
+    font-weight: bold;
+
+}
+
+.productPicture {
+    padding-top: 5%;
+}
+.productBasketButton {
+    float: bottom;
+
+}
+
+.chattingButton{
+    float: bottom;
+}
+.ownerInfoCard {
+    width: 620px;
+}
+.productView {
+    float: right;
+}
+.productBasketCard {
+    float: right;
+    margin: 10px;
+    bottom: 100px;
+
+
+}
+.chattingButton {
+    left: 45px;
+
+}
+.ownerTrustPoint {
+    justify-content: center;
+    display: flex;
+}
