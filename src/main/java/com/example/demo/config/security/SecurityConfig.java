@@ -47,7 +47,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/exception/*").permitAll()
                 .antMatchers("/auth/*", "/clients/{client-index}/nickname").permitAll()
                 .antMatchers("/clients/nickname-check", "/clients/id-check", "/clients/{item-id}/review").permitAll() //권한 해제
-                .antMatchers("/items/{item-index}", "/items/{item-index}/review").permitAll()
+                .antMatchers("/items/{item-index}", "/items/{item-index}/review", "/items/search-keyword").permitAll()
                 .antMatchers(HttpMethod.GET,"/items").permitAll()
                 .anyRequest().authenticated();
 
