@@ -12,7 +12,9 @@ import com.example.demo.model.review.ReviewResponseDTO;
 import com.example.demo.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 import org.springframework.data.geo.Point;
 import org.springframework.http.*;
 import org.springframework.security.core.Authentication;
@@ -25,8 +27,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.io.IOException;
 import java.net.URI;
 import java.util.List;
-import java.util.Optional;
-import org.springframework.web.multipart.MultipartFile;
 
 @RequiredArgsConstructor
 @Service
@@ -38,6 +38,7 @@ public class ItemServiceImpl implements ItemService{
     private final BasketRepository basketRepository;
     private final ReviewRepository reviewRepository;
     private final ItemRepository itemRepository;
+    private final ItemRepositoryCustom itemRepositoryCustom;
     private final Gson gson;
     private final RestTemplate restTemplate;
     @Value("${kakao_api_key}")
@@ -96,6 +97,18 @@ public class ItemServiceImpl implements ItemService{
             isMain = false;
         }
 
+    }
+
+    @Override
+    public Slice<SimpleItem> findByCategory(Integer clientIndex, ItemSearchRequestDTO itemSearchRequestDTO) {
+        Pageable pageable = PageRequest.of(itemSearchRequestDTO.getPage(), 10);
+        List<SimpleItem> content = itemRepositoryCustom.findByCategory(clientIndex, itemSearchRequestDTO, pageable);
+        boolean hasNext = false;
+        if (content.size() > pageable.getPageSize()) {
+            content.remove(pageable.getPageSize());
+            hasNext = true;
+        }
+        return new SliceImpl<>(content, pageable, hasNext);
     }
 
     @Override

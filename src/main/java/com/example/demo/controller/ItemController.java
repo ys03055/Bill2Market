@@ -1,8 +1,5 @@
 package com.example.demo.controller;
 
-import com.example.demo.exception.client.ClientNotFoundException;
-import com.example.demo.exception.item.ItemNotFoundException;
-import com.example.demo.model.item.Item;
 import com.example.demo.model.item.ItemSaveRequestDTO;
 import com.example.demo.model.item.ItemSearchRequestDTO;
 import com.example.demo.model.response.CommonResult;
@@ -52,11 +49,17 @@ public class ItemController {
 
     @ApiOperation(value = "게시물 저장", notes = "게시물 저장")
     @PostMapping("")
-    public CommonResult itemSave(@RequestPart(value = "item") ItemSaveRequestDTO itemSaveRequest,
+    public CommonResult itemSave(@RequestPart(value = "item") ItemSaveRequestDTO itemSaveRequestDTO,
                                  @RequestPart(value = "itemPhoto") List<MultipartFile> itemPhotoSaveRequest) throws IOException {
-        itemService.saveItem(itemSaveRequest, itemPhotoSaveRequest);
+        itemService.saveItem(itemSaveRequestDTO, itemPhotoSaveRequest);
         return responseService.getSuccessfulResult();
     }
 
+    @ApiOperation(value = "카테고리 검색", notes = "카테고리 검색")
+    @GetMapping("/search-category")
+    public CommonResult itemCategorySearch(ItemSearchRequestDTO itemSearchRequestDTO)  {//nearby도 구현
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        return responseService.getSingleResult(itemService.findByCategory((!auth.getName().equals("anonymousUser"))? Integer.parseInt(auth.getName()) : -1000, itemSearchRequestDTO));
+    }
 
 }
