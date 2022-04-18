@@ -1,8 +1,5 @@
 package com.example.demo.controller;
 
-import com.example.demo.exception.client.ClientNotFoundException;
-import com.example.demo.exception.item.ItemNotFoundException;
-import com.example.demo.model.item.Item;
 import com.example.demo.model.item.ItemSaveRequestDTO;
 import com.example.demo.model.item.ItemSearchRequestDTO;
 import com.example.demo.model.response.CommonResult;
@@ -56,6 +53,13 @@ public class ItemController {
                                  @RequestPart(value = "itemPhoto") List<MultipartFile> itemPhotoSaveRequest) throws IOException {
         itemService.saveItem(itemSaveRequest, itemPhotoSaveRequest);
         return responseService.getSuccessfulResult();
+    }
+
+    @ApiOperation(value="게시물 검색", notes = "키워드 검색을 통해 게시물을 검색하여 물품 리스트를 조회한다.")
+    @GetMapping("/search-keyword")
+    public CommonResult searchItemList(ItemSearchRequestDTO itemSearchRequestDTO){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        return responseService.getSingleResult(itemService.findItemByQuery(itemSearchRequestDTO, (!auth.getName().equals("anonymousUser"))? Integer.parseInt(auth.getName()) : -1000));
     }
 
 

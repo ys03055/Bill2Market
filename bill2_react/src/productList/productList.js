@@ -15,10 +15,6 @@ function ProductListPage() {
     const [itemList, setItemList] = useState([]);
     // const [createDate, setCreateDate] = useState([moment().format('YYYY 년 MM월 DD일 HH시')]);
 
-
-
-
-
     const navigate = useNavigate();
 
     const toProductViewDetailsPage = (itemId) => {
@@ -26,8 +22,8 @@ function ProductListPage() {
         }
 
 
-
     useEffect(() => {
+
         if (navigator.geolocation) { // GPS를 지원하면 사용자 local에서 위도 경도 불러오는 부분
             navigator.geolocation.getCurrentPosition(function (position) {
                 setLatitude(position.coords.latitude);
@@ -45,7 +41,6 @@ function ProductListPage() {
         } else {
             alert('GPS를 지원하지 않습니다');
         }
-
 
         }, []);
 
@@ -99,8 +94,6 @@ function ProductListPage() {
                 console.log(error.response);
             })
     }
-
-
     function format  (date) {
 
         return date.getFullYear() + "년 " + date.getMonth() + "월 " + date.getDate() + "일 " + date.getHours() + "시" ;
@@ -108,12 +101,10 @@ function ProductListPage() {
     }
 
 
-
     return (
         <Fragment>
 
             <div className="row">
-
                 <Row  gutter={24}>
 
                     {itemList.map(item => {
@@ -155,8 +146,6 @@ function ProductListPage() {
                                     <img className="phoneImage" src={item.itemPhoto}/>
 
 
-
-
                                 </Card>
                             </Col>
                         )
@@ -166,7 +155,6 @@ function ProductListPage() {
             </div>
 
             <Button>더보기</Button>
-
 
 
 
