@@ -4,7 +4,7 @@ import "./signUp.css";
 // import Post from "./address.js";
 // import { SearchOutlined } from '@ant-design/icons';
 import axios from "axios";
-import {useNavigate} from "react-router-dom"
+import {Link, useNavigate} from "react-router-dom"
 // import NicknameModal from "./snsSignUp"
 // import snsSignUp from "./snsSignUp";
 // import ReactDom from 'react-dom';
@@ -95,6 +95,7 @@ function SignUpPage () {
             })
             .catch(res => {
                 alert(res.response.data.message);
+
             })
 
     };
@@ -231,7 +232,16 @@ function SignUpPage () {
         }
     }
 
+    //type validation 적용
+    const idExp =  /[^a-z0-9]/;
+    const passwordExp = /(?=.*\d{1,50})(?=.*[a-z]{1,50}).{1,50}$/;
+    const nameExp = /[^a-z가-힣]/;
+    const nicknameExp = /[^a-zA-Z0-9가-힣]/;
+    const birthdateExp = /[^0-9]/
+    const phoneExp = /[^0-9]/
+    const emailExp = /^[A-Za-z0-9_\.\-]+@[A-Za-z0-9\-]+\.[A-Za-z0-9\-]+/;
 
+    // const Exp = /(?=.*\d{1,50})(?=.*[~`!@#$%\^&*()-+=]{1,50})(?=.*[a-z]{1,50})(?=.*[A-Z]{1,50}).{4,50}$/;
 
 
     //휴대폰 본인 인증 코드
@@ -303,6 +313,10 @@ function SignUpPage () {
             >
                 <h1 className="signUp_Header">Billie Market 회원가입</h1>
 
+                <Link className='main_Link' to={'/login'}>
+                    로그인 화면으로 돌아가기
+                </Link>
+
                 <Divider></Divider>
 
 
@@ -316,7 +330,17 @@ function SignUpPage () {
                     rules = {[{    //입력이 안되면 메세지 뜨는 속성
                         required :true,
                         message : "아이디를 입력해주세요!" },
-                    ]}
+                        { min: 5, message: '최소 5자리를 입력해주세요.' },
+                        ({ getFieldValue }) => ({
+                            validator(_, value) {
+                                if (idExp.test(value)) {
+                                    return Promise.reject(
+                                        new Error('영문 소문자 , 숫자만 가능합니다!'));
+                                }
+                                return Promise.resolve();
+                            },
+
+                            }),]}
                 >
                     <Input value={clientId} onChange= {onClientIdHandler}/>
 
@@ -330,7 +354,17 @@ function SignUpPage () {
                     rules = {[{    //입력이 안되면 메세지 뜨는 속성
                         required :true,
                         message : "비밀번호를 입력해주세요!" },
-                    ]}
+                        { min: 6, message: '최소 6자리를 입력해주세요.' },
+                        ({ getFieldValue }) => ({
+                            validator(_, value) {
+                                if (!passwordExp.test(value))  {
+                                    return Promise.reject(
+                                        new Error('영문 소문자,숫자를 모두 포함해주세요 ^__^'));
+                                }
+                                return Promise.resolve();
+
+                            },
+                        }),]}
                     hasFeedback   //입력 창 옆 체크&x 표시
                 >
                     <Input.Password value={password} onChange= {onPasswordHandler}/>
@@ -367,7 +401,15 @@ function SignUpPage () {
                     rules = {[{    //입력이 안되면 메세지 뜨는 속성
                         required :true,
                         message : "이름을 입력해주세요!" },
-                    ]}
+                        ({ getFieldValue }) => ({
+                            validator(_, value) {
+                                if (nameExp.test(value)) {
+                                    return Promise.reject(
+                                        new Error('영문 소문자 , 한글만 가능합니다!'));
+                                }
+                                return Promise.resolve();
+                            },
+                        }),]}
                 >
                     <Input value={clientName} onChange= {onClientNameHandler}/>
                 </Form.Item>
@@ -383,7 +425,17 @@ function SignUpPage () {
                     rules = {[{    //입력이 안되면 메세지 뜨는 속성
                         required :true,
                         message : "닉네임을 입력해주세요!" },
-                    ]}
+                        { min: 2, message: '최소 2자리를 입력해주세요.' },
+                        ({ getFieldValue }) => ({
+                            validator(_, value) {
+                                if (nicknameExp.test(value))  {
+                                    return Promise.reject(
+                                        new Error('특수문자는 빼주세요 ^__^'));
+                                }
+                                return Promise.resolve();
+
+                            },
+                        }),]}
                 >
                     <Input value={nickname} onChange= {onNickNameHandler}/>
 
@@ -404,15 +456,25 @@ function SignUpPage () {
                                 <Form.Item
                                     name = "year"
                                     rules = {[{    //입력이 안되면 메세지 뜨는 속성*/}
-                                        required :true,
-                                        message : "년도를 입력해주세요!" }]}
+                                        required :true, message : "년도를 입력해주세요!" },
+                                        { min: 4, message: '4자리를 입력해주세요.' },
+                                        ({ getFieldValue }) => ({
+                                            validator(_, value) {
+                                                if (birthdateExp.test(value))  {
+                                                    return Promise.reject(
+                                                        new Error('숫자만 가능합니다!'));
+                                                }
+                                                return Promise.resolve();
+
+                                            },
+                                        }), ]}
                                     style={{width: 100 }}>
-                                    <Input type="number"
+                                    <Input value={year}
+                                           placeholder= "예) 2000"
                                            maxLength = "4"
                                            onInput={maxLengthCheck}
-                                           value={year}
-                                           placeholder="예) 2000"
                                            onChange= {onYearHandler}/>
+
                                 </Form.Item>
                             </Col>
 
@@ -421,10 +483,20 @@ function SignUpPage () {
                                     name = "month"
                                     rules = {[{    //입력이 안되면 메세지 뜨는 속성*/}
                                         required :true,
-                                        message : "월을 입력해주세요!" }]}
+                                        message : "월을 입력해주세요!" },
+                                        { min: 2, message: '2자리를 입력해주세요.' },
+                                        ({ getFieldValue }) => ({
+                                            validator(_, value) {
+                                                if (birthdateExp.test(value))  {
+                                                    return Promise.reject(
+                                                        new Error('숫자만 가능합니다!'));
+                                                }
+                                                return Promise.resolve();
+
+                                            },
+                                        }), ]}
                                     style={{width: 100 }}>
-                                    <Input type="number"
-                                           maxLength = "2"
+                                    <Input maxLength = "2"
                                            onInput={maxLengthCheck}
                                            value={month}
                                            placeholder="예) 01"
@@ -437,10 +509,19 @@ function SignUpPage () {
                                     name = "date"
                                     rules = {[{    //입력이 안되면 메세지 뜨는 속성*/}
                                         required :true,
-                                        message : "일을 입력해주세요!" }]}
+                                        message : "일을 입력해주세요!" },
+                                        { min: 2, message: '2자리를 입력해주세요.' },
+                                        ({ getFieldValue }) => ({
+                                            validator(_, value) {
+                                                if (birthdateExp.test(value))  {
+                                                    return Promise.reject(
+                                                        new Error('숫자만 가능합니다!'));
+                                                }
+                                                return Promise.resolve();
+                                            },
+                                        }), ]}
                                     style={{width: 100 }}>
-                                    <Input type="number"
-                                           maxLength = "2"
+                                    <Input maxLength = "2"
                                            onInput={maxLengthCheck}
                                            value={date}
                                            placeholder="예) 12"
@@ -496,10 +577,19 @@ function SignUpPage () {
                                 name = "first3digit"
                                 rules = {[{    //입력이 안되면 메세지 뜨는 속성*/}
                                     required :true,
-                                    message : "첫 3자리를 입력하세요!" }]}
+                                    message : "첫 3자리를 입력하세요!" },
+                                    { min: 3, message: '3자리를 입력해주세요.' },
+                                    ({ getFieldValue }) => ({
+                                        validator(_, value) {
+                                            if (phoneExp.test(value))  {
+                                                return Promise.reject(
+                                                    new Error('숫자만 가능합니다!'));
+                                            }
+                                            return Promise.resolve();
+                                        },
+                                    }), ]}
                                 style={{width: 100 }}>
-                                <Input type="number"
-                                       maxLength = "3"
+                                <Input maxLength = "3"
                                        onInput={maxLengthCheck}
                                        value={first3digit}
                                        placeholder="예) 010"
@@ -512,10 +602,19 @@ function SignUpPage () {
                                 name = "middle4digit"
                                 rules = {[{    //입력이 안되면 메세지 뜨는 속성*/}
                                     required :true,
-                                    message : "중간 4자리를 입력하세요!" }]}
+                                    message : "중간 4자리를 입력하세요!" },
+                                    { min: 4, message: '4자리를 입력해주세요.' },
+                                    ({ getFieldValue }) => ({
+                                        validator(_, value) {
+                                            if (phoneExp.test(value))  {
+                                                return Promise.reject(
+                                                    new Error('숫자만 가능합니다!'));
+                                            }
+                                            return Promise.resolve();
+                                        },
+                                    }), ]}
                                 style={{width: 100 }}>
-                                <Input type="number"
-                                       maxLength = "4"
+                                <Input maxLength = "4"
                                        onInput={maxLengthCheck}
                                        value={middle4digit}
                                        placeholder="예) 1234"
@@ -528,10 +627,19 @@ function SignUpPage () {
                                 name = "last4digit"
                                 rules = {[{    //입력이 안되면 메세지 뜨는 속성*/}
                                     required :true,
-                                    message : "마지막 4자리를 입력하세요!" }]}
+                                    message : "마지막 4자리를 입력하세요!" },
+                                    { min: 4, message: '4자리를 입력해주세요.' },
+                                    ({ getFieldValue }) => ({
+                                        validator(_, value) {
+                                            if (phoneExp.test(value))  {
+                                                return Promise.reject(
+                                                    new Error('숫자만 가능합니다!'));
+                                            }
+                                            return Promise.resolve();
+                                        },
+                                    }), ]}
                                 style={{width: 100 }}>
-                                <Input type="number"
-                                       maxLength = "4"
+                                <Input maxLength = "4"
                                        onInput={maxLengthCheck}
                                        value={last4digit}
                                        placeholder="예) 1234"
@@ -560,18 +668,22 @@ function SignUpPage () {
 
                     name = "email"
                     label="이메일"
-                    rules = {[{
-                        type: 'email',
-                        message : "이메일 양식을 확인해주세요!"
-                    },  //입력이 안되면 메세지 뜨는 속성
+                    rules = {[
                         {
                             required :true,
                             message : "이메일을 입력해주세요!"
                         },
-
-                    ]}
+                        ({ getFieldValue }) => ({
+                            validator(_, value) {
+                                if (!value.match(emailExp))  {
+                                    return Promise.reject(
+                                        new Error('올바른 이메일 형식이 아닙니다!'));
+                                }
+                                return Promise.resolve();
+                            },
+                        }), ]}
                 >
-                    <Input type="email" value={email} onChange= {onEmailHandler} />
+                    <Input  value={email} onChange= {onEmailHandler} />
                 </Form.Item >
 
 

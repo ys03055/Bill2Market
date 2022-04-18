@@ -1,22 +1,25 @@
 import React, {Fragment, useEffect, useMemo, useState, useRef} from "react";
 import "./productList.css";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import {Card, Col, Row, Avatar, Button, Badge} from 'antd';
 import { HeartOutlined,HeartFilled, BorderOutlined } from '@ant-design/icons';
 import Meta from "antd/es/card/Meta";
 import axios from "axios";
 import moment from "moment";
+import ProductViewDetailsPage from "../productViewDetails/productViewDetails";
 
 function ProductListPage() {
-
     let [latitude, setLatitude] = useState(0);
     let [longitude, setLongitude] = useState(0);
-
     const page = 0;
     const [itemList, setItemList] = useState([]);
     // const [createDate, setCreateDate] = useState([moment().format('YYYY 년 MM월 DD일 HH시')]);
 
+    const navigate = useNavigate();
 
+    const toProductViewDetailsPage = (itemId) => {
+        navigate("/ProductViewDetails" , {state : itemId});
+        }
 
 
     useEffect(() => {
@@ -39,9 +42,8 @@ function ProductListPage() {
             alert('GPS를 지원하지 않습니다');
         }
 
+        }, []);
 
-
-    }, []);
     const onSubmit = (latitude, longitude) => {
         axios.get( 'http://localhost:8080/items?latitude='+latitude+'&longitude='+longitude+'&page='+page ,
             {headers: {
@@ -52,9 +54,6 @@ function ProductListPage() {
             .then((response) => {
                 if (response.status >= 200 && response.status <= 204) {
                     setItemList(response.data.data.content);
-
-
-
                 }
             })
             .catch(res => {
@@ -62,31 +61,24 @@ function ProductListPage() {
             })
 
     };
-    //찜하기
-
 
 
     const addBasket = (itemId,isLike) => { //찜하기가 안된상태에서 찜하기를 눌렀을때
 
         axios.post("http://localhost:8080/baskets?itemId="+itemId,
             {},{headers: {
-                Authorization: 'Bearer ' + localStorage.getItem("token")
-            }}
+                    Authorization: 'Bearer ' + localStorage.getItem("token")
+                }}
 
 
         ).then(response => {
-
-
-                onSubmit(latitude, longitude);
-
+            onSubmit(latitude, longitude);
         })
             .catch(error => {
-
                 console.log(error.response);
             })
-
-
     }
+
     const delBasket = (itemId,isLike) => { //찜하기가 안된상태에서 찜하기를 눌렀을때
 
         axios.delete("http://localhost:8080/baskets?itemId="+itemId,
@@ -96,20 +88,12 @@ function ProductListPage() {
 
 
         ).then(response => {
-
-
             onSubmit(latitude, longitude);
-
-
         })
             .catch(error => {
-
                 console.log(error.response);
             })
-
-
     }
-
     function format  (date) {
 
         return date.getFullYear() + "년 " + date.getMonth() + "월 " + date.getDate() + "일 " + date.getHours() + "시" ;
@@ -132,20 +116,27 @@ function ProductListPage() {
                                 <Card  hoverable
                                        key={item.itemId} className="cards">
 
-
                                     {item.isLike?
 
-                                    <HeartFilled onClick ={()=>{delBasket(item.itemId,item.isLike)
-                                        }}></HeartFilled>:
-                                        <HeartOutlined onClick ={()=>addBasket(item.itemId,item.isLike)}></HeartOutlined>
+                                        <HeartFilled onClick ={()=>{delBasket(item.itemId,item.isLike)}}>
+
+                                        </HeartFilled> :
+
+                                        <HeartOutlined onClick ={()=>addBasket(item.itemId,item.isLike)}>
+
+                                        </HeartOutlined>
                                     }
 
-                                   <span> <h2 className="title"> 제목: {item.itemTitle}</h2>
-                                    {item.contractStatus === "GENERAL" ?
-                                        <p ></p>:
-                                     item.contractStatus === "RENTAL" ?
-                                        <p className="rental">대여중</p>:
-                                        <p className="reservation">예약중</p>}</span>
+
+                                    <span> <h2 className="title"
+                                               onClick={ () => {toProductViewDetailsPage(item.itemId) }}>
+                                        제목: {item.itemTitle}</h2>
+
+                                        {item.contractStatus === "GENERAL" ?
+                                            <p ></p>:
+                                            item.contractStatus === "RENTAL" ?
+                                                <p className="rental">대여중</p>:
+                                                <p className="reservation">예약중</p>}</span>
                                     <p>게시일: {format(new Date(item.createDate))}</p>
                                     <p>대여료: {item.price}</p>
                                     <p>보증금: {item.deposit}</p>
@@ -155,7 +146,6 @@ function ProductListPage() {
                                     <img className="phoneImage" src={item.itemPhoto}/>
 
 
-
                                 </Card>
                             </Col>
                         )
@@ -163,10 +153,14 @@ function ProductListPage() {
                 </Row>
 
             </div>
+
             <Button>더보기</Button>
 
 
+
         </Fragment>
+
     )
 }
 export default ProductListPage;
+
