@@ -84,12 +84,7 @@ function ProductViewDetailsPage () {
         console.log(isLike)
     }
 
-    const basketCountHandlerUp = () => {
-        setProductBasket(productBasket+1)
-    }
-    const basketCountHandlerDown = () => {
-        setProductBasket(productBasket-1)
-    }
+
 
 
 
@@ -148,10 +143,12 @@ function ProductViewDetailsPage () {
         ).then(response => {
             console.log("찜하기 등록 성공")
             setIsLike(true)
+            setProductBasket(productBasket+1)
 
         })
             .catch(error => {
                 console.log(error.response);
+                alert("로그인 후 가능합니다!")
 
             })
     }
@@ -168,6 +165,7 @@ function ProductViewDetailsPage () {
         ).then(response => {
             console.log("찜하기 삭제 성공")
             setIsLike(false)
+            setProductBasket(productBasket-1)
 
         })
             .catch(error => {
@@ -286,11 +284,9 @@ function ProductViewDetailsPage () {
                         &nbsp;
                         {isLike ?
                             <HeartFilled className="heartFilledButton"
-                                         onClick={ () => {onClickBasketButton()
-                                             basketCountHandlerDown()}} /> :
+                                         onClick={ () => {onClickBasketButton()}} /> :
                             <HeartOutlined className="heartOutButton"
-                                           onClick={ () => {onClickBasketButton()
-                                               basketCountHandlerUp()}} />}
+                                           onClick={ () => {onClickBasketButton()}} />}
 
 
                     </Card>
