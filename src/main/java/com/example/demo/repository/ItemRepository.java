@@ -5,12 +5,19 @@ import com.example.demo.model.item.SimpleItem;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import javax.transaction.Transactional;
 
 @Repository
 public interface ItemRepository extends JpaRepository<Item, Integer> {
     @Query(name = "SimpleItemSliceByLocation", nativeQuery = true)
     public Slice<SimpleItem> findAllByLocation(@Param("client_longitude") double clientLongitude, @Param("client_latitude") double clientLatitude, @Param("client_index") Integer clientIndex, Pageable pageable);
+
+    @Transactional
+    @Modifying
+    @Query(value = "update Item set views = views + 1 where itemId = :itemId")
+    public void updateViews(@Param("itemId")Integer itemId);
 }

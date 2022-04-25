@@ -116,6 +116,7 @@ public class ItemServiceImpl implements ItemService{
     @Override
     public ItemDetailResponseDTO findItemOne(Integer itemId, Integer clientIndex) {
         Item item = itemRepository.findById(itemId).orElseThrow(ItemNotFoundException::new);
+        itemRepository.updateViews(itemId);
         return ItemDetailResponseDTO.builder()
                 .ownerInfo(clientRepository.findOwnerInfoByClientIndex(item.getOwnerId()).orElseThrow(ClientNotFoundException::new))
                 .item(item)
