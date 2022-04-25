@@ -42,7 +42,6 @@ public class ItemServiceImpl implements ItemService{
     private final Gson gson;
     private final RestTemplate restTemplate;
     private final ElasticItemRepository elasticItemRepository;
-    private final ItemRepositoryCustom itemRepositoryCustom;
 
     @Value("${kakao_api_key}")
     private String KAKAO_API_KEY;
