@@ -9,11 +9,13 @@ import com.example.demo.exception.item.ItemNotFoundException;
 import com.example.demo.model.response.CommonResult;
 import com.example.demo.service.ResponseService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+@Slf4j
 @RequiredArgsConstructor
 @RestControllerAdvice
 public class ExceptionAdvice {
@@ -22,7 +24,8 @@ public class ExceptionAdvice {
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    protected CommonResult unknown(){
+    protected CommonResult unknown(Exception e){
+        log.error(e.getMessage());
         return responseService.getFailResult(ExceptionList.UNKNOWN.getCode(), ExceptionList.UNKNOWN.getMessage());
     }
 

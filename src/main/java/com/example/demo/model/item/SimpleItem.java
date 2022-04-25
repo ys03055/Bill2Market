@@ -6,8 +6,6 @@ import lombok.Data;
 import lombok.ToString;
 
 import java.time.LocalDate;
-import java.util.Date;
-import java.util.List;
 
 @AllArgsConstructor
 @ToString
@@ -37,5 +35,4 @@ public class SimpleItem {
         this.createDate = createDate;
         this.isLike = isLike;
     }
-
 }

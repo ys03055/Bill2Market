@@ -7,13 +7,12 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-
 @Data
 public class ItemSaveRequestDTO {
 
-    private int categoryBig;
-    private int categoryMiddle;
-    private int categorySmall;
+    private Integer categoryBig;
+    private Integer categoryMiddle;
+    private Integer categorySmall;
     private String itemTitle;
     private String itemContent;
     private String itemQuality;

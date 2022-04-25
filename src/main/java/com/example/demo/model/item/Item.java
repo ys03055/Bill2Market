@@ -3,6 +3,7 @@ package com.example.demo.model.item;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -19,13 +20,12 @@ import java.util.List;
 @NamedNativeQuery(
         name = "SimpleItemSliceByLocation",
         query = "SELECT Item.item_id, Item_Photo.item_photo_index, item_title, price, deposit, item_address, Item_Photo.item_photo, contract_status, create_date, " +
-                "IF(Basket.item_id = Item.item_id, TRUE, FALSE) AS is_like " +
+                "EXISTS(SELECT item_id FROM Basket WHERE Basket.item_id = Item.item_id AND Basket.client_index = :client_index) AS is_like " +
                 "FROM Item LEFT JOIN Item_Photo " +
                 "ON Item.item_id = Item_Photo.item_id " +
                 "AND Item_Photo.is_main = 1 " +
-                "LEFT JOIN Basket ON Basket.client_index = :client_index " +
-                "WHERE ST_Distance_Sphere(POINT(:client_longitude, :client_latitude), POINT(item_longitude, item_latitude)) <= 10000 " +
-                "GROUP BY item_id ORDER BY ST_Distance_Sphere(POINT(:client_longitude, :client_latitude), POINT(item_longitude, item_latitude))",
+                "WHERE ST_Distance_Sphere(POINT(:client_longitude, :client_latitude), POINT(item_longitude, item_latitude)) <= 6000 " +
+                "GROUP BY item_id ORDER BY ST_Distance_Sphere(POINT(:client_longitude, :client_latitude), POINT(item_longitude, item_latitude)), Item.item_id",
         resultSetMapping = "SimpleItemMapping"
 )
 @SqlResultSetMapping(
@@ -41,7 +41,7 @@ import java.util.List;
                         @ColumnResult(name = "deposit", type = Integer.class),
                         @ColumnResult(name = "item_photo", type = String.class),
                         @ColumnResult(name = "contract_status", type = String.class),
-                        @ColumnResult(name = "create_date", type = java.util.Date.class),
+                        @ColumnResult(name = "create_date", type = LocalDate.class),
                         @ColumnResult(name = "is_like", type = Boolean.class)
                 }
         )

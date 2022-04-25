@@ -41,10 +41,13 @@ public class ItemServiceImpl implements ItemService{
     private final ItemRepositoryCustom itemRepositoryCustom;
     private final Gson gson;
     private final RestTemplate restTemplate;
+    private final ElasticItemRepository elasticItemRepository;
+    private final ItemRepositoryCustom itemRepositoryCustom;
+
     @Value("${kakao_api_key}")
     private String KAKAO_API_KEY;
 
-    public Point getAddressPoint(String address){//kakao api
+    private Point getAddressPoint(String address){//kakao api
         URI uri = UriComponentsBuilder
                 .fromUriString("https://dapi.kakao.com")
                 .path("/v2/local/search/address.json")
@@ -125,6 +128,21 @@ public class ItemServiceImpl implements ItemService{
     @Override
     public Slice<ReviewResponseDTO> findItemReview(Integer itemId, Integer page) {
         return reviewRepository.findSliceByItemId(itemId, PageRequest.of(page, 10));
+    }
+
+    @Override
+    public Slice<SimpleItem> findItemByQuery(ItemSearchRequestDTO itemSearchRequestDTO, Integer clientIndex) {
+        Pageable pageable = PageRequest.of(itemSearchRequestDTO.getPage(), 10);
+        List<ElasticItem> searchList = elasticItemRepository.searchItemByQuery(itemSearchRequestDTO.getQuery());
+        List<SimpleItem> content = itemRepositoryCustom.searchItemByItemIn(searchList, itemSearchRequestDTO,clientIndex, pageable);
+
+        boolean hasNext = false;
+        if (content.size() > pageable.getPageSize()) {
+            content.remove(pageable.getPageSize());
+            hasNext = true;
+        }
+
+        return new SliceImpl<>(content, pageable, hasNext);
     }
 
 }

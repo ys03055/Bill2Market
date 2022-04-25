@@ -15,6 +15,7 @@ public interface ItemService {
     public void saveItem(ItemSaveRequestDTO itemSaveRequestDTO, List<MultipartFile> itemPhotoSaveRequest) throws IOException;
     public ItemDetailResponseDTO findItemOne(Integer itemId, Integer clientIndex);
     public Slice<ReviewResponseDTO> findItemReview(Integer itemId, Integer page);
-    Slice<SimpleItem> findByCategory(Integer clientIndex, ItemSearchRequestDTO itemSearchRequestDTO);
+    public Slice<SimpleItem> findByCategory(Integer clientIndex, ItemSearchRequestDTO itemSearchRequestDTO);
+    public Slice<SimpleItem> findItemByQuery(ItemSearchRequestDTO itemSearchRequestDTO, Integer clientIndex);
 
 }

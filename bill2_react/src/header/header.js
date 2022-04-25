@@ -75,8 +75,8 @@ function HeaderPage()  {
     }
 
     const tokenRemove = () => { //저장되어있는 모든 토큰 값을 삭제
-        localStorage.removeItem('token');
-        localStorage.removeItem('nickName');
+        sessionStorage.removeItem('token');
+        sessionStorage.removeItem('nickName');
     }
 
     const onLogin = () => { //로그인일 경우 logged를 true로 설정
@@ -87,17 +87,19 @@ function HeaderPage()  {
     const onLogout = () => { //로그아웃일 경우 logged를 false로 설정, 및 모든 토큰값 삭제
         tokenRemove();
         setLogged(false);
+        window.location.replace("/")
+
     }
 
     const getNickName = () => { //닉네임을 가져오는 함수
 
-        axios.get("/client/me", {
+        axios.get("/clients/me", {
             headers: {
-                Authorization: 'Bearer ' + localStorage.getItem("token")
+                Authorization: 'Bearer ' + sessionStorage.getItem("token")
             }
         }).then(response => {
-            localStorage.setItem('nickName', response.data.data.nickname)
-            setNickName(localStorage.getItem('nickName'))
+            sessionStorage.setItem('nickName', response.data.data.nickname)
+            setNickName(sessionStorage.getItem('nickName'))
         })
             .catch(error => {
                 console.log(error.response.data);
@@ -107,10 +109,10 @@ function HeaderPage()  {
     }
 
     useEffect(() => { // useEffect를 사용하여 초기값을 설정하고, login과 logout일 때를 분리
-        const token = localStorage.getItem('token');
+        const token = sessionStorage.getItem('token');
 
         if (token === null) {
-            onLogout();
+            setLogged(false);
             console.log("로그아웃 상태!")
 
         } else {
@@ -148,12 +150,33 @@ function HeaderPage()  {
             </div>
 
             <div className="links_button">
-                <Link to='/' onClick={isLogin}><img src={require("./HeaderImage/sell.png")} height="40px"
-                                                         width="40px"/> 글쓰기</Link>
-                <Link to='/' onClick={isLogin}><img src={require("./HeaderImage/chat.png")} height="40px"
-                                                         width="40px"/> 채팅</Link>
-                <Link to='/' onClick={isLogin}><img src={require("./HeaderImage/bell.png")} height="40px"
-                                                         width="40px"/> 알림</Link>
+                {logged === false ?
+                    <Link to='/' onClick={isLogin}>
+                    <img src={require("./HeaderImage/sell.png")} height="40px" width="40px"/> 글쓰기</Link>
+                    :
+                    <Link to='/write' >
+                        <img src={require("./HeaderImage/sell.png")} height="40px" width="40px"/> 글쓰기</Link>
+                }
+
+                {logged === false ?
+                    <Link to='/' onClick={isLogin}>
+                        <img src={require("./HeaderImage/chat.png")} height="40px"
+                             width="40px"/> 채팅</Link>
+                    :
+                    <Link to='/' >
+                        <img src={require("./HeaderImage/chat.png")} height="40px"
+                             width="40px"/> 채팅</Link>
+                }
+
+                {logged === false ?
+                    <Link to='/' onClick={isLogin}>
+                        <img src={require("./HeaderImage/bell.png")} height="40px"
+                             width="40px"/> 알림</Link>
+                    :
+                    <Link to='/' >
+                        <img src={require("./HeaderImage/bell.png")} height="40px"
+                             width="40px"/> 알림</Link>
+                }
             </div>
 
 
