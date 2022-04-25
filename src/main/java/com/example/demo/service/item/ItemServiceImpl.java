@@ -38,6 +38,7 @@ public class ItemServiceImpl implements ItemService{
     private final BasketRepository basketRepository;
     private final ReviewRepository reviewRepository;
     private final ItemRepository itemRepository;
+    private final ItemRepositoryCustom itemRepositoryCustom;
     private final Gson gson;
     private final RestTemplate restTemplate;
     private final ElasticItemRepository elasticItemRepository;
@@ -99,6 +100,18 @@ public class ItemServiceImpl implements ItemService{
             isMain = false;
         }
 
+    }
+
+    @Override
+    public Slice<SimpleItem> findByCategory(Integer clientIndex, ItemSearchRequestDTO itemSearchRequestDTO) {
+        Pageable pageable = PageRequest.of(itemSearchRequestDTO.getPage(), 10);
+        List<SimpleItem> content = itemRepositoryCustom.findByCategory(clientIndex, itemSearchRequestDTO, pageable);
+        boolean hasNext = false;
+        if (content.size() > pageable.getPageSize()) {
+            content.remove(pageable.getPageSize());
+            hasNext = true;
+        }
+        return new SliceImpl<>(content, pageable, hasNext);
     }
 
     @Override
