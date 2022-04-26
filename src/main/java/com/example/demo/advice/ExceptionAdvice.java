@@ -3,6 +3,8 @@ package com.example.demo.advice;
 import com.example.demo.exception.ExceptionList;
 import com.example.demo.exception.basket.BasketNotFoundException;
 import com.example.demo.exception.basket.DuplicateBasketException;
+import com.example.demo.exception.chat.ChatFileCreateFailedException;
+import com.example.demo.exception.chat.ChatNotFoundException;
 import com.example.demo.exception.client.*;
 import com.example.demo.exception.common.HttpFailException;
 import com.example.demo.exception.item.ItemNotFoundException;
@@ -93,6 +95,18 @@ public class ExceptionAdvice {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     protected CommonResult basketNotFoundException(){
         return responseService.getFailResult(ExceptionList.BASKET_NOT_FOUND.getCode(), ExceptionList.BASKET_NOT_FOUND.getMessage());
+    }
+
+    @ExceptionHandler(ChatNotFoundException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    protected CommonResult chatNotFoundException(){
+        return responseService.getFailResult(ExceptionList.CHAT_NOT_FOUND.getCode(), ExceptionList.CHAT_NOT_FOUND.getMessage());
+    }
+
+    @ExceptionHandler(ChatFileCreateFailedException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    protected CommonResult chatFileCreateFailedException(){
+        return responseService.getFailResult(ExceptionList.CHATFILE_CREATE_FAIL.getCode(), ExceptionList.CHATFILE_CREATE_FAIL.getMessage());
     }
 
 }

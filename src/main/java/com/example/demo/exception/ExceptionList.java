@@ -18,7 +18,9 @@ public enum ExceptionList {
     ITEM_NOT_FOUND(-1007, "해당 물품이 존재하지 않습니다."),
     BASKET_NOT_FOUND(-1008, "해당 찜이 존재하지 않습니다."),
     DUPLICATE_BASKET(-1009, "이미 찜이 되어있는 물품입니다."),
-    EXIST_NICKNAME(-1010, "현재 존재하는 닉네임입니다.");
+    EXIST_NICKNAME(-1010, "현재 존재하는 닉네임입니다."),
+    CHAT_NOT_FOUND(-1011, "존재하지 않는 채팅입니다."),
+    CHATFILE_CREATE_FAIL(-1012, "채팅 파일 생성에 실패하였습니다.");
 
     private final int code;
     private final String message;
