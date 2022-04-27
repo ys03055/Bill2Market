@@ -15,5 +15,5 @@ public interface ItemService {
     public ItemDetailResponseDTO findItemOne(Integer itemId, Integer clientIndex);
     public Slice<ReviewResponseDTO> findItemReview(Integer itemId, Integer page);
     public Slice<SimpleItem> findItemByQuery(ItemSearchRequestDTO itemSearchRequestDTO, Integer clientIndex);
-
+    public Slice<ItemDetailResponseDTO> findOwnerItemList(Integer clientIndex, Integer page);
 }

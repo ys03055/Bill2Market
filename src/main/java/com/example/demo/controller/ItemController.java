@@ -41,6 +41,12 @@ public class ItemController {
         return responseService.getSingleResult(itemService.findItemOne(itemId, (!auth.getName().equals("anonymousUser"))? Integer.parseInt(auth.getName()) : -1000));
     }
 
+    @ApiOperation(value = "사용자 판매 목록 조회", notes = "판매자가 판매한 목록들을 조회한다.")
+    @GetMapping("owner/{client-index}")
+    public CommonResult ownerItemDetail(@PathVariable("client-index") Integer clientIndex, @RequestParam Integer page){
+        return responseService.getSingleResult(itemService.findOwnerItemList(clientIndex, page));
+    }
+
     @ApiOperation(value = "물품 리뷰 조회", notes = "해당 물품의 리뷰를 조회한다.")
     @GetMapping("/{item-id}/review")
     public CommonResult itemReview(@PathVariable("item-id") Integer itemId, @RequestParam Integer page){
