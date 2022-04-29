@@ -65,10 +65,9 @@ public class Item extends BaseEntity{
     @Column(name = "item_content")
     private String itemContent;
     @Column(name = "item_quality")
-    private String itemQuality;
+    private int itemQuality;
     @Column(name = "contract_status")
-    @Enumerated(EnumType.STRING)
-    private ContractStatus contractStatus;
+    private int contractStatus;
     @Column
     private int price;
     @Column
