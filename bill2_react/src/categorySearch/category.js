@@ -208,17 +208,10 @@ function CategoryPage()  {
 
     ];
 
-    const navi = useNavigate();
 
 
-
-
-
-
-    function onChange(value) {
-
-      dispatch({type: "CATEGORY", payload: value})
-      navi('/categorySearch')
+    const onChange = (value) => {
+        dispatch({type: "CATEGORY", payload: value})
 
     }
 

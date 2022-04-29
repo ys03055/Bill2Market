@@ -59,18 +59,17 @@ main {
     flex-direction: row;
     margin-right: 15px;
 }
-.accuracy::after{
-    content: " |";
+.distance::after{
+
     margin-right: 4px;
 }
 
 .recent::after{
-    content: " |";
+
     margin-right: 4px;
 }
 
 .lowPrice::after{
-    content: " |";
     margin-right: 4px;
 }
 .itemSearch {
@@ -83,4 +82,7 @@ main {
 }
 .itemSearchResult {
     margin-left: 15px;
+}
+.addButton {
+    justify: center;
 }

@@ -70,7 +70,7 @@ function HeaderPage()  {
             console.log("로그인 상태!")
             getNickName()
         }
-    })
+    },[])
 
 
     return (
