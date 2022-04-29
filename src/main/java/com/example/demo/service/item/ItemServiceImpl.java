@@ -4,7 +4,6 @@ import com.example.demo.exception.client.ClientNotFoundException;
 import com.example.demo.exception.client.InputNullException;
 import com.example.demo.model.Document;
 import com.example.demo.model.KakaoAddress;
-import com.example.demo.model.client.Client;
 import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Value;
 import com.example.demo.exception.item.ItemNotFoundException;
@@ -134,8 +133,9 @@ public class ItemServiceImpl implements ItemService{
     }
 
     @Override
-    public Slice<ItemDetailResponseDTO> findOwnerItemList(Integer clientIndex, Integer page) {
-
-        return itemRepository.findSliceByClientId(clientIndex, PageRequest.of(page, 10));
+    public Slice<ItemOwnerDTO> findItemListByClientIndex(Integer clientIndex, Integer ownerId, Pageable pageable) {
+        System.out.println("check2");
+//        return null;
+        return itemRepository.findSliceByClientIndex(clientIndex, pageable);
     }
 }
