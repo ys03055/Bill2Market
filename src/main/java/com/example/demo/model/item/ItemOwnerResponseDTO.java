@@ -20,5 +20,6 @@ public class ItemOwnerResponseDTO {
     private LocalDate createDate;
     private boolean is_main;
     private String itemPhoto;
+    private Integer itemId;
 
 }

@@ -16,5 +16,5 @@ public interface ItemRepository extends JpaRepository<Item, Integer> {
     public Slice<SimpleItem> findAllByLocation(@Param("client_longitude") double clientLongitude, @Param("client_latitude") double clientLatitude, @Param("client_index") Integer clientIndex, Pageable pageable);
 
     @Query(name = "ItemOwnerByOwnerId", nativeQuery = true)
-    public List<ItemOwnerResponseDTO> findByOwnerId(@Param("owner_id") Integer ownerId, Pageable pageable);
+    public Slice<ItemOwnerResponseDTO> findByOwnerId(@Param("owner_id") Integer ownerId, Pageable pageable);
 }

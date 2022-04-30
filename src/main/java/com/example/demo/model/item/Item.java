@@ -31,7 +31,7 @@ import java.util.List;
         ),
         @NamedNativeQuery(
                 name = "ItemOwnerByOwnerId",
-                query = "SELECT owner_id, item_title, price, deposit, item_address, contract_status, create_date, is_main, item_photo " +
+                query = "SELECT owner_id, item_title, price, deposit, item_address, contract_status, create_date, is_main, item_photo, Item.item_id " +
                         "FROM Item " +
                         "INNER JOIN Item_Photo " +
                         "ON Item_Photo.item_id = Item.item_id " +
@@ -70,7 +70,8 @@ import java.util.List;
                         @ColumnResult(name = "contract_status", type = int.class),
                         @ColumnResult(name = "create_date", type = LocalDate.class),
                         @ColumnResult(name = "is_main", type = Boolean.class),
-                        @ColumnResult(name = "item_photo", type = String.class)
+                        @ColumnResult(name = "item_photo", type = String.class),
+                        @ColumnResult(name = "item_id", type = Integer.class)
                 }
         )
 )
