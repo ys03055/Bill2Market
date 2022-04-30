@@ -1,15 +1,26 @@
 package com.example.demo.model.client;
 
+import com.example.demo.model.item.ContractStatus;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-@Getter
-@RequiredArgsConstructor
 public enum Role {
 
-    USER("ROLE_USER", "사용자");
+    USER(0),
+    MANAGER(1);
 
-    private final String key;
-    private final String title;
+    private final int value;
+    private Role(int value){
+        this.value = value;
+    }
+
+    private int getValue(){
+        return value;
+    }
+
+    public int getRoleValue(){
+        Role role = Role.USER;
+        return role.getValue();
+    }
 
 }

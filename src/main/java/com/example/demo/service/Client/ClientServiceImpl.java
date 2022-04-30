@@ -72,7 +72,7 @@ public class ClientServiceImpl implements ClientService{
                             .clientName(clientInfo.get("name"))
                             .birthdate(date)
                             .snsType(2)
-                            .role(Role.USER)
+                            .role(0)
                             .build();
                     int tmpIndex = clientRepository.save(client).getClientIndex();
                     return responseService.getNeedNickname(tmpIndex);

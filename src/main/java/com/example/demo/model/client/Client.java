@@ -62,6 +62,5 @@ public class Client {
     @Column
     private int subscribe;
     @Column
-    @Enumerated(EnumType.STRING)
-    private Role role;
+    private int role;
 }
