@@ -24,7 +24,7 @@ public class ItemSaveRequestDTO {
     private Integer ownerId;
     private String startDate;
     private String endDate;
-    private ContractStatus contractStatus;
+    private int contractStatus;
 
 
     public Item toEntity(Point point) {
@@ -52,7 +52,7 @@ public class ItemSaveRequestDTO {
                 .deposit(deposit)
                 .itemAddress(itemAddress)
                 .views(0)
-                .contractStatus(contractStatus)
+                .contractStatus(0)
                 .startDate(startDate)
                 .endDate(endDate)
                 .build();

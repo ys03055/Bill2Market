@@ -133,9 +133,8 @@ public class ItemServiceImpl implements ItemService{
     }
 
     @Override
-    public Slice<ItemOwnerResponseDTO> findItemListByClientIndex(Integer clientIndex, Integer ownerId, Pageable pageable) {
-        System.out.println("check2");
-//        return null;
+    public List<ItemOwnerResponseDTO> findItemListByClientIndex(Integer clientIndex, Integer ownerId, Pageable pageable) {
+
         return itemRepository.findByOwnerId(clientIndex, pageable);
     }
 }

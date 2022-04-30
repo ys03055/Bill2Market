@@ -48,7 +48,7 @@ public class ItemController {
     @GetMapping("/owner/{client-index}")
     public CommonResult ownerItemDetail(@PathVariable("client-index") Integer clientIndex, @RequestParam Integer ownerId,
                                         @PageableDefault(page = 0, size = 10, sort = "createDate", direction = Sort.Direction.DESC) Pageable pageable){
-        System.out.println("check1");
+
         return responseService.getSingleResult(itemService.findItemListByClientIndex(clientIndex, ownerId, pageable));
     }
 

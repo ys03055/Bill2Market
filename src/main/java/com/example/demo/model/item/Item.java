@@ -35,7 +35,7 @@ import java.util.List;
                         "FROM Item " +
                         "INNER JOIN Item_Photo " +
                         "ON Item_Photo.item_id = Item.item_id " +
-                        "WHERE is_main=1",
+                        "WHERE owner_id=:owner_id AND is_main=1",
                 resultSetMapping = "ItemOwnerDTOMapping"
         )
 })
@@ -95,7 +95,7 @@ public class Item extends BaseEntity{
     @Column(name = "item_quality")
     private String itemQuality;
     @Column(name = "contract_status")
-    private ContractStatus contractStatus;
+    private int contractStatus;
     @Column
     private int price;
     @Column
