@@ -133,7 +133,7 @@ public class ItemServiceImpl implements ItemService{
     }
 
     @Override
-    public Slice<ItemOwnerResponseDTO> findItemListByClientIndex(Integer clientIndex, Integer ownerId, Pageable pageable) {
+    public Slice<ItemOwnerResponseDTO> findItemListByClientIndex(Integer clientIndex, Pageable pageable) {
 
         return itemRepository.findByOwnerId(clientIndex, pageable);
     }

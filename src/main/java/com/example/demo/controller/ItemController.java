@@ -46,10 +46,10 @@ public class ItemController {
 
     @ApiOperation(value = "사용자 판매 목록 조회", notes = "판매자가 판매한 목록들을 조회한다.")
     @GetMapping("/owner/{client-index}")
-    public CommonResult ownerItemDetail(@PathVariable("client-index") Integer clientIndex, @RequestParam Integer ownerId,
+    public CommonResult ownerItemDetail(@PathVariable("client-index") Integer clientIndex,
                                         @PageableDefault(page = 0, size = 10, sort = "createDate", direction = Sort.Direction.DESC) Pageable pageable){
 
-        return responseService.getSingleResult(itemService.findItemListByClientIndex(clientIndex, ownerId, pageable));
+        return responseService.getSingleResult(itemService.findItemListByClientIndex(clientIndex ,pageable));
     }
 
     @ApiOperation(value = "물품 리뷰 조회", notes = "해당 물품의 리뷰를 조회한다.")
