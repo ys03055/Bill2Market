@@ -28,7 +28,7 @@ public class ItemSaveRequestDTO {
 
 
     public Item toEntity(Point point) {
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh-mm-ss");
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         Date startDate = null;
         Date endDate = null;
         try {
