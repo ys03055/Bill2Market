@@ -5,10 +5,10 @@ import axios from "axios";
 import HeaderPage from "../header/header";
 import Meta from "antd/es/card/Meta";
 import {HeartFilled, HeartOutlined} from "@ant-design/icons";
-import {useHistory, useLocation} from "react-router-dom";
+import {useHistory, useLocation} from "react-router-dom";    //수정부분
 import {render} from "react-dom";
 
-import {useNavigate} from "react-router-dom"
+import {useNavigate} from "react-router-dom"  //수정부분
 
 
 
@@ -58,46 +58,46 @@ function ProductViewDetailsPage () {
     const [productReview, setProductReview] = useState([]);
     const [userReview, setUserReview] = useState([]);
 
-    const [userProduct, setUserProduct] = useState([]);
-    const [userProductDetails, setUserProductDetails] = useState([]);
+    const [userProduct, setUserProduct] = useState([]);    //수정부분
+    const [userProductDetails, setUserProductDetails] = useState([]); //수정부분
 
     const [visible, setVisible] = useState(false);
 
-    const [isReviewModalVisible, setIsReviewModalVisible] = useState(false);
+    const [isReviewModalVisible, setIsReviewModalVisible] = useState(false); //수정부분
 
-    const [isProductModalVisible, setIsProductModalVisible] = useState(false);
+    const [isProductModalVisible, setIsProductModalVisible] = useState(false); //수정부분
 
-    const [last, setLast] = useState(false);
+    const [last, setLast] = useState(false); //수정부분
 
-    let [page, setPage] = useState(0);
+    let [page, setPage] = useState(0); //수정부분
 
     const showModal = () => {
-        setIsReviewModalVisible(true);
+        setIsReviewModalVisible(true);   //수정부분
     };
 
     const showProductModal = () => {
-        setIsProductModalVisible(true);
-        setPage(0);
-        userProductList();
+        setIsProductModalVisible(true);   //수정부분
+        setPage(0); //수정부분
+        userProductList(); //수정부분
     };
 
     const handleOk = () => {
-        setIsReviewModalVisible(false);
+        setIsReviewModalVisible(false);   //수정부분
     };
 
     const handleProductOk = () => {
-        setIsProductModalVisible(false);
-        setUserProduct([]);
+        setIsProductModalVisible(false);   //수정부분
+        setUserProduct([]); //수정부분
 
     };
 
     const handleCancel = () => {
-        setIsReviewModalVisible(false);
+        setIsReviewModalVisible(false);   //수정부분
     };
 
     const handleProductCancel = () => {
-        setIsProductModalVisible(false);
-        setUserProduct([]);
+        setIsProductModalVisible(false);    //수정부분
+        setUserProduct([]);    //수정부분
     };
 
 
@@ -111,27 +111,27 @@ function ProductViewDetailsPage () {
         console.log(isLike)
     }
 
-    const increasePage = () => {
-        setPage(page+1);
-        console.log(page)
-    };
+    const increasePage = () => {      //수정부분
+        setPage(page+1);         //수정부분
+        console.log(page)         //수정부분
+    }; //수정부분
 
 
 
-    const navigate = useNavigate();
+    const navigate = useNavigate();  //수정부분
 
 
 
 
-    const toProductViewDetailsPage = (itemId) => {
-        console.log(itemId)
-        setItemId(itemId);
-        handleProductCancel();
+    const toProductViewDetailsPage = (itemId) => {     //수정부분
+        console.log(itemId)    //수정부분
+        setItemId(itemId);     //수정부분
+        handleProductCancel();    //수정부분
 
 
     }
 
-    const onClickChatButton = () => {navigate("/chat")}   //꼭 안에 감싸기
+    const onClickChatButton = () => {navigate("/chat")}   //꼭 안에 감싸기     //수정부분
 
 
 
@@ -222,7 +222,7 @@ function ProductViewDetailsPage () {
 
 
     //제품 리뷰
-    const productReviewAxios = () => {
+    const productReviewAxios = () => {       //수정부분
         axios.get("/items/"+itemId+"/review?page=0")
             .then((response) => {
                 if (response.status >= 200 && response.status <= 204) {
@@ -232,11 +232,11 @@ function ProductViewDetailsPage () {
             .catch(res => {
                 console.log("fail");
             })
-    }
+    }     //수정부분
 
     //판매자 리뷰
-    const userReviewAxios = () => {
-        axios.get("/items/"+itemId+"/review?page=0")
+    const userReviewAxios = () => {        //수정부분
+        axios.get("/items/"+itemId+"/review?page=0")       //수정부분
             .then((response) => {
                 if (response.status >= 200 && response.status <= 204) {
                     setUserReview(response.data.data.content);
@@ -245,11 +245,11 @@ function ProductViewDetailsPage () {
             .catch(res => {
                 console.log("fail");
             })
-    }
+    }     //수정부분
 
     //판매자 물품 보기
 
-    const userProductList = () => {
+    const userProductList = () => {                            //252줄부터 299줄까지 추가
         // console.log(productDetailsView.ownerId);
         axios.get("/items/owner/"+productDetailsView.ownerId+'?page='+page )
             .then((response) => {
@@ -306,7 +306,7 @@ function ProductViewDetailsPage () {
     //날짜 변환
     function format(date) {
         return date.getFullYear() + "년 "
-            + (date.getMonth()+1) + "월 "
+            + (date.getMonth()+1) + "월 "               //수정부분
             + date.getDate() + "일 "
     }
 
@@ -331,7 +331,7 @@ function ProductViewDetailsPage () {
     }
 
 
-    return (
+    return (        //334줄부터 396줄까지 수정사항
         <div>
 
             <header>
@@ -396,7 +396,7 @@ function ProductViewDetailsPage () {
                         description={trustPoint + productOwnerInfo.trustPoint}
                     />
 
-                    <Button className="chattingButton"
+                    <Button className="chattingButton"        //399줄부터 471줄까지 수정사항
                             onClick={onClickChatButton}>
                         채팅하기
                     </Button>
@@ -470,7 +470,7 @@ function ProductViewDetailsPage () {
                     className="productReviews"
                 >
                     <Card
-                        className="reviewCard"
+                        className="reviewCard"              //473줄부터 482줄까지 수정사항
                         title="<제품 리뷰>">
                         {productReview.map(review => {
                                 return (
@@ -482,9 +482,9 @@ function ProductViewDetailsPage () {
                                     </Card>
 
 
-                                )
-                            }
-                        )}
+                                )              //수정부분
+                            }              //수정부분
+                        )}              
 
 
                     </Card>

@@ -1,5 +1,7 @@
 .productViewDetailsPage_container {
+    /*//수정부분*/
     width : 60%;
+    /**/
     align-items: center;
     min-height: 100vh;
     margin: auto;
@@ -48,12 +50,14 @@
     margin-top: 10px;
 }
 
+/*//수정부분*/
 .userProductModal{
     justify-content: center;
     display: flex;
     left: 45px;
     margin-top: 10px;
 }
+/*//*/
 .ownerTrustPoint {
     justify-content: center;
     display: flex;
@@ -61,10 +65,13 @@
 .ImageGroup {
     justify-content: center;
     display: flex;
+    /*//수정부분*/
     width: 60vw;
     height: 80vh;
+    /*//*/
 
 }
+/*//수정부분*/
 .productImage{
     justify-content: center;
     display: flex;
@@ -72,6 +79,7 @@
     height : 200px;
     margin-bottom: 20px;
 }
+/*//*/
 
 .reviewCard {
     margin-top: 10px;
@@ -102,7 +110,10 @@
 .reviewContent {
     margin-bottom: 40px;
 }
+
+/*//수정부분*/
 .createDate {
     margin-top: 40px;
 }
+/*//*/
 
