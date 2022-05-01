@@ -9,6 +9,7 @@ import com.example.demo.service.item.ItemService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -47,9 +48,8 @@ public class ItemController {
     @ApiOperation(value = "사용자 판매 목록 조회", notes = "판매자가 판매한 목록들을 조회한다.")
     @GetMapping("/owner/{client-index}")
     public CommonResult ownerItemDetail(@PathVariable("client-index") Integer clientIndex,
-                                        @PageableDefault(page = 0, size = 10, sort = "createDate", direction = Sort.Direction.DESC) Pageable pageable){
-
-        return responseService.getSingleResult(itemService.findItemListByClientIndex(clientIndex ,pageable));
+                                        @RequestParam Integer page){
+        return responseService.getSingleResult(itemService.findItemListByClientIndex(clientIndex, PageRequest.of(page,10)));
     }
 
     @ApiOperation(value = "물품 리뷰 조회", notes = "해당 물품의 리뷰를 조회한다.")
