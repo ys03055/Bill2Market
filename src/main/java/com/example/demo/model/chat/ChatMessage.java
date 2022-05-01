@@ -9,17 +9,21 @@ import lombok.ToString;
 @Data
 public class ChatMessage {
 
-    public enum MessageType{
+    public enum ChatType{
         ENTER, MESSAGE, EXIT
     }
 
-    private MessageType messageType;
+    private ChatType chatType;
     private Integer chatId;
     private Integer senderId;
     private String senderNickname;
     private String message;
     private Boolean isRead;
-    private Integer isImg;
+    private MessageType messageType;
     private String createDate;
+
+    public void setMessageType(int type){
+        this.messageType = MessageType.values()[type];
+    }
 
 }

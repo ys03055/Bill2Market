@@ -6,6 +6,7 @@ import com.example.demo.model.item.Item;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 
 @Data
 @ToString
@@ -13,9 +14,10 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Builder
 @Entity(name="Chat")
-public class Chat extends BaseEntity {
+public class Chat{
 
     @Id
+    @Column(name = "chat_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer chatId;
     @OneToOne
@@ -29,5 +31,7 @@ public class Chat extends BaseEntity {
     private Item item;
     @Column(name = "file_name")
     private String fileName;
+    @Column(name = "create_date")
+    private LocalDate createDate;
 
 }

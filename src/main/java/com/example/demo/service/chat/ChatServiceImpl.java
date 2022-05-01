@@ -26,6 +26,7 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.time.LocalDate;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -47,7 +48,7 @@ public class ChatServiceImpl implements ChatService{
     public ChatResponseDTO findChat(Integer itemId, Integer lenterIndex) {
         Item item = itemRepository.findById(itemId).orElseThrow(ItemNotFoundException::new);
         Client lenter = clientRepository.findById(lenterIndex).orElseThrow(ClientNotFoundException::new);
-        Chat chat = chatRepository.findByLenterAndItem(lenter, item).orElse(createChat(itemId, lenterIndex));
+        Chat chat = chatRepository.findByLenterAndItem(lenter, item).orElseGet(()->createChat(itemId, lenterIndex));
         String chatId = String.valueOf(chat.getChatId());
         redisChatRepository.setChatMessageUrl(chatId, chat.getFileName());
         return new ChatResponseDTO(chat,
@@ -62,13 +63,15 @@ public class ChatServiceImpl implements ChatService{
         File emptyTextFile = getEmptyTextFile(lenter, owner, item).orElseThrow(ChatFileCreateFailedException::new);
         String fileName =  "chat/" + UUID.randomUUID() + ".txt";
         String uploadImageUrl = putS3(emptyTextFile, fileName);
-        if (!emptyTextFile.delete()) log.info("로컬 파일 삭제 실패");
+        if (!emptyTextFile.delete())
+            log.info("로컬 파일 삭제 실패");
 
         return chatRepository.save(Chat.builder()
                 .lenter(lenter)
                 .owner(owner)
                 .item(item)
                 .fileName(uploadImageUrl)
+                .createDate(LocalDate.now())
                 .build());
     }
 
@@ -110,7 +113,7 @@ public class ChatServiceImpl implements ChatService{
             Files.copy(inputStream, tmp.toPath(), StandardCopyOption.REPLACE_EXISTING);
 
             BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(tmp,true), StandardCharsets.UTF_8));
-            String message = chatMessage.getCreateDate() + " " + chatMessage.getIsImg() + " "
+            String message = chatMessage.getCreateDate() + " " + chatMessage.getMessageType().ordinal() + " "
                     + chatMessage.getSenderNickname() + " " + chatMessage.getMessage();
             bufferedWriter.write(message);
             bufferedWriter.newLine();

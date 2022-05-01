@@ -1,20 +1,18 @@
 package com.example.demo.service.chat;
 
-import com.example.demo.config.jwt.JwtTokenProvider;
-import com.example.demo.exception.chat.ChatNotFoundException;
-import com.example.demo.model.chat.Chat;
 import com.example.demo.model.chat.ChatMessage;
-import com.example.demo.repository.ChatRepository;
+import com.example.demo.model.chat.ChatMessageEvent;
 import com.example.demo.repository.RedisChatRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.messaging.Message;
-import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 @Slf4j
@@ -22,21 +20,13 @@ import java.util.Optional;
 @Service
 public class MessageServiceImpl implements MessageService{
 
-    private final JwtTokenProvider jwtTokenProvider;
     private final RedisChatRepository redisChatRepository;
-    private final ChatRepository chatRepository;
     private final RedisTemplate<String, Object> redisTemplate;
     private final ChannelTopic channelTopic;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     @Override
-    public void connect(Message<?> message, StompHeaderAccessor accessor) {
-        jwtTokenProvider.validateToken(accessor.getFirstNativeHeader("Authorization"));
-    }
-
-    @Override
-    public void subscribe(Message<?> message, StompHeaderAccessor accessor) {
-        Authentication auth = jwtTokenProvider.getAuthentication(accessor.getFirstNativeHeader("Authorization"));
-        String clientIndex = auth.getName();
+    public void subscribe(Message<?> message, String clientIndex) {
         String chatId = getChatId(Optional.ofNullable((String) message.getHeaders().get("simpDestination")).orElse("InvalidRoomId"));
         String lastUser = redisChatRepository.getLastUser(chatId);
         String sessionId = (String) message.getHeaders().get("simpSessionId");
@@ -46,7 +36,7 @@ public class MessageServiceImpl implements MessageService{
             redisChatRepository.resetNonReadCount(chatId);
 
         ChatMessage chatMessage = ChatMessage.builder()
-                .messageType(ChatMessage.MessageType.ENTER)
+                .chatType(ChatMessage.ChatType.ENTER)
                 .chatId(Integer.parseInt(chatId))
                 .senderId(Integer.parseInt(clientIndex))
                 .isRead(false)
@@ -56,15 +46,12 @@ public class MessageServiceImpl implements MessageService{
     }
 
     @Override
-    public void unSubscribe(Message<?> message, StompHeaderAccessor accessor) {
-        String[] chatIdAndToken = accessor.getFirstNativeHeader("id").split("/");
-        Authentication auth = jwtTokenProvider.getAuthentication(chatIdAndToken[1]);
-        String clientIndex = auth.getName();
+    public void unSubscribe(Message<?> message, String clientIndex, String[] chatIdAndToken) {
         String chatId = chatIdAndToken[0];
         redisChatRepository.deleteUser(chatId, clientIndex);
 
         ChatMessage chatMessage = ChatMessage.builder()
-                .messageType(ChatMessage.MessageType.EXIT)
+                .chatType(ChatMessage.ChatType.EXIT)
                 .chatId(Integer.parseInt(chatId))
                 .senderId(Integer.parseInt(clientIndex))
                 .build();
@@ -74,9 +61,27 @@ public class MessageServiceImpl implements MessageService{
     }
 
     @Override
-    public void disconnect(Message<?> message, StompHeaderAccessor accessor) {
+    public void disconnect(Message<?> message, String clientIndex) {
         
     }
+
+    @Override
+    public void message(ChatMessage chatMessage, Integer senderId) {
+        long userCount = redisChatRepository.getUserCount(String.valueOf(chatMessage.getChatId()));
+        chatMessage.setSenderId(senderId);
+        chatMessage.setCreateDate(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+        if(userCount == 1){
+            chatMessage.setIsRead(false);
+            redisChatRepository.plusNonReadCount(String.valueOf(chatMessage.getChatId()));
+        }else if(userCount == 2){
+            chatMessage.setIsRead(true);
+            redisChatRepository.resetNonReadCount(String.valueOf(chatMessage.getChatId()));
+        }
+
+        applicationEventPublisher.publishEvent(new ChatMessageEvent(applicationEventPublisher, chatMessage));
+        redisTemplate.convertAndSend(channelTopic.getTopic(), chatMessage);
+    }
+
 
     private String getChatId(String destination){
         int lastIndex = destination.lastIndexOf('/');
