@@ -47,7 +47,7 @@ public class ItemSaveRequestDTO {
                 .categoryMiddle(categoryMiddle)
                 .categorySmall(categorySmall)
                 .itemContent(itemContent)
-                .itemQuality(1)
+                .itemQuality(itemQuality)
                 .price(price)
                 .deposit(deposit)
                 .itemAddress(itemAddress)

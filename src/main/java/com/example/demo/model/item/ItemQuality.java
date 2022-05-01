@@ -2,9 +2,9 @@ package com.example.demo.model.item;
 
 public enum ItemQuality {
 
-    HIGH(0),//상
+    HIGH(2),//상
     MIDDLE(1),//중
-    LOW(2);//하
+    LOW(0);//하
 
     private final int value;
     private ItemQuality(int value){
@@ -15,9 +15,5 @@ public enum ItemQuality {
         return value;
     }
 
-    public int getItemQualityValue(){
-        ItemQuality itemQuality = ItemQuality.MIDDLE;
-        return itemQuality.getValue();
-    }
 }
 

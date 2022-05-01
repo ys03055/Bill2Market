@@ -1,9 +1,5 @@
 package com.example.demo.model.client;
 
-import com.example.demo.model.item.ContractStatus;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-
 public enum Role {
 
     USER(0),
@@ -13,6 +9,7 @@ public enum Role {
     private Role(int value){
         this.value = value;
     }
+
 
     private int getValue(){
         return value;
