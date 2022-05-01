@@ -2,9 +2,7 @@ package com.example.demo.model.chat;
 
 import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.sql.Date;
 import java.sql.Time;
 
@@ -16,11 +14,19 @@ import java.sql.Time;
 @Entity(name="Chat")
 public class Chat {
     @Id
-    private int chat_id;
+    @Column(name = "chat_id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer chatId;
 
-    @Column(nullable = false)
-    private int lenter_index;
-    private int item_id;
-    private Date create_date;
-    private Date update_date;
+    @Column(name = "item_id", nullable = false)
+    private Integer itemId;
+    @Column(name = "lenter_index", nullable = false)
+    private Integer lenterIndex;
+    @Column(name = "owner_index", nullable = false)
+    private Integer ownerIndex;
+    @Column(name = "file_name", nullable = false)
+    private String fileName;
+    @Column(name = "create_date", nullable = false)
+    private Date createDate;
+
 }
