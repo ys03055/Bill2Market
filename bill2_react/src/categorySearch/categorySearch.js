@@ -6,47 +6,42 @@ import {Button, Card, Col, Row} from "antd";
 import {HeartFilled, HeartOutlined} from "@ant-design/icons";
 import HeaderPage from "../header/header";
 import ProductListPage from "../productList/productList";
-import { useSelector, useDispatch } from "react-redux";
+import {useSelector, useDispatch, shallowEqual} from "react-redux";
+import {isDisabled} from "@testing-library/user-event/dist/utils";
 
 function CategorySearchPage()  {
-    const value = useSelector(state => state.value)
-    // const label = useSelector(state => state.label)
-    // console.log(label);
-
-    let [latitude, setLatitude] = useState(0);
-    let [longitude, setLongitude] = useState(0);
-
+    const value = useSelector(state => state.value, shallowEqual)
+    const latitude = useSelector(state=> state.latitude)
+    const longitude = useSelector(state=> state.longitude)
     const [orderType, setOrderType] = useState('DISTANCE');
-    const page = 0;
+    let [page, setPage] = useState(0);
+    const [last, setLast] = useState(false);
     const [categoryitemList, setCategoryitemList] = useState([]);
-    // const [createDate, setCreateDate] = useState([moment().format('YYYY 년 MM월 DD일 HH시')]);
+
+    //더보기시 page값 늘려주는 함수
+    const increasePage = () => {
+        setPage(++page);
+        addCategory(latitude, longitude)
+    };
 
     useEffect(() => {
-        if (navigator.geolocation) { // GPS를 지원하면 사용자 local에서 위도 경도 불러오는 부분
-            navigator.geolocation.getCurrentPosition(function (position) {
-                setLatitude(position.coords.latitude);
-                setLongitude(position.coords.longitude);
-                console.log(position.coords.latitude)
-                console.log(position.coords.longitude)
-                onCategory(position.coords.latitude, position.coords.longitude)
 
-            }, function (error) {
-                console.error(error);
-            }, {
-                enableHighAccuracy: true,
-                maximumAge: 0,
-                timeout: Infinity
-            });
-        } else {
-            alert('GPS를 지원하지 않습니다');
-        }
+        onCategory(latitude, longitude)
+    }, [value,orderType]);
 
-
-
-    }, []);
+    //onchange 시에 물품 부르는 함수
     const onCategory = (latitude, longitude) => {
-        axios.get( 'http://localhost:8080/items/search-category?categoryBig='+value[0]+'&categoryMiddle='+value[1]+'&categorySmall='+value[2]
-            +'&latitude='+latitude+'&longitude='+longitude+'&orderType='+orderType+'&page='+page,
+
+        let url = 'http://localhost:8080/items/search-category?categoryBig='+value[0]
+
+        if(value[1] != undefined && value[1].charAt(1)!='0'){
+            url+='&categoryMiddle='+value[1]
+        }
+        if(value[2] != undefined && value[2].charAt(2)!='0'){
+            url+='&categorySmall='+value[2]
+        }
+        url+='&latitude='+latitude+'&longitude='+longitude+'&orderType='+orderType+'&page=0'
+        axios.get( url,
             {headers: {
                     Authorization: 'Bearer ' + sessionStorage.getItem("token")
                 }}
@@ -54,9 +49,9 @@ function CategorySearchPage()  {
         )
             .then((response) => {
                 if (response.status >= 200 && response.status <= 204) {
-                    console.log(response);
-                    setCategoryitemList(response.data.data.content);
 
+                    setCategoryitemList(response.data.data.content);
+                    setLast(response.data.data.last);
 
 
                 }
@@ -66,30 +61,52 @@ function CategorySearchPage()  {
             })
 
     };
+    //더보기 했을때 물품 렌더링 시키는 함수
+    const addCategory = (latitude, longitude) => {
+
+        let url = 'http://localhost:8080/items/search-category?categoryBig='+value[0]
+
+        if(value[1] != undefined && value[1].charAt(1)!='0'){
+            url+='&categoryMiddle='+value[1]
+        }
+        if(value[2] != undefined && value[2].charAt(2)!='0'){
+            url+='&categorySmall='+value[2]
+        }
+        url+='&latitude='+latitude+'&longitude='+longitude+'&orderType='+orderType+'&page='+page
+        axios.get( url,
+            {headers: {
+                    Authorization: 'Bearer ' + sessionStorage.getItem("token")
+                }}
+            ,
+        )
+            .then((response) => {
+                if (response.status >= 200 && response.status <= 204) {
+
+                    setCategoryitemList(categoryitemList.concat(response.data.data.content));
+                    setLast(response.data.data.last);
+
+
+                }
+            })
+            .catch(res => {
+
+            })
+
+    };
+
     //찜하기
-    console.log(categoryitemList);
-
-
     const addBasket2 = (itemId,isLike) => { //찜하기가 안된상태에서 찜하기를 눌렀을때
 
         axios.post("http://localhost:8080/baskets?itemId="+itemId,
             {},{headers: {
                     Authorization: 'Bearer ' + sessionStorage.getItem("token")
                 }}
-
-
         ).then(response => {
-
-
             onCategory(latitude, longitude);
-
         })
             .catch(error => {
-
                 console.log(error.response);
             })
-
-
     }
     const delBasket2 = (itemId,isLike) => { //찜하기가 안된상태에서 찜하기를 눌렀을때
 
@@ -97,71 +114,81 @@ function CategorySearchPage()  {
             {headers: {
                     Authorization: 'Bearer ' + sessionStorage.getItem("token")
                 }}
-
-
         ).then(response => {
 
-
             onCategory(latitude, longitude);
-
-
         })
             .catch(error => {
 
                 console.log(error.response);
             })
-
-
     }
 
-
+    //날짜 포맷
     function format  (date) {
 
         return date.getFullYear() + "년 " + date.getMonth() + "월 " + date.getDate() + "일 " + date.getHours() + "시" ;
 
     }
+    //거리순, 고가순, 저가순, 최신순 버튼함수
     const changeOrderType = () => {
         setOrderType('DISTANCE')
-        onCategory(latitude, longitude)
+        setCategoryitemList([])
+        setPage(0)
+
+        // onCategory(latitude, longitude)
     }
     const changeOrderExType = () => {
         setOrderType('EXPENSIVE')
-        onCategory(latitude, longitude)
+        setCategoryitemList([])
+        setPage(0)
+
+
     }
     const changeOrderInExType = () => {
         setOrderType('INEXPENSIVE')
-        onCategory(latitude, longitude)
+        setCategoryitemList([])
+        setPage(0)
+
+
     }
     const changeOrderReType = () => {
         setOrderType('RECENTLY')
-        onCategory(latitude, longitude)
+        setCategoryitemList([])
+        setPage(0)
+
     }
 
     return (
+
         <Fragment>
-            <title>빌리마켓</title>
-            <body>
-            <header>
-                <HeaderPage></HeaderPage>
 
-            </header>
-
-            <main>
-                <h3>카테고리 물품 보여주기</h3>
                 <div className="row">
                     <div className="itemSearch">
 
                         <div className="itemSearchResult">
-                            <span></span>
-                            의 검색결과
-                            <span>  개</span>
+
                         </div>
 
                         <div className="itemSort">
-                            <a className="accuracy" onClick={changeOrderType}>거리순</a>
-                            <a className="recent" onClick={changeOrderReType}>최신순</a>
-                            <a className="lowPrice" onClick={changeOrderExType}>저가순</a>
-                            <a className="highPrice" onClick={changeOrderInExType}>고가순</a>
+                            {orderType === 'DISTANCE'?
+                            <Button className="distance" disabled >거리순</Button>:
+                                <Button className="distance" onClick={changeOrderType} >거리순</Button>
+                            }
+                            {orderType === 'RECENTLY'?
+                            <Button className="recent" disabled>최신순</Button>:
+                                <Button className="recent" onClick={changeOrderReType}>최신순</Button>
+                            }
+                            {orderType === "EXPENSIVE"?
+                            <Button className="lowPrice" disabled>고가순</Button>:
+                                <Button className="lowPrice" onClick={changeOrderExType}>고가순</Button>
+                            }
+                            {orderType === "INEXPENSIVE"?
+                            <Button className="highPrice" disabled>저가순</Button>:
+                                <Button className="highPrice" onClick={changeOrderInExType}>저가순</Button>
+                            }
+
+
                         </div>
 
                     </div>
@@ -194,7 +221,7 @@ function CategorySearchPage()  {
                                         <p>대여료: {categoryitem.price}</p>
                                         <p>보증금: {categoryitem.deposit}</p>
                                         <p>아이템 위치: {categoryitem.itemAddress}</p>
-                                        {/*<p>대여상태: {item.contractStatus}</p>*/}
+
 
                                         <img className="phoneImage" src={categoryitem.itemPhoto}/>
 
@@ -207,10 +234,11 @@ function CategorySearchPage()  {
                     </Row>
 
                 </div>
-                <Button justify={'center'}>더보기</Button>
-            </main>
+            {last === true?
+                <Button className="addButton" disabled>더보기</Button>:
+                <Button className="addButton" onClick={increasePage}>더보기</Button>
+            }
 
-            </body>
 
 
 
