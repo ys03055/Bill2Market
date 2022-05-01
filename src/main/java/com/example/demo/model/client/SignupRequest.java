@@ -14,7 +14,8 @@ public class SignupRequest {
     private String email;
     private Date birthdate;
     private String phoneNumber;
-    private int role;
+    private Role role;
+    private SnsType snsType;
 
     public Client toEntity(PasswordEncoder passwordEncoder) {
         Client client = new Client();
@@ -25,8 +26,8 @@ public class SignupRequest {
         client.setClientName(clientName);
         client.setNickname(nickname);
         client.setBirthdate(birthdate);
-        client.setRole(0);
-        client.setSnsType(1);
+        client.setRole(role);
+        client.setSnsType(SnsType.SIGNUP);
 
         return client;
     }

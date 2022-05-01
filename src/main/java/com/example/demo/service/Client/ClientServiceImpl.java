@@ -6,6 +6,7 @@ import com.example.demo.exception.common.HttpFailException;
 import com.example.demo.exception.item.ItemNotFoundException;
 import com.example.demo.model.client.Client;
 import com.example.demo.model.client.Role;
+import com.example.demo.model.client.SnsType;
 import com.example.demo.model.item.Item;
 import com.example.demo.model.response.CommonResult;
 import com.example.demo.model.review.ReviewResponseDTO;
@@ -71,8 +72,8 @@ public class ClientServiceImpl implements ClientService{
                             .phoneNumber(clientInfo.get("mobile"))
                             .clientName(clientInfo.get("name"))
                             .birthdate(date)
-                            .snsType(2)
-                            .role(0)
+                            .snsType(SnsType.NAVER)
+                            .role(Role.USER)
                             .build();
                     int tmpIndex = clientRepository.save(client).getClientIndex();
                     return responseService.getNeedNickname(tmpIndex);

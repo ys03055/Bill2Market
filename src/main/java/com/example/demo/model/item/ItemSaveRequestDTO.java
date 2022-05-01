@@ -15,7 +15,7 @@ public class ItemSaveRequestDTO {
     private Integer categorySmall;
     private String itemTitle;
     private String itemContent;
-    private int itemQuality;
+    private ItemQuality itemQuality;
     private int price;
     private int deposit;
     private String itemAddress;
@@ -24,7 +24,7 @@ public class ItemSaveRequestDTO {
     private Integer ownerId;
     private String startDate;
     private String endDate;
-    private int contractStatus;
+    private ContractStatus contractStatus;
 
 
     public Item toEntity(Point point) {
@@ -52,7 +52,7 @@ public class ItemSaveRequestDTO {
                 .deposit(deposit)
                 .itemAddress(itemAddress)
                 .views(0)
-                .contractStatus(0)
+                .contractStatus(contractStatus)
                 .startDate(startDate)
                 .endDate(endDate)
                 .build();

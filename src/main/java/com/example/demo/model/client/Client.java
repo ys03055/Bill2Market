@@ -54,7 +54,8 @@ public class Client {
     @Column
     private Date birthdate;
     @Column(name = "sns_type")
-    private int snsType;
+    @Enumerated(EnumType.ORDINAL)
+    private SnsType snsType;
     @Column(name = "client_name")
     private String clientName;
     @Column
@@ -62,5 +63,6 @@ public class Client {
     @Column
     private int subscribe;
     @Column
-    private int role;
+    @Enumerated(EnumType.ORDINAL)
+    private Role role;
 }
