@@ -35,7 +35,8 @@ import java.util.List;
                         "FROM Item " +
                         "INNER JOIN Item_Photo " +
                         "ON Item_Photo.item_id = Item.item_id " +
-                        "WHERE owner_id=:owner_id AND is_main=1",
+                        "WHERE owner_id=:owner_id AND is_main=1" +
+                        " ORDER BY Item.create_date DESC",
                 resultSetMapping = "ItemOwnerDTOMapping"
         )
 })
