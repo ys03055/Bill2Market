@@ -38,10 +38,10 @@ public class ItemServiceImpl implements ItemService{
     private final BasketRepository basketRepository;
     private final ReviewRepository reviewRepository;
     private final ItemRepository itemRepository;
+    private final ItemRepositoryCustom itemRepositoryCustom;
     private final Gson gson;
     private final RestTemplate restTemplate;
     private final ElasticItemRepository elasticItemRepository;
-    private final ItemRepositoryCustom itemRepositoryCustom;
 
     @Value("${kakao_api_key}")
     private String KAKAO_API_KEY;
@@ -102,8 +102,21 @@ public class ItemServiceImpl implements ItemService{
     }
 
     @Override
+    public Slice<SimpleItem> findByCategory(Integer clientIndex, ItemSearchRequestDTO itemSearchRequestDTO) {
+        Pageable pageable = PageRequest.of(itemSearchRequestDTO.getPage(), 10);
+        List<SimpleItem> content = itemRepositoryCustom.findByCategory(clientIndex, itemSearchRequestDTO, pageable);
+        boolean hasNext = false;
+        if (content.size() > pageable.getPageSize()) {
+            content.remove(pageable.getPageSize());
+            hasNext = true;
+        }
+        return new SliceImpl<>(content, pageable, hasNext);
+    }
+
+    @Override
     public ItemDetailResponseDTO findItemOne(Integer itemId, Integer clientIndex) {
         Item item = itemRepository.findById(itemId).orElseThrow(ItemNotFoundException::new);
+        itemRepository.updateViews(itemId);
         return ItemDetailResponseDTO.builder()
                 .ownerInfo(clientRepository.findOwnerInfoByClientIndex(item.getOwnerId()).orElseThrow(ClientNotFoundException::new))
                 .item(item)
