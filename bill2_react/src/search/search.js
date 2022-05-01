@@ -44,7 +44,7 @@ function SearchPage() {
     //현재 위도,경도, sorting, 검색어, 페이지 값으로 아이템 리스트 가져오기
     const getSearchItem = () => {
         const option = {
-            url : "/items/search-keyword?page="+page+'&orderType='+orderType+'&query='+searchText+'&longitude='+longitude+'&latitude='+latitude,
+            url : "/items/search-keyword?page="+page+'&orderType='+orderType+'&query='+searchText+'&longitude='+0+'&latitude='+0,
             method: 'GET',
             headers: {
                 // Authorization: 'Bearer ' + sessionStorage.getItem("token"),
@@ -153,9 +153,9 @@ function SearchPage() {
                     </div>
 
                     <div className="itemSort">
-                        {orderType === 'DISTANCE' ?
-                            <Button className="distance" disabled>거리순</Button> :
-                            <Button className="distance" onClick={changeOrderType}>거리순</Button>
+                        {orderType === 'ACCURATE' ?
+                            <Button className="accurate" disabled>정확도순</Button> :
+                            <Button className="accurate" onClick={changeOrderType}>정확도순</Button>
                         }
                         {orderType === 'RECENTLY' ?
                             <Button className="recent" disabled>최신순</Button> :
@@ -205,7 +205,7 @@ function SearchPage() {
                                             item.contractStatus === "RENTAL" ?
                                                 <p className="rental">대여중</p>:
                                                 <p className="reservation">예약중</p>}</span>
-                                    {/*<p>게시일: {format(new Date(item.createDate))}</p>*/}
+                                    <p>게시일: {format(new Date(item.createDate))}</p>
                                     <p>대여료: {item.price}</p>
                                     <p>보증금: {item.deposit}</p>
                                     {/*<p>아이템 위치: {item.itemAddress}</p>*/}
