@@ -15,7 +15,7 @@ public class ItemSaveRequestDTO {
     private Integer categorySmall;
     private String itemTitle;
     private String itemContent;
-    private String itemQuality;
+    private ItemQuality itemQuality;
     private int price;
     private int deposit;
     private String itemAddress;
@@ -28,7 +28,7 @@ public class ItemSaveRequestDTO {
 
 
     public Item toEntity(Point point) {
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh-mm-ss");
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         Date startDate = null;
         Date endDate = null;
         try {
