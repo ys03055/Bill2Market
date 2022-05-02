@@ -1,6 +1,7 @@
 package com.example.demo.service.chat;
 
 import com.example.demo.exception.client.ClientNotFoundException;
+import com.example.demo.exception.client.ExistIdException;
 import com.example.demo.model.chat.ChatListResponseDTO;
 import com.example.demo.model.client.Client;
 import com.example.demo.repository.ChatRepository;
@@ -16,10 +17,9 @@ public class ChatServiceImpl implements ChatService{
     private final ClientRepository clientRepository;
     private final ChatRepository chatRepository;
 
-
     @Override
-    public List<ChatListResponseDTO> findClientChatList(Integer clientIndex, Integer ownerId) {
-        Client client = clientRepository.findById(clientIndex).orElseThrow(ClientNotFoundException::new);
-        return chatRepository.findChatByClientIndex(ownerId);
+    public List<ChatListResponseDTO> findClientChatList(Integer clientIndex, Integer ownerIndex) {
+
+        return chatRepository.findChatByClientIndex(clientIndex, ownerIndex);
     }
 }

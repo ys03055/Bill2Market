@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface ChatService {
 
-    public List<ChatListResponseDTO> findClientChatList(Integer clientIndex, Integer ownerId);
+    public List<ChatListResponseDTO> findClientChatList(Integer clientIndex, Integer ownerIndex);
 }

@@ -12,6 +12,6 @@ import java.util.List;
 @Repository
 public interface ChatRepository extends JpaRepository<Chat,Integer> {
 
-    @Query
-    public List<ChatListResponseDTO> findChatByClientIndex(@Param("owner_index") Integer ownerIndex);
+    @Query(name = "chatList", nativeQuery = true)
+    public List<ChatListResponseDTO> findChatByClientIndex(@Param("client_index") Integer clientIndex, Integer ownerIndex);
 }
