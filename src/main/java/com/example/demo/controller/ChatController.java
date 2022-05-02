@@ -26,10 +26,10 @@ public class ChatController {
 
     @ApiOperation(value = "채팅방 목록 조회", notes = "채팅방 목록을 조회한다.")
     @GetMapping("/client")
-    public CommonResult chatList(@PathVariable("client-index") Integer clientIndex){
+    public CommonResult chatList(){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
-        return responseService.getSingleResult(chatService.findClientChatList(clientIndex, Integer.parseInt(auth.getName())));
+        return responseService.getSingleResult(chatService.findClientChatList(Integer.parseInt(auth.getName())));
     }
 
     @ApiOperation(value = "알림", notes = "알림을 조회한다.")

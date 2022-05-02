@@ -18,8 +18,8 @@ public class ChatServiceImpl implements ChatService{
     private final ChatRepository chatRepository;
 
     @Override
-    public List<ChatListResponseDTO> findClientChatList(Integer clientIndex, Integer ownerIndex) {
+    public List<ChatListResponseDTO> findClientChatList(Integer clientIndex) {
 
-        return chatRepository.findChatByClientIndex(clientIndex, ownerIndex);
+        return chatRepository.findChatByClientIndex(clientIndex);
     }
 }
