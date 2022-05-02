@@ -85,6 +85,7 @@ public class JwtTokenProvider {
             log.info("지원되지 않는 JWT 토큰입니다.");
         } catch (IllegalArgumentException e) {
             log.info("JWT 토큰 압축이 옳바르지 않습니다.");
+            e.printStackTrace();
         }
         return null;
     }
