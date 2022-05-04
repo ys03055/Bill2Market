@@ -17,17 +17,31 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @Entity(name="Item")
-@NamedNativeQuery(
-        name = "SimpleItemSliceByLocation",
-        query = "SELECT Item.item_id, Item_Photo.item_photo_index, item_title, price, deposit, item_address, Item_Photo.item_photo, contract_status, create_date, " +
-                "EXISTS(SELECT item_id FROM Basket WHERE Basket.item_id = Item.item_id AND Basket.client_index = :client_index) AS is_like " +
-                "FROM Item LEFT JOIN Item_Photo " +
-                "ON Item.item_id = Item_Photo.item_id " +
-                "AND Item_Photo.is_main = 1 " +
-                "WHERE ST_Distance_Sphere(POINT(:client_longitude, :client_latitude), POINT(item_longitude, item_latitude)) <= 6000 " +
-                "GROUP BY item_id ORDER BY ST_Distance_Sphere(POINT(:client_longitude, :client_latitude), POINT(item_longitude, item_latitude)), Item.item_id",
-        resultSetMapping = "SimpleItemMapping"
-)
+@NamedNativeQueries({
+        @NamedNativeQuery(
+                name = "SimpleItemSliceByLocation",
+                query = "SELECT Item.item_id, Item_Photo.item_photo_index, item_title, price, deposit, item_address, Item_Photo.item_photo, contract_status, create_date, " +
+                        "EXISTS(SELECT item_id FROM Basket WHERE Basket.item_id = Item.item_id AND Basket.client_index = :client_index) AS is_like " +
+                        "FROM Item LEFT JOIN Item_Photo " +
+                        "ON Item.item_id = Item_Photo.item_id " +
+                        "AND Item_Photo.is_main = 1 " +
+                        "WHERE ST_Distance_Sphere(POINT(:client_longitude, :client_latitude), POINT(item_longitude, item_latitude)) <= 6000 " +
+                        "GROUP BY item_id ORDER BY ST_Distance_Sphere(POINT(:client_longitude, :client_latitude), POINT(item_longitude, item_latitude)), Item.item_id",
+                resultSetMapping = "SimpleItemMapping"
+        ),
+        @NamedNativeQuery(
+                name = "ItemsMeByClientIndex",
+                query = "SELECT Item.item_id, Item_Photo.item_photo_index, item_title, price, deposit, item_address, Item_Photo.item_photo, contract_status, create_date, " +
+                        "EXISTS(SELECT item_id FROM Basket WHERE Basket.item_id = Item.item_id AND Basket.client_index = :client_index) AS is_like " +
+                        "FROM Item LEFT JOIN Item_Photo " +
+                        "ON Item.item_id = Item_Photo.item_id " +
+                        "AND Item_Photo.is_main = 1 " +
+                        "WHERE ST_Distance_Sphere(POINT(:client_longitude, :client_latitude), POINT(item_longitude, item_latitude)) <= 6000 " +
+                        "GROUP BY item_id ORDER BY ST_Distance_Sphere(POINT(:client_longitude, :client_latitude), POINT(item_longitude, item_latitude)), Item.item_id",
+                resultSetMapping = "ItemMeListResponseDTOMapping"
+        )
+})
+
 @SqlResultSetMapping(
         name = "SimpleItemMapping",
         classes = @ConstructorResult(
@@ -43,6 +57,21 @@ import java.util.List;
                         @ColumnResult(name = "contract_status", type = String.class),
                         @ColumnResult(name = "create_date", type = LocalDate.class),
                         @ColumnResult(name = "is_like", type = Boolean.class)
+                }
+        )
+)
+@SqlResultSetMapping(
+        name = "ItemMeListResponseDTOMapping",
+        classes = @ConstructorResult(
+                targetClass = ItemMeListResponseDTO.class,
+                columns = {
+                        @ColumnResult(name = "item_title", type = String.class),
+                        @ColumnResult(name = "price", type = Integer.class),
+                        @ColumnResult(name = "deposit", type = Integer.class),
+                        @ColumnResult(name = "item_address", type = String.class),
+                        @ColumnResult(name = "is_main", type = Boolean.class),
+                        @ColumnResult(name = "contract_status", type = int.class),
+                        @ColumnResult(name = "create_date", type = LocalDate.class)
                 }
         )
 )

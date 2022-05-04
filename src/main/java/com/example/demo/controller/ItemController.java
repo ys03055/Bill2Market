@@ -34,6 +34,14 @@ public class ItemController {
         return responseService.getSingleResult(itemService.findItemList(itemSearchRequestDTO, (!auth.getName().equals("anonymousUser"))? Integer.parseInt(auth.getName()) : -1000));
     }
 
+    @ApiOperation(value = "내 물품 보기", notes = "내가 올린 물품 목록을 조회한다.")
+    @GetMapping("/me")
+    public CommonResult myList(Integer page){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        return responseService.getSingleResult(itemService.findItemsMe(page, Integer.parseInt(auth.getName())));
+    }
+
     @ApiOperation(value = "기본 물품 상세 조회", notes = "번호에 맞는 물품을 조회한다.")
     @GetMapping("/{item-id}")
     public CommonResult itemDetail(@PathVariable("item-id") Integer itemId){
