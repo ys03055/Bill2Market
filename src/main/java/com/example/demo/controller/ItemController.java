@@ -39,7 +39,7 @@ public class ItemController {
     public CommonResult myList(Integer page){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
-        return responseService.getSingleResult(itemService.findItemsMe(page, Integer.parseInt(auth.getName())));
+        return responseService.getSingleResult(itemService.findItemsMe(Integer.parseInt(auth.getName()), page));
     }
 
     @ApiOperation(value = "기본 물품 상세 조회", notes = "번호에 맞는 물품을 조회한다.")
