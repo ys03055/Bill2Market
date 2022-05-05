@@ -4,11 +4,15 @@ import com.example.demo.exception.chat.ChatNotFoundException;
 import com.example.demo.exception.contract.ContractNotFoundException;
 import com.example.demo.model.chat.Chat;
 import com.example.demo.model.contract.Contract;
+import com.example.demo.model.contract.ContractMeListResponseDTO;
 import com.example.demo.model.contract.ContractRequestDTO;
 import com.example.demo.model.contract.ContractType;
 import com.example.demo.repository.ChatRepository;
 import com.example.demo.repository.ContractRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -52,6 +56,12 @@ public class ContractServiceImpl implements ContractService{
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         contract.setEndDate(LocalDate.parse(endDate, formatter));
         return contractRepository.save(contract);
+    }
+
+    @Override
+    public Slice<ContractMeListResponseDTO> findBorrowedItemList(Integer clientIndex, Integer page) {
+
+        return contractRepository.findContractsByClientIndex(clientIndex, PageRequest.of(page, 10));
     }
 
 }
