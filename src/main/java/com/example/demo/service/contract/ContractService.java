@@ -9,4 +9,7 @@ public interface ContractService {
     public Contract getContract(Integer contractId);
     public Contract modifyContract(Integer contractId, Integer contractStatus);
     public Contract modifyContract(Integer contractId, String endDate);
+    public void scheduleContractOneDayBeforeExpireDate();
+    public void scheduleContractExpireDate();
+
 }
