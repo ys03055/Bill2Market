@@ -3,10 +3,7 @@ package com.example.demo.service.contract;
 import com.example.demo.exception.chat.ChatNotFoundException;
 import com.example.demo.exception.contract.ContractNotFoundException;
 import com.example.demo.model.chat.Chat;
-import com.example.demo.model.contract.Contract;
-import com.example.demo.model.contract.ContractMeListResponseDTO;
-import com.example.demo.model.contract.ContractRequestDTO;
-import com.example.demo.model.contract.ContractType;
+import com.example.demo.model.contract.*;
 import com.example.demo.repository.ChatRepository;
 import com.example.demo.repository.ContractRepository;
 import lombok.RequiredArgsConstructor;
@@ -59,7 +56,7 @@ public class ContractServiceImpl implements ContractService{
     }
 
     @Override
-    public Slice<ContractMeListResponseDTO> findBorrowedItemList(Integer clientIndex, Integer page) {
+    public Slice<ContractIBorrowed> findBorrowedItemList(Integer clientIndex, Integer page) {
 
         return contractRepository.findContractsByClientIndex(clientIndex, PageRequest.of(page, 10));
     }
