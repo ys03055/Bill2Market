@@ -58,6 +58,6 @@ public class Chat {
     @Column(name = "file_name", nullable = false)
     private String fileName;
     @Column(name = "create_date", nullable = false)
-    private Date createDate;
+    private LocalDate createDate;
 
 }
