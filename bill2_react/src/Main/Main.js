@@ -1,9 +1,21 @@
-import React, {Fragment} from "react";
+import React, {Fragment, useEffect, useState} from "react";
 import "./Main.css";
 import HeaderPage from "../header/header";
 import ProductListPage from "../productList/productList";
+import {shallowEqual, useSelector} from "react-redux";
+import CategorySearchPage from "../categorySearch/categorySearch";
 
 function MainPage()  {
+    const value = useSelector(state => state.value, shallowEqual)
+    const [test1,setTest1] = useState('')
+
+    // useEffect(() => {
+    //
+    //    setTest1(value)
+    //
+    //
+    //
+    // }, []);
 
     return (
         <Fragment>
@@ -16,8 +28,15 @@ function MainPage()  {
         </header>
 
         <main>
-            <h3>거리별 물품 보여주기</h3>
-            <ProductListPage></ProductListPage>
+            <h3>물품 보여주기</h3>
+            {JSON.stringify(value) === JSON.stringify([])?
+                <ProductListPage></ProductListPage>
+            :
+
+                <CategorySearchPage></CategorySearchPage>
+
+            }
+
         </main>
 
       </body>

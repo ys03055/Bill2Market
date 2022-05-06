@@ -7,20 +7,29 @@ import Meta from "antd/es/card/Meta";
 import axios from "axios";
 import moment from "moment";
 import ProductViewDetailsPage from "../productViewDetails/productViewDetails";
+import {useSelector, useDispatch, batch} from "react-redux";
 
 function ProductListPage() {
+    const dispatchLocation = useDispatch();
     let [latitude, setLatitude] = useState(0);
     let [longitude, setLongitude] = useState(0);
-    const page = 0;
+
+    let [page, setPage] = useState(0);
+    const [last, setLast] = useState(false);
     const [itemList, setItemList] = useState([]);
     // const [createDate, setCreateDate] = useState([moment().format('YYYY 년 MM월 DD일 HH시')]);
 
     const navigate = useNavigate();
 
+
     const toProductViewDetailsPage = (itemId) => {
         navigate("/ProductViewDetails" , {state : itemId});
         }
+    const increasePage = () => {
+        setPage(++page);
 
+        onSubmit(latitude, longitude)
+    };
 
     useEffect(() => {
 
@@ -30,6 +39,7 @@ function ProductListPage() {
                 setLongitude(position.coords.longitude);
 
                 onSubmit(position.coords.latitude, position.coords.longitude)
+
 
             }, function (error) {
                 console.error(error);
@@ -47,13 +57,26 @@ function ProductListPage() {
     const onSubmit = (latitude, longitude) => {
         axios.get( 'http://localhost:8080/items?latitude='+latitude+'&longitude='+longitude+'&page='+page ,
             {headers: {
-                    Authorization: 'Bearer ' + localStorage.getItem("token")
+                    Authorization: 'Bearer ' + sessionStorage.getItem("token")
                 }}
             ,
         )
             .then((response) => {
                 if (response.status >= 200 && response.status <= 204) {
-                    setItemList(response.data.data.content);
+                    console.log(response.data.data.pageable.pageNumber)
+
+                    setItemList(itemList.concat(response.data.data.content));
+                    setLast(response.data.data.last);
+
+
+                    // batch(() => {
+                        dispatchLocation({type: "LATITUDE", payload: latitude})
+                        dispatchLocation({type: "LONGITUDE", payload: longitude})
+
+
+                    // })
+
+
                 }
             })
             .catch(res => {
@@ -67,7 +90,7 @@ function ProductListPage() {
 
         axios.post("http://localhost:8080/baskets?itemId="+itemId,
             {},{headers: {
-                    Authorization: 'Bearer ' + localStorage.getItem("token")
+                    Authorization: 'Bearer ' + sessionStorage.getItem("token")
                 }}
 
 
@@ -83,7 +106,7 @@ function ProductListPage() {
 
         axios.delete("http://localhost:8080/baskets?itemId="+itemId,
             {headers: {
-                    Authorization: 'Bearer ' + localStorage.getItem("token")
+                    Authorization: 'Bearer ' + sessionStorage.getItem("token")
                 }}
 
 
@@ -105,6 +128,7 @@ function ProductListPage() {
         <Fragment>
 
             <div className="row">
+
                 <Row  gutter={24}>
 
                     {itemList.map(item => {
@@ -141,7 +165,7 @@ function ProductListPage() {
                                     <p>대여료: {item.price}</p>
                                     <p>보증금: {item.deposit}</p>
                                     <p>아이템 위치: {item.itemAddress}</p>
-                                    <p>대여상태: {item.contractStatus}</p>
+                                    {/*<p>대여상태: {item.contractStatus}</p>*/}
 
                                     <img className="phoneImage" src={item.itemPhoto}/>
 
@@ -153,8 +177,10 @@ function ProductListPage() {
                 </Row>
 
             </div>
-
-            <Button>더보기</Button>
+            {last === true?
+            <Button disabled>더보기</Button>:
+            <Button onClick={increasePage}>더보기</Button>
+            }
 
 
 

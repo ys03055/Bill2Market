@@ -40,5 +40,15 @@ public class ChatController {
 
         return responseService.getSuccessfulResult();
     }
-}
 
+    private final ChatService chatService;
+    private final ResponseService responseService;
+
+    @ApiOperation(value = "채팅방 정보 조회", notes = "현재 사용자가 보고있는 아이템에 따른 채팅방 정보를 가져온다.")
+    @GetMapping("/{item-id}")
+    public CommonResult addChat(@PathVariable("item-id") Integer itemId){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        return responseService.getSingleResult(chatService.findChat(itemId, Integer.parseInt(auth.getName())));
+    }
+
+}

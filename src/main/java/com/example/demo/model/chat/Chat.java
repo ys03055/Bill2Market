@@ -1,11 +1,15 @@
 package com.example.demo.model.chat;
 
 import com.example.demo.model.item.OwnerInfo;
+import com.example.demo.model.client.Client;
+import com.example.demo.model.item.BaseEntity;
+import com.example.demo.model.item.Item;
 import lombok.*;
 
 import javax.persistence.*;
 import java.sql.Date;
 import java.sql.Time;
+import java.time.LocalDate;
 
 @Data
 @ToString

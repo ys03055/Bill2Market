@@ -48,7 +48,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/auth/*", "/clients/{client-index}/nickname").permitAll()
                 .antMatchers("/clients/nickname-check", "/clients/id-check", "/clients/{item-id}/review").permitAll() //권한 해제
                 .antMatchers("/items/{item-index}", "/items/{item-index}/review", "/items/search-keyword").permitAll()
+                .antMatchers("/items/owner/{client-index}").permitAll()
                 .antMatchers(HttpMethod.GET,"/items").permitAll()
+                .antMatchers("/bill2-ws/**").permitAll()
                 .anyRequest().authenticated();
 
         http.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);

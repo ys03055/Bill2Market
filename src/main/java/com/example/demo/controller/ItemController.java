@@ -9,6 +9,10 @@ import com.example.demo.service.item.ItemService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -41,6 +45,13 @@ public class ItemController {
         return responseService.getSingleResult(itemService.findItemOne(itemId, (!auth.getName().equals("anonymousUser"))? Integer.parseInt(auth.getName()) : -1000));
     }
 
+    @ApiOperation(value = "사용자 판매 목록 조회", notes = "판매자가 판매한 목록들을 조회한다.")
+    @GetMapping("/owner/{client-index}")
+    public CommonResult ownerItemDetail(@PathVariable("client-index") Integer clientIndex,
+                                        @RequestParam Integer page){
+        return responseService.getSingleResult(itemService.findItemListByClientIndex(clientIndex, PageRequest.of(page,10)));
+    }
+
     @ApiOperation(value = "물품 리뷰 조회", notes = "해당 물품의 리뷰를 조회한다.")
     @GetMapping("/{item-id}/review")
     public CommonResult itemReview(@PathVariable("item-id") Integer itemId, @RequestParam Integer page){
@@ -49,18 +60,24 @@ public class ItemController {
 
     @ApiOperation(value = "게시물 저장", notes = "게시물 저장")
     @PostMapping("")
-    public CommonResult itemSave(@RequestPart(value = "item") ItemSaveRequestDTO itemSaveRequest,
+    public CommonResult itemSave(@RequestPart(value = "item") ItemSaveRequestDTO itemSaveRequestDTO,
                                  @RequestPart(value = "itemPhoto") List<MultipartFile> itemPhotoSaveRequest) throws IOException {
-        itemService.saveItem(itemSaveRequest, itemPhotoSaveRequest);
+        itemService.saveItem(itemSaveRequestDTO, itemPhotoSaveRequest);
         return responseService.getSuccessfulResult();
     }
 
+    @ApiOperation(value = "카테고리 검색", notes = "카테고리 검색")
+    @GetMapping("/search-category")
+    public CommonResult itemCategorySearch(ItemSearchRequestDTO itemSearchRequestDTO)  {//nearby도 구현
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        return responseService.getSingleResult(itemService.findByCategory((!auth.getName().equals("anonymousUser"))? Integer.parseInt(auth.getName()) : -1000, itemSearchRequestDTO));
+    }
+  
     @ApiOperation(value="게시물 검색", notes = "키워드 검색을 통해 게시물을 검색하여 물품 리스트를 조회한다.")
     @GetMapping("/search-keyword")
     public CommonResult searchItemList(ItemSearchRequestDTO itemSearchRequestDTO){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         return responseService.getSingleResult(itemService.findItemByQuery(itemSearchRequestDTO, (!auth.getName().equals("anonymousUser"))? Integer.parseInt(auth.getName()) : -1000));
     }
-
 
 }
