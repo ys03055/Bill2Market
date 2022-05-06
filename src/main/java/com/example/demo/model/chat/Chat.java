@@ -46,12 +46,15 @@ public class Chat {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer chatId;
 
-    @Column(name = "item_id", nullable = false)
-    private Integer itemId;
-    @Column(name = "lenter_index", nullable = false)
-    private Integer lenterIndex;
-    @Column(name = "owner_index", nullable = false)
-    private Integer ownerIndex;
+    @OneToOne
+    @JoinColumn(name = "lenter_index")
+    private Client lenter;
+    @OneToOne
+    @JoinColumn(name = "owner_index")
+    private Client owner;
+    @OneToOne
+    @JoinColumn(name = "item_id")
+    private Item item;
     @Column(name = "file_name", nullable = false)
     private String fileName;
     @Column(name = "create_date", nullable = false)
