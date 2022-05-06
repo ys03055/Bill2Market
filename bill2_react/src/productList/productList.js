@@ -17,6 +17,7 @@ function ProductListPage() {
     let [page, setPage] = useState(0);
     const [last, setLast] = useState(false);
     const [itemList, setItemList] = useState([]);
+    const [itemMap, setItemMap] = useState(new Map());
     // const [createDate, setCreateDate] = useState([moment().format('YYYY 년 MM월 DD일 HH시')]);
 
     const navigate = useNavigate();
@@ -28,7 +29,7 @@ function ProductListPage() {
     const increasePage = () => {
         setPage(++page);
 
-        onSubmit(latitude, longitude)
+        addSubmit(latitude, longitude)
     };
 
     useEffect(() => {
@@ -38,7 +39,7 @@ function ProductListPage() {
                 setLatitude(position.coords.latitude);
                 setLongitude(position.coords.longitude);
 
-                onSubmit(position.coords.latitude, position.coords.longitude)
+                addSubmit(position.coords.latitude, position.coords.longitude)
 
 
             }, function (error) {
@@ -53,9 +54,16 @@ function ProductListPage() {
         }
 
         }, []);
+    //itemMpa의 value에 따른 array를 itemList에 넣는 부분
+    useEffect(() => {
+        setItemList([...itemMap.values()])
 
-    const onSubmit = (latitude, longitude) => {
-        axios.get( 'http://localhost:8080/items?latitude='+latitude+'&longitude='+longitude+'&page='+page ,
+    },[itemMap])
+
+    //더보기 함수
+    const onSubmit = (latitude, longitude, index) => {
+
+        axios.get( 'http://localhost:8080/items?latitude='+latitude+'&longitude='+longitude+'&page='+index ,
             {headers: {
                     Authorization: 'Bearer ' + sessionStorage.getItem("token")
                 }}
@@ -65,7 +73,7 @@ function ProductListPage() {
                 if (response.status >= 200 && response.status <= 204) {
                     console.log(response.data.data.pageable.pageNumber)
 
-                    setItemList(itemList.concat(response.data.data.content));
+                    setItemMap((prev)=>new Map(prev).set(index,response.data.data.content))
                     setLast(response.data.data.last);
 
 
@@ -83,10 +91,42 @@ function ProductListPage() {
 
             })
 
+
     };
 
+        //물품리스트 불러올때 사용되는 함수
+    const addSubmit = (latitude, longitude) => {
+        axios.get( 'http://localhost:8080/items?latitude='+latitude+'&longitude='+longitude+'&page='+page ,
+            {headers: {
+                    Authorization: 'Bearer ' + sessionStorage.getItem("token")
+                }}
+            ,
+        )
+            .then((response) => {
+                if (response.status >= 200 && response.status <= 204) {
+                    console.log(response.data.data.pageable.pageNumber)
 
-    const addBasket = (itemId,isLike) => { //찜하기가 안된상태에서 찜하기를 눌렀을때
+                    setItemMap((prev)=>new Map([...prev,[page,response.data.data.content]]))
+                    setLast(response.data.data.last);
+
+
+                    // batch(() => {
+                    dispatchLocation({type: "LATITUDE", payload: latitude})
+                    dispatchLocation({type: "LONGITUDE", payload: longitude})
+
+
+                    // })
+
+
+                }
+            })
+            .catch(res => {
+
+            })
+
+    };
+    //찜하기
+    const addBasket = (itemId,index) => { //찜하기가 안된상태에서 찜하기를 눌렀을때
 
         axios.post("http://localhost:8080/baskets?itemId="+itemId,
             {},{headers: {
@@ -95,14 +135,15 @@ function ProductListPage() {
 
 
         ).then(response => {
-            onSubmit(latitude, longitude);
+            onSubmit(latitude, longitude, index);
+
         })
             .catch(error => {
                 console.log(error.response);
             })
     }
 
-    const delBasket = (itemId,isLike) => { //찜하기가 안된상태에서 찜하기를 눌렀을때
+    const delBasket = (itemId,index) => { //찜하기가 안된상태에서 찜하기를 눌렀을때
 
         axios.delete("http://localhost:8080/baskets?itemId="+itemId,
             {headers: {
@@ -111,7 +152,7 @@ function ProductListPage() {
 
 
         ).then(response => {
-            onSubmit(latitude, longitude);
+            onSubmit(latitude, longitude, index);
         })
             .catch(error => {
                 console.log(error.response);
@@ -119,7 +160,7 @@ function ProductListPage() {
     }
     function format  (date) {
 
-        return date.getFullYear() + "년 " + date.getMonth() + "월 " + date.getDate() + "일 " + date.getHours() + "시" ;
+        return date.getFullYear() + "년 " + (("00"+(date.getMonth() + 1))).slice(-2) + "월 " + (("00"+date.getDate()).slice(-2)) + "일 " + date.getHours() + "시" ;
 
     }
 
@@ -130,8 +171,11 @@ function ProductListPage() {
             <div className="row">
 
                 <Row  gutter={24}>
+                    {itemList.map((list,index)=>
 
-                    {itemList.map(item => {
+                    {
+                        return(
+                        list.map((item) => {
 
 
                         return (
@@ -142,11 +186,11 @@ function ProductListPage() {
 
                                     {item.isLike?
 
-                                        <HeartFilled onClick ={()=>{delBasket(item.itemId,item.isLike)}}>
+                                        <HeartFilled onClick ={()=>{delBasket(item.itemId,index)}}>
 
                                         </HeartFilled> :
 
-                                        <HeartOutlined onClick ={()=>addBasket(item.itemId,item.isLike)}>
+                                        <HeartOutlined onClick ={()=>addBasket(item.itemId,index)}>
 
                                         </HeartOutlined>
                                     }
@@ -156,9 +200,9 @@ function ProductListPage() {
                                                onClick={ () => {toProductViewDetailsPage(item.itemId) }}>
                                         제목: {item.itemTitle}</h2>
 
-                                        {item.contractStatus === "GENERAL" ?
+                                        {item.contractStatus === "0" ?
                                             <p ></p>:
-                                            item.contractStatus === "RENTAL" ?
+                                            item.contractStatus === "2" ?
                                                 <p className="rental">대여중</p>:
                                                 <p className="reservation">예약중</p>}</span>
                                     <p>게시일: {format(new Date(item.createDate))}</p>
@@ -173,7 +217,7 @@ function ProductListPage() {
                                 </Card>
                             </Col>
                         )
-                    })}
+                    }))})}
                 </Row>
 
             </div>
