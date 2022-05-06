@@ -12,8 +12,9 @@ public enum OrderType {
     ACCURATE(null),
     RECENTLY(item.create_date.desc()),
     EXPENSIVE(item.price.desc()),
-    INEXPENSIVE(item.price.asc());
+    INEXPENSIVE(item.price.asc()),
+    DISTANCE(null);
 
     private OrderSpecifier order;
-    
+
 }

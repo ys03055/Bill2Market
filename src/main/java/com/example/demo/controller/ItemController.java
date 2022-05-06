@@ -60,18 +60,24 @@ public class ItemController {
 
     @ApiOperation(value = "게시물 저장", notes = "게시물 저장")
     @PostMapping("")
-    public CommonResult itemSave(@RequestPart(value = "item") ItemSaveRequestDTO itemSaveRequest,
+    public CommonResult itemSave(@RequestPart(value = "item") ItemSaveRequestDTO itemSaveRequestDTO,
                                  @RequestPart(value = "itemPhoto") List<MultipartFile> itemPhotoSaveRequest) throws IOException {
-        itemService.saveItem(itemSaveRequest, itemPhotoSaveRequest);
+        itemService.saveItem(itemSaveRequestDTO, itemPhotoSaveRequest);
         return responseService.getSuccessfulResult();
     }
 
+    @ApiOperation(value = "카테고리 검색", notes = "카테고리 검색")
+    @GetMapping("/search-category")
+    public CommonResult itemCategorySearch(ItemSearchRequestDTO itemSearchRequestDTO)  {//nearby도 구현
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        return responseService.getSingleResult(itemService.findByCategory((!auth.getName().equals("anonymousUser"))? Integer.parseInt(auth.getName()) : -1000, itemSearchRequestDTO));
+    }
+  
     @ApiOperation(value="게시물 검색", notes = "키워드 검색을 통해 게시물을 검색하여 물품 리스트를 조회한다.")
     @GetMapping("/search-keyword")
     public CommonResult searchItemList(ItemSearchRequestDTO itemSearchRequestDTO){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         return responseService.getSingleResult(itemService.findItemByQuery(itemSearchRequestDTO, (!auth.getName().equals("anonymousUser"))? Integer.parseInt(auth.getName()) : -1000));
     }
-
 
 }

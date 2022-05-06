@@ -11,9 +11,10 @@ import java.util.List;
 
 public interface ItemService {
     public Slice<SimpleItem> findItemList(ItemSearchRequestDTO itemSearchRequestDTO, Integer clientIndex);
-    public void saveItem(ItemSaveRequestDTO itemSaveRequest, List<MultipartFile> itemPhotoSaveRequest) throws IOException;
+    public void saveItem(ItemSaveRequestDTO itemSaveRequestDTO, List<MultipartFile> itemPhotoSaveRequest) throws IOException;
     public ItemDetailResponseDTO findItemOne(Integer itemId, Integer clientIndex);
     public Slice<ReviewResponseDTO> findItemReview(Integer itemId, Integer page);
+    public Slice<SimpleItem> findByCategory(Integer clientIndex, ItemSearchRequestDTO itemSearchRequestDTO);
     public Slice<SimpleItem> findItemByQuery(ItemSearchRequestDTO itemSearchRequestDTO, Integer clientIndex);
     public Slice<ItemOwnerResponseDTO> findItemListByClientIndex(Integer clientIndex, Pageable pageable);
 }

@@ -1,13 +1,10 @@
 package com.example.demo.model.contract;
 
+import com.example.demo.model.chat.Chat;
 import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.IdClass;
-import java.sql.Date;
-import java.sql.Time;
+import javax.persistence.*;
+import java.time.LocalDate;
 
 @Data
 @ToString
@@ -18,12 +15,20 @@ import java.sql.Time;
 public class Contract {
     @Id
     @Column(name = "contract_id")
-    private int contract_id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer contractId;
 
-    @Column(nullable = false)
-    private int chat_id;
-    private Date contract_date;
-    private Date start_date;
-    private Date end_date;
-    private int contract_status;
+    @OneToOne
+    @JoinColumn(name = "chat_id")
+    private Chat chat;
+    @Column(name = "contract_date")
+    private LocalDate contractDate;
+    @Column(name = "start_date")
+    private LocalDate startDate;
+    @Column(name = "end_date")
+    private LocalDate endDate;
+    @Column(name = "contract_status")
+    @Enumerated(value = EnumType.ORDINAL)
+    private ContractType contractStatus;
+
 }
