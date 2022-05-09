@@ -98,7 +98,14 @@ function ProductViewDetailsPage () {
     const handleProductCancel = () => {
         setIsProductModalVisible(false);    //수정부분
         setUserProduct([]);    //수정부분
+
     };
+
+    const handleProductCancel = () => {
+        setIsProductModalVisible(false);    //수정부분
+        setUserProduct([]);    //수정부분
+    };
+
 
 
 
@@ -150,7 +157,24 @@ function ProductViewDetailsPage () {
 
 
 
+    const toProductViewDetailsPage = (itemId) => {     //수정부분
+        console.log(itemId)    //수정부분
+        setItemId(itemId);     //수정부분
+        handleProductCancel();    //수정부분
+
+
+    }
+
+    const onClickChatButton = () => {navigate("/chat")}   //꼭 안에 감싸기     //수정부분
+
+
+
+
+
+
+
     // const navigate = useNavigate();
+
 
 
     function ItemProduct (){

@@ -1,0 +1,94 @@
+.myPageWrap{
+    width:1080px;
+    margin: auto;
+}
+.user{
+    display: flex;
+    width: 100%;
+    margin-bottom: 30px;
+}
+
+.userContent{
+    font-size: 18px;
+    height: 75px;
+    font-weight: 600;
+    display: flex;
+    -webkit-box-align: center;
+    align-items: center;
+    -webkit-box-pack: justify;
+    justify-content: space-between;
+    flex-shrink: 0;
+}
+.nickNameChangeBtn{
+    margin-left: 10px;
+}
+.userPhoto{
+    position: inherit;
+    display: flex;
+    width: 250px;
+    height: 250px;
+    -webkit-box-pack: center;
+    justify-content: center;
+    -webkit-box-align: center;
+    align-items: center;
+    flex-direction: column;
+    box-shadow: rgb(4 0 0 / 3%) 0px 5px 10px 0px;
+}
+
+
+.tab {
+
+    padding-left: 0px;
+    font-weight: bold;
+    list-style: none;
+    width:100%;
+    display: flex;
+    align-items: center;
+    position: relative;
+
+}
+.tabTitle1 {
+    flex: 1 1 0%;
+    -webkit-box-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    justify-content: center;
+    display: flex;
+    border-top: 1px solid rgb(33, 33, 33);
+    border-left: 1px solid rgb(33, 33, 33);
+    border-right: 1px solid rgb(33, 33, 33);
+    border-bottom: 1px solid rgb(255, 255, 255);
+    color: rgb(33, 33, 33);
+}
+
+.tabTitle {
+    flex: 1 1 0%;
+    -webkit-box-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    justify-content: center;
+    display: flex;
+    border-top: 1px solid rgb(33, 33, 33);
+    border-right: 1px solid rgb(33, 33, 33);
+    border-bottom: 1px solid rgb(255, 255, 255);
+    color: rgb(33, 33, 33);
+}
+
+.tabCont{
+    margin: auto;
+    width: 100%;
+    font-synthesis: none;
+    -webkit-font-smoothing: antialiased;
+    direction: ltr;
+    text-align: left;
+    color: rgb(33, 33, 33);
+    letter-spacing: -0.5px;
+}
+.tabContDetail{
+    font-size: 18px;
+    padding: 50px 0px 20px;
+    border-bottom: 1px solid rgb(238, 238, 238);
+    display: flex;
+    -webkit-box-pack: justify;
+    justify-content: space-between;
+}

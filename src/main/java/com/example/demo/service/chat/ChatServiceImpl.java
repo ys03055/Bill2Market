@@ -1,14 +1,17 @@
 package com.example.demo.service.chat;
 
+
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.*;
 import com.example.demo.exception.chat.ChatFileCreateFailedException;
 import com.example.demo.exception.client.ClientNotFoundException;
+import com.example.demo.exception.client.ExistIdException;
 import com.example.demo.exception.item.ItemNotFoundException;
 import com.example.demo.model.chat.Chat;
 import com.example.demo.model.chat.ChatMessage;
 import com.example.demo.model.chat.ChatMessageEvent;
 import com.example.demo.model.chat.ChatResponseDTO;
+import com.example.demo.model.chat.ChatListResponseDTO;
 import com.example.demo.model.client.Client;
 import com.example.demo.model.item.Item;
 import com.example.demo.repository.ChatRepository;
@@ -29,6 +32,7 @@ import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -95,6 +99,13 @@ public class ChatServiceImpl implements ChatService{
             log.error("해당 파일이 존재하지 않습니다. message:" + e.getMessage());
         }
         return amazonS3Client.getUrl(bucket, fileName).toString();
+    }
+  
+  
+    @Override
+    public List<ChatListResponseDTO> findClientChatList(Integer clientIndex) {
+
+        return chatRepository.findChatByClientIndex(clientIndex);
     }
 
     @EventListener
