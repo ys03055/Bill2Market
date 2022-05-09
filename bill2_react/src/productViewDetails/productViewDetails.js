@@ -98,7 +98,14 @@ function ProductViewDetailsPage () {
     const handleProductCancel = () => {
         setIsProductModalVisible(false);    //수정부분
         setUserProduct([]);    //수정부분
+
     };
+
+    const handleProductCancel = () => {
+        setIsProductModalVisible(false);    //수정부분
+        setUserProduct([]);    //수정부분
+    };
+
 
 
 
@@ -131,6 +138,33 @@ function ProductViewDetailsPage () {
 
     }
 
+    const onClickChatButton = (itemId) => {
+        const token = sessionStorage.getItem('token');
+        if (token === null) {
+            alert("로그인 후 사용 가능합니다!")
+        }
+
+        else {
+            navigate("/chat",  {state : itemId});
+        }
+    }
+
+
+
+
+
+
+
+
+
+    const toProductViewDetailsPage = (itemId) => {     //수정부분
+        console.log(itemId)    //수정부분
+        setItemId(itemId);     //수정부분
+        handleProductCancel();    //수정부분
+
+
+    }
+
     const onClickChatButton = () => {navigate("/chat")}   //꼭 안에 감싸기     //수정부분
 
 
@@ -138,7 +172,9 @@ function ProductViewDetailsPage () {
 
 
 
+
     // const navigate = useNavigate();
+
 
 
     function ItemProduct (){
@@ -251,7 +287,7 @@ function ProductViewDetailsPage () {
 
     const userProductList = () => {                            //252줄부터 299줄까지 추가
         // console.log(productDetailsView.ownerId);
-        axios.get("/items/owner/"+productDetailsView.ownerId+'?page='+page )
+        axios.get("/items/owner/"+productDetailsView.ownerId+'?page='+page)
             .then((response) => {
                 if (response.status >= 200 && response.status <= 204) {
                     setUserProduct(response.data.data.content);
@@ -397,7 +433,7 @@ function ProductViewDetailsPage () {
                     />
 
                     <Button className="chattingButton"        //399줄부터 471줄까지 수정사항
-                            onClick={onClickChatButton}>
+                            onClick={ () => {onClickChatButton(itemId)}}>
                         채팅하기
                     </Button>
                     <Button  className="userReviewModal" onClick={showModal}>
@@ -427,7 +463,7 @@ function ProductViewDetailsPage () {
                     </Modal>
 
                     <Button  className="userProductModal" onClick={ () => {showProductModal()
-                        }}>
+                    }}>
                         판매 물품 보기
                     </Button>
                     <Modal
@@ -484,7 +520,7 @@ function ProductViewDetailsPage () {
 
                                 )              //수정부분
                             }              //수정부분
-                        )}              
+                        )}
 
 
                     </Card>
@@ -504,4 +540,3 @@ function ProductViewDetailsPage () {
 
 
 export default ProductViewDetailsPage;
-
