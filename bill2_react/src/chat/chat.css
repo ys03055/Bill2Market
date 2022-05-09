@@ -93,6 +93,31 @@
 
 }
 
+.chatItemImage {
+    width: 30%;
+    margin-left: 35%;
+    display: flex;
+    justify-content: center;
+}
+.chatItemTitle{
+    display: flex;
+    justify-content: center;
+    font-weight: bold;
+}
+.chatItemPrice{
+    display: flex;
+    justify-content: center;
+    font-weight: bold;
+}
+.chatItemDeposit{
+    display: flex;
+    justify-content: center;
+    font-weight: bold;
+}
+
+
+
+
 /*.backTopButton {*/
 /*    height: 25px;*/
 /*    width: 100px;*/
