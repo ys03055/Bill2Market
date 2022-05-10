@@ -9,7 +9,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @ToString
 @Data
-public class ContractIBorrowed {
+public class ContractIBorrowedResponseDTO {
     private String itemTitle;
     private Integer price;
     private Integer deposit;

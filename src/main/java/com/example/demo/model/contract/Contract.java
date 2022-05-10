@@ -24,7 +24,7 @@ import java.time.LocalDate;
 @SqlResultSetMapping(
         name = "ItemIBorrowedMapping",
         classes = @ConstructorResult(
-                targetClass = ContractIBorrowed.class,
+                targetClass = ContractIBorrowedResponseDTO.class,
                 columns = {
                         @ColumnResult(name = "item_title", type = String.class),
                         @ColumnResult(name = "price", type = Integer.class),
