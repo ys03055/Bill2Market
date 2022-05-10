@@ -33,7 +33,7 @@ public class ClientController {
     @GetMapping("/me")
     public CommonResult myInfo(){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if(clientRepository.findById(Integer.parseInt(auth.getName())).isPresent()) throw new ClientNotFoundException();
+        if(clientRepository.findById(Integer.parseInt(auth.getName())).isEmpty()) throw new ClientNotFoundException();
         return responseService.getSingleResult(
                 clientRepository.findReviewPointByClientIndex(Integer.parseInt(auth.getName())));
     }
