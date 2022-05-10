@@ -9,9 +9,7 @@ import com.example.demo.model.basket.BasketPK;
 import com.example.demo.repository.BasketRepository;
 import com.example.demo.repository.ItemRepository;
 import lombok.RequiredArgsConstructor;
-import nonapi.io.github.classgraph.fileslice.Slice;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

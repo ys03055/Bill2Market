@@ -3,7 +3,6 @@ package com.example.demo.repository;
 import com.example.demo.model.basket.Basket;
 import com.example.demo.model.basket.BasketMyListResponseDTO;
 import com.example.demo.model.basket.BasketPK;
-import org.apache.lucene.util.automaton.LimitedFiniteStringsIterator;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
