@@ -17,6 +17,7 @@ public class ItemMeListResponseDTO {
     private String itemAddress;
     private String contractStatus;
     private LocalDate createDate;
+    private String itemPhoto;
     private Boolean isMain;
 
 }

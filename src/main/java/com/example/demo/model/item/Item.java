@@ -69,6 +69,7 @@ import java.util.List;
                         @ColumnResult(name = "item_address", type = String.class),
                         @ColumnResult(name = "contract_status", type = String.class),
                         @ColumnResult(name = "create_date", type = LocalDate.class),
+                        @ColumnResult(name = "item_photo", type = String.class),
                         @ColumnResult(name = "is_main", type = Boolean.class)
                 }
         )
