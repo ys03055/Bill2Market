@@ -1,6 +1,7 @@
 package com.example.demo.repository;
 
 import com.example.demo.model.client.Client;
+import com.example.demo.model.client.ClientTrustPointResponseDTO;
 import com.example.demo.model.item.OwnerInfo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -19,5 +20,8 @@ public interface ClientRepository extends JpaRepository<Client, Integer> {
 
     @Query(name = "ownerInfo", nativeQuery = true)
     public Optional<OwnerInfo> findOwnerInfoByClientIndex(@Param("client_index") Integer clientIndex);
+
+    @Query(name = "reviewPointCalculator", nativeQuery = true)
+    Optional<ClientTrustPointResponseDTO> findReviewPointByClientIndex(@Param("client_index") Integer clientIndex);
 
 }

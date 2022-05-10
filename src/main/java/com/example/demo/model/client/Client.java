@@ -20,20 +20,40 @@ import java.sql.Date;
 @NoArgsConstructor
 @Builder
 @Entity(name="Client")
-@NamedNativeQuery(
-        name = "ownerInfo",
-        query = "SELECT nickname, ROUND(AVG(Review.review_score),1) AS trust_point " +
-                "FROM Client LEFT JOIN Review " +
-                "ON Client.client_index = Review.review_target AND Review.review_type IN(0, 1) " +
-                "WHERE Client.client_index = :client_index",
-        resultSetMapping = "ownerInfoMapping"
-)
+@NamedNativeQueries({
+        @NamedNativeQuery(
+                name = "ownerInfo",
+                query = "SELECT nickname, ROUND(AVG(Review.review_score),1) AS trust_point " +
+                        "FROM Client LEFT JOIN Review " +
+                        "ON Client.client_index = Review.review_target AND Review.review_type IN(0, 1) " +
+                        "WHERE Client.client_index = :client_index",
+                resultSetMapping = "ownerInfoMapping"
+        ),
+        @NamedNativeQuery(
+                name = "reviewPointCalculator",
+                query = "SELECT ROUND(AVG(Review.review_score),1) AS trust_point " +
+                        "FROM Client LEFT JOIN Review " +
+                        "ON Client.client_index = Review.review_target AND Review.review_type IN(0, 1) " +
+                        "WHERE Client.client_index = :client_index",
+                resultSetMapping = "ClientTrustPointResponseDTOMapping"
+
+        )
+})
 @SqlResultSetMapping(
         name = "ownerInfoMapping",
         classes = @ConstructorResult(
                 targetClass = OwnerInfo.class,
                 columns = {
                         @ColumnResult(name = "nickname", type = String.class),
+                        @ColumnResult(name = "trust_point", type = Float.class)
+                }
+        )
+)
+@SqlResultSetMapping(
+        name = "ClientTrustPointResponseDTOMapping",
+        classes = @ConstructorResult(
+                targetClass = ClientTrustPointResponseDTO.class,
+                columns = {
                         @ColumnResult(name = "trust_point", type = Float.class)
                 }
         )
