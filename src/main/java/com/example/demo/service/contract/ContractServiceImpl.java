@@ -56,7 +56,7 @@ public class ContractServiceImpl implements ContractService{
     }
 
     @Override
-    public Slice<ContractIBorrowed> findBorrowedItemList(Integer clientIndex, Integer page) {
+    public Slice<ContractIBorrowedResponseDTO> findBorrowedItemList(Integer clientIndex, Integer page) {
 
         return contractRepository.findContractsByClientIndex(clientIndex, PageRequest.of(page, 10));
     }

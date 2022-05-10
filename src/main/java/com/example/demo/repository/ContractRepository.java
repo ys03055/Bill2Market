@@ -1,7 +1,7 @@
 package com.example.demo.repository;
 
 import com.example.demo.model.contract.Contract;
-import com.example.demo.model.contract.ContractIBorrowed;
+import com.example.demo.model.contract.ContractIBorrowedResponseDTO;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,6 +13,6 @@ import org.springframework.stereotype.Repository;
 public interface ContractRepository extends JpaRepository<Contract, Integer> {
 
     @Query(name = "ContractIBorrowedByClientIndex", nativeQuery = true)
-    public Slice<ContractIBorrowed> findContractsByClientIndex(@Param("client_index") Integer clientIndex, Pageable page);
+    public Slice<ContractIBorrowedResponseDTO> findContractsByClientIndex(@Param("client_index") Integer clientIndex, Pageable page);
 
 }

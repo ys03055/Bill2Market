@@ -14,7 +14,7 @@ import java.time.LocalDate;
 @Entity(name="Contract")
 @NamedNativeQuery(
         name = "ContractIBorrowedByClientIndex",
-        query="SELECT Item.item_title, Item.price, Item.deposit, Item.item_address, Item_Photo.item_photo, Contract.contract_status, Contract.start_date " +
+        query="SELECT Item.item_id, Item.item_title, Item.price, Item.deposit, Item.item_address, Item_Photo.item_photo, Contract.contract_status, Contract.start_date " +
                 "FROM Contract LEFT JOIN Chat ON Contract.chat_id=Chat.chat_id LEFT JOIN Item ON Chat.item_id = Item.item_id LEFT JOIN Item_Photo ON Item.item_id = Item_Photo.item_id " +
                 "WHERE Chat.lenter_index = :client_index AND is_main=1 " +
                 "ORDER BY Contract.contract_status,Contract.start_date DESC ",
@@ -26,6 +26,7 @@ import java.time.LocalDate;
         classes = @ConstructorResult(
                 targetClass = ContractIBorrowedResponseDTO.class,
                 columns = {
+                        @ColumnResult(name = "item_id", type = Integer.class),
                         @ColumnResult(name = "item_title", type = String.class),
                         @ColumnResult(name = "price", type = Integer.class),
                         @ColumnResult(name = "deposit", type = Integer.class),

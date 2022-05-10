@@ -10,6 +10,8 @@ import java.time.LocalDate;
 @ToString
 @Data
 public class ContractIBorrowedResponseDTO {
+
+    private Integer itemId;
     private String itemTitle;
     private Integer price;
     private Integer deposit;
