@@ -31,7 +31,7 @@ import java.util.List;
         ),
         @NamedNativeQuery(
                 name = "ItemsMeByClientIndex",
-                query = "SELECT Item.item_title, Item.price, Item.deposit, Item.item_address, Item.contract_status , Item.create_date, Item_Photo.is_main, Item_Photo.item_photo " +
+                query = "SELECT Item.item_id, Item.item_title, Item.price, Item.deposit, Item.item_address, Item.contract_status , Item.create_date, Item_Photo.is_main, Item_Photo.item_photo " +
                         "FROM Item LEFT JOIN Item_Photo " +
                         "ON Item.item_id = Item_Photo.item_id " +
                         "WHERE Item.owner_id = :client_index AND Item_Photo.is_main = 1 " +
@@ -63,6 +63,7 @@ import java.util.List;
         classes = @ConstructorResult(
                 targetClass = ItemMeListResponseDTO.class,
                 columns = {
+                        @ColumnResult(name = "item_id", type = Integer.class),
                         @ColumnResult(name = "item_title", type = String.class),
                         @ColumnResult(name = "price", type = Integer.class),
                         @ColumnResult(name = "deposit", type = Integer.class),

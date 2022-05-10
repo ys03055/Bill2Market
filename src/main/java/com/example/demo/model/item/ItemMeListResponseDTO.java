@@ -11,6 +11,7 @@ import java.time.LocalDate;
 @Data
 public class ItemMeListResponseDTO {
 
+    private Integer itemId;
     private String itemTitle;
     private Integer price;
     private Integer deposit;
