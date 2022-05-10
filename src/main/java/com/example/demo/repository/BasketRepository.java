@@ -3,7 +3,6 @@ package com.example.demo.repository;
 import com.example.demo.model.basket.Basket;
 import com.example.demo.model.basket.BasketMyListResponseDTO;
 import com.example.demo.model.basket.BasketPK;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -20,5 +19,5 @@ public interface BasketRepository extends JpaRepository<Basket, BasketPK> {
     public int existsBasketByBasketPK(@Param("item_id") Integer itemId, @Param("client_index") Integer clientIndex);
 
     @Query(name = "BasketsMeByClientIndex", nativeQuery = true)
-    public List<BasketMyListResponseDTO> findBasketListByClientIndex(@Param("owner_id") Integer ownerId, Pageable page);
+    public List<BasketMyListResponseDTO> findBasketListByClientIndex(@Param("owner_id") Integer ownerId);
 }

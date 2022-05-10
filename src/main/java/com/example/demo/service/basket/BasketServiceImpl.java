@@ -9,7 +9,6 @@ import com.example.demo.model.basket.BasketPK;
 import com.example.demo.repository.BasketRepository;
 import com.example.demo.repository.ItemRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -41,9 +40,9 @@ public class BasketServiceImpl implements BasketService{
     }
 
     @Override
-    public List<BasketMyListResponseDTO> findMyBasketList(Integer ownerId, Integer page) {
+    public List<BasketMyListResponseDTO> findMyBasketList(Integer ownerId) {
 
-        return basketRepository.findBasketListByClientIndex(ownerId, PageRequest.of(page, 10));
+        return basketRepository.findBasketListByClientIndex(ownerId);
     }
 
 }

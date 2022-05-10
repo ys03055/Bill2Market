@@ -15,9 +15,10 @@ public class BasketMyListResponseDTO {
     private Integer price;
     private Integer deposit;
     private String itemAddress;
+    private String itemPhoto;
     private String contractStatus;
     private LocalDate createDate;
     private Boolean isMain;
-    private String itemPhoto;
+
 
 }

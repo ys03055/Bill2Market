@@ -42,12 +42,14 @@ import java.util.List;
         ),
         @NamedNativeQuery(
                 name = "BasketsMeByClientIndex",
-                query = "SELECT Item.item_title, Item.price, Item.deposit, Item.item_address, Item.contract_status, Item.create_date, Item_Photo.is_main, Item_Photo.item_photo " +
+                query = "SELECT item_title, price, deposit, item_address, item_photo, contract_status, create_date, Item_Photo.is_main " +
                         "FROM Item " +
-                        "INNER JOIN Item_Photo " +
-                        "ON Item_Photo.item_id = Item.item_id " +
-                        "WHERE owner_id=:owner_id AND is_main=1" +
-                        " ORDER BY Item.create_date DESC",
+                        "LEFT JOIN Item_Photo " +
+                        "ON Item.item_id = Item_Photo.item_id "+
+                        "LEFT JOIN Basket "+
+                        "ON Item.item_id = Basket.item_id "+
+                        "WHERE Basket.client_index=:owner_id AND Item_Photo.is_main=1 "+
+                        "ORDER BY contract_status, create_date DESC",
                 resultSetMapping = "BasketMyListResponseDTOMapping"
         ),
 })
@@ -96,10 +98,11 @@ import java.util.List;
                         @ColumnResult(name = "price", type = Integer.class),
                         @ColumnResult(name = "deposit", type = Integer.class),
                         @ColumnResult(name = "item_address", type = String.class),
+                        @ColumnResult(name = "item_photo", type = String.class),
                         @ColumnResult(name = "contract_status", type = String.class),
                         @ColumnResult(name = "create_date", type = LocalDate.class),
                         @ColumnResult(name = "is_main", type = Boolean.class),
-                        @ColumnResult(name = "item_photo", type = String.class)
+
                 }
         )
 )

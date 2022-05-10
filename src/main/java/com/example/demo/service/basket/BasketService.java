@@ -10,5 +10,5 @@ public interface BasketService {
     public long countBasketByItem(int itemId);
     public Basket saveBasket(int clientIndex, int itemId);
     public void deleteBasket(int clientIndex, int itemId);
-    public List<BasketMyListResponseDTO> findMyBasketList(Integer ownerId, Integer page);
+    public List<BasketMyListResponseDTO> findMyBasketList(Integer ownerId);
 }

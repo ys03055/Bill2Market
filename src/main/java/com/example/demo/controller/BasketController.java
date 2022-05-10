@@ -43,9 +43,9 @@ public class BasketController {
 
     @ApiOperation(value = "찜 목록 보기", notes = "내가 찜한 물품 목록을 본다.")
     @GetMapping("/me")
-    public CommonResult basketList(Integer page){
+    public CommonResult basketList(){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        return responseService.getSingleResult(basketService.findMyBasketList(Integer.parseInt(auth.getName()), page));
+        return responseService.getSingleResult(basketService.findMyBasketList(Integer.parseInt(auth.getName())));
     }
 
 }
