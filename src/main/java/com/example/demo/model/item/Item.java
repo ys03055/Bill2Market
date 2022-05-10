@@ -1,5 +1,6 @@
 package com.example.demo.model.item;
 
+import com.example.demo.model.basket.BasketMyListResponseDTO;
 import lombok.*;
 
 import javax.persistence.*;
@@ -38,7 +39,17 @@ import java.util.List;
                         "WHERE owner_id=:owner_id AND is_main=1" +
                         " ORDER BY Item.create_date DESC",
                 resultSetMapping = "ItemOwnerDTOMapping"
-        )
+        ),
+        @NamedNativeQuery(
+                name = "BasketsMeByClientIndex",
+                query = "SELECT Item.item_title, Item.price, Item.deposit, Item.item_address, Item.contract_status, Item.create_date, Item_Photo.is_main, Item_Photo.item_photo " +
+                        "FROM Item " +
+                        "INNER JOIN Item_Photo " +
+                        "ON Item_Photo.item_id = Item.item_id " +
+                        "WHERE owner_id=:owner_id AND is_main=1" +
+                        " ORDER BY Item.create_date DESC",
+                resultSetMapping = "BasketMyListResponseDTOMapping"
+        ),
 })
 @SqlResultSetMapping(
         name = "SimpleItemMapping",
@@ -73,6 +84,22 @@ import java.util.List;
                         @ColumnResult(name = "is_main", type = Boolean.class),
                         @ColumnResult(name = "item_photo", type = String.class),
                         @ColumnResult(name = "item_id", type = Integer.class)
+                }
+        )
+)
+@SqlResultSetMapping(
+        name = "BasketMyListResponseDTOMapping",
+        classes = @ConstructorResult(
+                targetClass = BasketMyListResponseDTO.class,
+                columns = {
+                        @ColumnResult(name = "item_title", type = String.class),
+                        @ColumnResult(name = "price", type = Integer.class),
+                        @ColumnResult(name = "deposit", type = Integer.class),
+                        @ColumnResult(name = "item_address", type = String.class),
+                        @ColumnResult(name = "contract_status", type = String.class),
+                        @ColumnResult(name = "create_date", type = LocalDate.class),
+                        @ColumnResult(name = "is_main", type = Boolean.class),
+                        @ColumnResult(name = "item_photo", type = String.class)
                 }
         )
 )
