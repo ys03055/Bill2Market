@@ -42,7 +42,7 @@ import java.util.List;
         ),
         @NamedNativeQuery(
                 name = "BasketsMeByClientIndex",
-                query = "SELECT item_title, price, deposit, item_address, item_photo, contract_status, create_date, Item_Photo.is_main " +
+                query = "SELECT Item.item_id, item_title, price, deposit, item_address, item_photo, contract_status, create_date, Item_Photo.is_main " +
                         "FROM Item " +
                         "LEFT JOIN Item_Photo " +
                         "ON Item.item_id = Item_Photo.item_id "+
@@ -94,6 +94,7 @@ import java.util.List;
         classes = @ConstructorResult(
                 targetClass = BasketMyListResponseDTO.class,
                 columns = {
+                        @ColumnResult(name = "item_id", type = Integer.class),
                         @ColumnResult(name = "item_title", type = String.class),
                         @ColumnResult(name = "price", type = Integer.class),
                         @ColumnResult(name = "deposit", type = Integer.class),
