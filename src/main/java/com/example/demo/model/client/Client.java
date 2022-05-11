@@ -1,17 +1,9 @@
 package com.example.demo.model.client;
 
 import lombok.*;
-import org.springframework.security.crypto.password.PasswordEncoder;
-
 import javax.persistence.*;
-import java.sql.Date;
-
-
+import java.util.Date;
 import com.example.demo.model.item.OwnerInfo;
-import lombok.*;
-
-import javax.persistence.*;
-import java.sql.Date;
 
 
 @Data
@@ -31,7 +23,7 @@ import java.sql.Date;
         ),
         @NamedNativeQuery(
                 name = "reviewPointCalculator",
-                query = "SELECT ROUND(AVG(Review.review_score),1) AS trust_point " +
+                query = "SELECT Client.client_index, client_id, password, email, phone_number, birthdate, sns_type, client_name, nickname, subscribe, Client.role, ROUND(AVG(Review.review_score),1) AS trust_point " +
                         "FROM Client LEFT JOIN Review " +
                         "ON Client.client_index = Review.review_target AND Review.review_type IN(0, 1) " +
                         "WHERE Client.client_index = :client_index",
@@ -54,6 +46,17 @@ import java.sql.Date;
         classes = @ConstructorResult(
                 targetClass = ClientTrustPointResponseDTO.class,
                 columns = {
+                        @ColumnResult(name = "client_index", type = Integer.class),
+                        @ColumnResult(name = "client_id", type = String.class),
+                        @ColumnResult(name = "password", type = String.class),
+                        @ColumnResult(name = "email", type = String.class),
+                        @ColumnResult(name = "phone_number", type = String.class),
+                        @ColumnResult(name = "birthdate", type = Date.class),
+                        @ColumnResult(name = "sns_type", type = String.class),
+                        @ColumnResult(name = "client_name", type = String.class),
+                        @ColumnResult(name = "nickname", type = String.class),
+                        @ColumnResult(name = "subscribe", type = Integer.class),
+                        @ColumnResult(name = "role", type = String.class),
                         @ColumnResult(name = "trust_point", type = Float.class)
                 }
         )
@@ -81,7 +84,7 @@ public class Client {
     @Column
     private String nickname;
     @Column
-    private int subscribe;
+    private Integer subscribe;
     @Column
     @Enumerated(EnumType.ORDINAL)
     private Role role;
