@@ -1,5 +1,6 @@
 package com.example.demo.service.chat;
 
+import com.example.demo.model.chat.AlarmResponseDTO;
 import com.example.demo.model.chat.ChatListResponseDTO;
 import com.example.demo.model.chat.ChatMessageEvent;
 import com.example.demo.model.chat.ChatResponseDTO;
@@ -13,4 +14,6 @@ public interface ChatService {
     public void messageSave(ChatMessageEvent chatMessageEvent);
 
     public List<ChatListResponseDTO> findClientChatList(Integer clientIndex);
+
+    public List<AlarmResponseDTO> getChatAlarmList(Integer clientIndex);
 }

@@ -7,11 +7,7 @@ import com.example.demo.exception.chat.ChatFileCreateFailedException;
 import com.example.demo.exception.client.ClientNotFoundException;
 import com.example.demo.exception.client.ExistIdException;
 import com.example.demo.exception.item.ItemNotFoundException;
-import com.example.demo.model.chat.Chat;
-import com.example.demo.model.chat.ChatMessage;
-import com.example.demo.model.chat.ChatMessageEvent;
-import com.example.demo.model.chat.ChatResponseDTO;
-import com.example.demo.model.chat.ChatListResponseDTO;
+import com.example.demo.model.chat.*;
 import com.example.demo.model.client.Client;
 import com.example.demo.model.item.Item;
 import com.example.demo.repository.ChatRepository;
@@ -33,6 +29,7 @@ import java.time.LocalDate;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -106,6 +103,21 @@ public class ChatServiceImpl implements ChatService{
     public List<ChatListResponseDTO> findClientChatList(Integer clientIndex) {
 
         return chatRepository.findChatByClientIndex(clientIndex);
+    }
+
+    @Override
+    public List<AlarmResponseDTO> getChatAlarmList(Integer clientIndex) {
+        List<ChatListResponseDTO> chatList = chatRepository.findChatByClientIndex(clientIndex);
+        return chatList.stream()
+                .map(this::toAlarm)
+                .filter(alarm -> alarm.getNonReadMessage() > 0)
+                .collect(Collectors.toList());
+    }
+
+    private AlarmResponseDTO toAlarm(ChatListResponseDTO chat){
+        String chatId = String.valueOf(chat.getChatId());
+        Integer nonReadChat = redisChatRepository.getLastUser(chatId).equals(String.valueOf(chat.getOpponentIndex()))? redisChatRepository.getNonReadCount(chatId) : 0;
+        return new AlarmResponseDTO(chat.getNickname(), nonReadChat, chat.getFileName());
     }
 
     @EventListener
