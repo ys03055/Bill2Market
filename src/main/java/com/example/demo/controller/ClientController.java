@@ -68,4 +68,10 @@ public class ClientController {
         return responseService.getSingleResult(clientService.getReviewByOwnerIndex(itemId, page));
     }
 
+    @ApiOperation(value = "접속한 사용자 물품 리뷰 전체 조회", notes = "현재 접속한 사용자가 올린 물품에 대한 모든 리뷰를 조회한다.")
+    @GetMapping("/item-review")
+    public CommonResult clientAllItemReviewList(@RequestParam Integer page){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        return responseService.getSingleResult(clientService.getItemReviewByOwnerIndex(Integer.parseInt(auth.getName()), page));
+    }
 }
