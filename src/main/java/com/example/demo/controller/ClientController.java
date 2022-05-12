@@ -33,9 +33,7 @@ public class ClientController {
     @GetMapping("/me")
     public CommonResult myInfo(){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if(clientRepository.findById(Integer.parseInt(auth.getName())).isEmpty()) throw new ClientNotFoundException();
-        return responseService.getSingleResult(
-                clientRepository.findReviewPointByClientIndex(Integer.parseInt(auth.getName())));
+        return responseService.getSingleResult(clientService.findById(Integer.parseInt(auth.getName())));
     }
 
     @ApiOperation(value = "ID중복 체크", notes = "회원가입 시 ID중복 체크")
