@@ -43,7 +43,8 @@ import java.util.Date;
                         "INNER JOIN Client AS Writer " +
                         "ON Writer.client_index = review_writer " +
                         "WHERE Item.owner_id = :client_index " +
-                        "AND Review.review_type = 2",
+                        "AND Review.review_type = 2 " +
+                        "ORDER BY Review.create_date DESC",
                 resultSetMapping = "ItemReviewMapping"
         )
 })
