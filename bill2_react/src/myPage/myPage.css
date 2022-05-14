@@ -6,9 +6,11 @@
     display: flex;
     width: 100%;
     margin-bottom: 30px;
+
 }
 
 .userContent{
+    flex-direction: column;
     font-size: 18px;
     height: 75px;
     font-weight: 600;
@@ -16,9 +18,9 @@
     -webkit-box-align: center;
     align-items: center;
     -webkit-box-pack: justify;
-    justify-content: space-between;
     flex-shrink: 0;
 }
+
 .nickNameChangeBtn{
     margin-left: 10px;
 }
