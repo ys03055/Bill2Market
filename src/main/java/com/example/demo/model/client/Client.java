@@ -1,17 +1,9 @@
 package com.example.demo.model.client;
 
 import lombok.*;
-import org.springframework.security.crypto.password.PasswordEncoder;
-
 import javax.persistence.*;
-import java.sql.Date;
-
-
+import java.util.Date;
 import com.example.demo.model.item.OwnerInfo;
-import lombok.*;
-
-import javax.persistence.*;
-import java.sql.Date;
 
 
 @Data
@@ -39,6 +31,7 @@ import java.sql.Date;
         )
 )
 public class Client {
+
     @Id
     @Column(name = "client_index")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -61,8 +54,10 @@ public class Client {
     @Column
     private String nickname;
     @Column
-    private int subscribe;
+    private Integer subscribe;
     @Column
     @Enumerated(EnumType.ORDINAL)
     private Role role;
+    @Transient
+    private Float trustPoint;
 }

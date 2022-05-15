@@ -4,10 +4,14 @@ import "./myPage.css";
 import {useDispatch, useSelector} from "react-redux";
 import axios from "axios";
 import MyLendListPage from "./myLendList";
+import MyBorrowListPage from "./myBorrowList";
+import MyBasketListPage from "./myBasketList";
 
 function MyPage () {
     const dispatch = useDispatch();
     const [tabIndex, setTabIndex] = useState(0);
+    const [email, setEmail] = useState('');
+    const [trustPoint, setTrustPoint] = useState(0);
     const [ready, setReady] = useState(0);
 
     const tabHandler = (index) => {
@@ -22,6 +26,7 @@ function MyPage () {
         }
 
     }
+
     const getClientInfo = () => {
         axios.get("clients/me", {
             headers: {
@@ -29,6 +34,9 @@ function MyPage () {
             }
         }).then(response => {
             sessionStorage.setItem('client_index', response.data.data.clientIndex)
+            setEmail(response.data.data.email)
+            setTrustPoint(response.data.data.trustPoint)
+            console.log(response.data.data.trustPoint)
         })
             .catch(error => {
                 console.log(error.response.data);
@@ -63,8 +71,8 @@ function MyPage () {
     const nickNameChange = (e) => {
         console.log(userNick)
         setUserNick(e.target.value)
-
     }
+
     const TapContent = [
         {
             myTitle:(
@@ -81,7 +89,7 @@ function MyPage () {
                 <li className="tabTitle" onClick={()=>tabHandler(1)}>내가 빌린 물품</li>
             ),
             myContent:(
-                <div>빌린 물품 내용</div>
+                <div><MyBorrowListPage/></div>
             )
         },
         {
@@ -89,7 +97,7 @@ function MyPage () {
                 <li className="tabTitle" onClick={()=>tabHandler(2)}>찜 목록</li>
             ),
             myContent:(
-                <div>찜 목록</div>
+                <div><MyBasketListPage/></div>
             )
         },
         {
@@ -105,8 +113,6 @@ function MyPage () {
 
     useEffect(() => {
         getClientInfo()
-        console.log(userNick)
-        console.log(nickName)
         },[])
 
     return(
@@ -119,27 +125,36 @@ function MyPage () {
             <div className = "myPageWrap">
                 <div className = "user">
                     <div className= "userPhoto">
-
                     </div>
+                    <div className="userContent">
                     {ready === 0 ?
-                    <div className = "userContent" >
+                    <div>
                         {nickName}
                     <button className="nickNameChangeBtn" onClick= {nickNameHandler}>닉네임 수정</button>
+
                     </div>
+
                         :
-                    <div className = "userContent" >
+                    <div>
                         <input type="text" maxLength="40" onChange={nickNameChange} value={userNick} />
                     <button className="nickNameChangeBtn" onClick={() => {
                         nickNameHandler()
                         onSubmit()}}>수정</button>
                     </div>
                         }
+                        {email}
+                        {trustPoint == null ?
+                            <div>사용자 평점 : 받은 평점이 없습니다</div>
+                            :
+                            <div>사용자 평점 : {trustPoint}</div>
+                        }
 
+                    </div>
                 </div>
-                
+
                 <div>
                     <ul className = "tab">
-                        {TapContent.map((section, index)=>{
+                        {TapContent.map((section)=>{
                             return section.myTitle
                             })}
                     </ul>

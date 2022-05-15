@@ -30,6 +30,7 @@ import org.springframework.stereotype.Service;
 import java.sql.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -96,8 +97,15 @@ public class ClientServiceImpl implements ClientService{
         Item item = itemRepository.findById(itemId).orElseThrow(ItemNotFoundException::new);
         return reviewRepository.findSliceByClientIndex(item.getOwnerId(), PageRequest.of(page,10));
     }
-
+    
+    @Override
     public Slice<ItemReviewResponseDTO> getItemReviewByOwnerIndex(Integer clientIndex, Integer page){
         return reviewRepository.findSliceAllByClientIndex(clientIndex, PageRequest.of(page,10));
+
+    @Override
+    public Client findById(Integer clientIndex) {
+        Client client = clientRepository.findById(clientIndex).orElseThrow(ClientNotFoundException::new);
+        client.setTrustPoint(clientRepository.findReviewPointByClientIndex(clientIndex));
+        return client;
     }
 }
