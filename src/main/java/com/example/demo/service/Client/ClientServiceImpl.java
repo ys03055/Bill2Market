@@ -102,7 +102,6 @@ public class ClientServiceImpl implements ClientService{
     public Slice<ItemReviewResponseDTO> getItemReviewByOwnerIndex(Integer clientIndex, Integer page){
         return reviewRepository.findSliceAllByClientIndex(clientIndex, PageRequest.of(page,10));
 
-    @Override
     public Client findById(Integer clientIndex) {
         Client client = clientRepository.findById(clientIndex).orElseThrow(ClientNotFoundException::new);
         client.setTrustPoint(clientRepository.findReviewPointByClientIndex(clientIndex));
