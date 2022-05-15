@@ -33,6 +33,19 @@ import java.util.Date;
                         "WHERE :client_index = Target.client_index " +
                         "AND review_type = '0'",
                 resultSetMapping = "ReviewMapping"
+        ),
+        @NamedNativeQuery(
+                name = "ItemReviewByOwnerId",
+                query = "SELECT review_score, review_title, review_content, Review.create_date, Writer.nickname AS 'writer', Item.item_title " +
+                        "FROM Review " +
+                        "INNER JOIN Item " +
+                        "ON Item.item_id = Review.review_item " +
+                        "INNER JOIN Client AS Writer " +
+                        "ON Writer.client_index = review_writer " +
+                        "WHERE Item.owner_id = :client_index " +
+                        "AND Review.review_type = 2 " +
+                        "ORDER BY Review.create_date DESC",
+                resultSetMapping = "ItemReviewMapping"
         )
 })
 @SqlResultSetMapping(
@@ -45,6 +58,19 @@ import java.util.Date;
                         @ColumnResult(name = "review_content", type = String.class),
                         @ColumnResult(name = "create_date", type = Date.class),
                         @ColumnResult(name = "writer", type = String.class),
+                }
+        ))
+@SqlResultSetMapping(
+        name = "ItemReviewMapping",
+        classes = @ConstructorResult(
+                targetClass = ItemReviewResponseDTO.class,
+                columns = {
+                        @ColumnResult(name = "review_score", type = Integer.class),
+                        @ColumnResult(name = "review_title", type = String.class),
+                        @ColumnResult(name = "review_content", type = String.class),
+                        @ColumnResult(name = "create_date", type = Date.class),
+                        @ColumnResult(name = "writer", type = String.class),
+                        @ColumnResult(name = "item_title", type = String.class)
                 }
         ))
 public class Review {

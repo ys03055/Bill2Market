@@ -1,11 +1,15 @@
 package com.example.demo.model.chat;
 
 import com.example.demo.model.item.OwnerInfo;
+import com.example.demo.model.client.Client;
+import com.example.demo.model.item.BaseEntity;
+import com.example.demo.model.item.Item;
 import lombok.*;
 
 import javax.persistence.*;
 import java.sql.Date;
 import java.sql.Time;
+import java.time.LocalDate;
 
 @Data
 @ToString
@@ -44,15 +48,18 @@ public class Chat {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer chatId;
 
-    @Column(name = "item_id", nullable = false)
-    private Integer itemId;
-    @Column(name = "lenter_index", nullable = false)
-    private Integer lenterIndex;
-    @Column(name = "owner_index", nullable = false)
-    private Integer ownerIndex;
+    @OneToOne
+    @JoinColumn(name = "lenter_index")
+    private Client lenter;
+    @OneToOne
+    @JoinColumn(name = "owner_index")
+    private Client owner;
+    @OneToOne
+    @JoinColumn(name = "item_id")
+    private Item item;
     @Column(name = "file_name", nullable = false)
     private String fileName;
     @Column(name = "create_date", nullable = false)
-    private Date createDate;
+    private LocalDate createDate;
 
 }

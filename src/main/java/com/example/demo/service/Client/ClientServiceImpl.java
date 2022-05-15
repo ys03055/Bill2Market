@@ -6,8 +6,10 @@ import com.example.demo.exception.common.HttpFailException;
 import com.example.demo.exception.item.ItemNotFoundException;
 import com.example.demo.model.client.Client;
 import com.example.demo.model.client.Role;
+import com.example.demo.model.client.SnsType;
 import com.example.demo.model.item.Item;
 import com.example.demo.model.response.CommonResult;
+import com.example.demo.model.review.ItemReviewResponseDTO;
 import com.example.demo.model.review.ReviewResponseDTO;
 import com.example.demo.repository.ClientRepository;
 import com.example.demo.repository.ItemRepository;
@@ -28,6 +30,7 @@ import org.springframework.stereotype.Service;
 import java.sql.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -71,7 +74,7 @@ public class ClientServiceImpl implements ClientService{
                             .phoneNumber(clientInfo.get("mobile"))
                             .clientName(clientInfo.get("name"))
                             .birthdate(date)
-                            .snsType(2)
+                            .snsType(SnsType.NAVER)
                             .role(Role.USER)
                             .build();
                     int tmpIndex = clientRepository.save(client).getClientIndex();
@@ -93,5 +96,17 @@ public class ClientServiceImpl implements ClientService{
     public Slice<ReviewResponseDTO> getReviewByOwnerIndex(Integer itemId, Integer page) {
         Item item = itemRepository.findById(itemId).orElseThrow(ItemNotFoundException::new);
         return reviewRepository.findSliceByClientIndex(item.getOwnerId(), PageRequest.of(page,10));
+    }
+    
+    @Override
+    public Slice<ItemReviewResponseDTO> getItemReviewByOwnerIndex(Integer clientIndex, Integer page){
+        return reviewRepository.findSliceAllByClientIndex(clientIndex, PageRequest.of(page,10));
+    }
+    
+    @Override
+    public Client findById(Integer clientIndex) {
+        Client client = clientRepository.findById(clientIndex).orElseThrow(ClientNotFoundException::new);
+        client.setTrustPoint(clientRepository.findReviewPointByClientIndex(clientIndex));
+        return client;
     }
 }

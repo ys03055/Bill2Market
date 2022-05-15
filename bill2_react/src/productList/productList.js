@@ -7,20 +7,30 @@ import Meta from "antd/es/card/Meta";
 import axios from "axios";
 import moment from "moment";
 import ProductViewDetailsPage from "../productViewDetails/productViewDetails";
+import {useSelector, useDispatch, batch} from "react-redux";
 
 function ProductListPage() {
+    const dispatchLocation = useDispatch();
     let [latitude, setLatitude] = useState(0);
     let [longitude, setLongitude] = useState(0);
-    const page = 0;
+
+    let [page, setPage] = useState(0);
+    const [last, setLast] = useState(false);
     const [itemList, setItemList] = useState([]);
+    const [itemMap, setItemMap] = useState(new Map());
     // const [createDate, setCreateDate] = useState([moment().format('YYYY 년 MM월 DD일 HH시')]);
 
     const navigate = useNavigate();
 
+
     const toProductViewDetailsPage = (itemId) => {
         navigate("/ProductViewDetails" , {state : itemId});
         }
+    const increasePage = () => {
+        setPage(++page);
 
+        addSubmit(latitude, longitude)
+    };
 
     useEffect(() => {
 
@@ -29,7 +39,8 @@ function ProductListPage() {
                 setLatitude(position.coords.latitude);
                 setLongitude(position.coords.longitude);
 
-                onSubmit(position.coords.latitude, position.coords.longitude)
+                addSubmit(position.coords.latitude, position.coords.longitude)
+
 
             }, function (error) {
                 console.error(error);
@@ -43,17 +54,70 @@ function ProductListPage() {
         }
 
         }, []);
+    //itemMpa의 value에 따른 array를 itemList에 넣는 부분
+    useEffect(() => {
+        setItemList([...itemMap.values()])
 
-    const onSubmit = (latitude, longitude) => {
-        axios.get( 'http://localhost:8080/items?latitude='+latitude+'&longitude='+longitude+'&page='+page ,
+    },[itemMap])
+
+    //더보기 함수
+    const onSubmit = (latitude, longitude, index) => {
+
+        axios.get( 'http://localhost:8080/items?latitude='+latitude+'&longitude='+longitude+'&page='+index ,
             {headers: {
-                    Authorization: 'Bearer ' + localStorage.getItem("token")
+                    Authorization: 'Bearer ' + sessionStorage.getItem("token")
                 }}
             ,
         )
             .then((response) => {
                 if (response.status >= 200 && response.status <= 204) {
-                    setItemList(response.data.data.content);
+                    console.log(response.data.data.pageable.pageNumber)
+
+                    setItemMap((prev)=>new Map(prev).set(index,response.data.data.content))
+                    setLast(response.data.data.last);
+
+
+                    // batch(() => {
+                        dispatchLocation({type: "LATITUDE", payload: latitude})
+                        dispatchLocation({type: "LONGITUDE", payload: longitude})
+
+
+                    // })
+
+
+                }
+            })
+            .catch(res => {
+
+            })
+
+
+    };
+
+        //물품리스트 불러올때 사용되는 함수
+    const addSubmit = (latitude, longitude) => {
+        axios.get( 'http://localhost:8080/items?latitude='+latitude+'&longitude='+longitude+'&page='+page ,
+            {headers: {
+                    Authorization: 'Bearer ' + sessionStorage.getItem("token")
+                }}
+            ,
+        )
+            .then((response) => {
+                if (response.status >= 200 && response.status <= 204) {
+                    console.log(response.data.data.pageable.pageNumber)
+
+                    setItemMap((prev)=>new Map([...prev,[page,response.data.data.content]]))
+                    setLast(response.data.data.last);
+
+
+                    // batch(() => {
+                    dispatchLocation({type: "LATITUDE", payload: latitude})
+                    dispatchLocation({type: "LONGITUDE", payload: longitude})
+
+
+                    // })
+
+
                 }
             })
             .catch(res => {
@@ -61,34 +125,34 @@ function ProductListPage() {
             })
 
     };
-
-
-    const addBasket = (itemId,isLike) => { //찜하기가 안된상태에서 찜하기를 눌렀을때
+    //찜하기
+    const addBasket = (itemId,index) => { //찜하기가 안된상태에서 찜하기를 눌렀을때
 
         axios.post("http://localhost:8080/baskets?itemId="+itemId,
             {},{headers: {
-                    Authorization: 'Bearer ' + localStorage.getItem("token")
+                    Authorization: 'Bearer ' + sessionStorage.getItem("token")
                 }}
 
 
         ).then(response => {
-            onSubmit(latitude, longitude);
+            onSubmit(latitude, longitude, index);
+
         })
             .catch(error => {
                 console.log(error.response);
             })
     }
 
-    const delBasket = (itemId,isLike) => { //찜하기가 안된상태에서 찜하기를 눌렀을때
+    const delBasket = (itemId,index) => { //찜하기가 안된상태에서 찜하기를 눌렀을때
 
         axios.delete("http://localhost:8080/baskets?itemId="+itemId,
             {headers: {
-                    Authorization: 'Bearer ' + localStorage.getItem("token")
+                    Authorization: 'Bearer ' + sessionStorage.getItem("token")
                 }}
 
 
         ).then(response => {
-            onSubmit(latitude, longitude);
+            onSubmit(latitude, longitude, index);
         })
             .catch(error => {
                 console.log(error.response);
@@ -96,7 +160,7 @@ function ProductListPage() {
     }
     function format  (date) {
 
-        return date.getFullYear() + "년 " + date.getMonth() + "월 " + date.getDate() + "일 " + date.getHours() + "시" ;
+        return date.getFullYear() + "년 " + (("00"+(date.getMonth() + 1))).slice(-2) + "월 " + (("00"+date.getDate()).slice(-2)) + "일 " + date.getHours() + "시" ;
 
     }
 
@@ -105,9 +169,13 @@ function ProductListPage() {
         <Fragment>
 
             <div className="row">
-                <Row  gutter={24}>
 
-                    {itemList.map(item => {
+                <Row  gutter={24}>
+                    {itemList.map((list,index)=>
+
+                    {
+                        return(
+                        list.map((item) => {
 
 
                         return (
@@ -118,11 +186,11 @@ function ProductListPage() {
 
                                     {item.isLike?
 
-                                        <HeartFilled onClick ={()=>{delBasket(item.itemId,item.isLike)}}>
+                                        <HeartFilled onClick ={()=>{delBasket(item.itemId,index)}}>
 
                                         </HeartFilled> :
 
-                                        <HeartOutlined onClick ={()=>addBasket(item.itemId,item.isLike)}>
+                                        <HeartOutlined onClick ={()=>addBasket(item.itemId,index)}>
 
                                         </HeartOutlined>
                                     }
@@ -132,16 +200,16 @@ function ProductListPage() {
                                                onClick={ () => {toProductViewDetailsPage(item.itemId) }}>
                                         제목: {item.itemTitle}</h2>
 
-                                        {item.contractStatus === "GENERAL" ?
+                                        {item.contractStatus === "0" ?
                                             <p ></p>:
-                                            item.contractStatus === "RENTAL" ?
+                                            item.contractStatus === "2" ?
                                                 <p className="rental">대여중</p>:
                                                 <p className="reservation">예약중</p>}</span>
                                     <p>게시일: {format(new Date(item.createDate))}</p>
                                     <p>대여료: {item.price}</p>
                                     <p>보증금: {item.deposit}</p>
                                     <p>아이템 위치: {item.itemAddress}</p>
-                                    <p>대여상태: {item.contractStatus}</p>
+                                    {/*<p>대여상태: {item.contractStatus}</p>*/}
 
                                     <img className="phoneImage" src={item.itemPhoto}/>
 
@@ -149,12 +217,14 @@ function ProductListPage() {
                                 </Card>
                             </Col>
                         )
-                    })}
+                    }))})}
                 </Row>
 
             </div>
-
-            <Button>더보기</Button>
+            {last === true?
+            <Button disabled>더보기</Button>:
+            <Button onClick={increasePage}>더보기</Button>
+            }
 
 
 

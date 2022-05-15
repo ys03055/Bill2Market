@@ -3,70 +3,24 @@ import "./header.css";
 import {NavLink, Link} from "react-router-dom";
 import {Cascader} from "antd";
 import axios from "axios";
+import CategoryPage from "../categorySearch/category";
+import SearchBar from "../search/searchBar";
+import MyPage from "../myPage/myPage";
+import {useDispatch, useSelector} from "react-redux";
 
 
 function HeaderPage()  {
                 {/* 초기화면에서 액세스 권한관련 자바 스크립트  */}
-    const options = [
-        {
-            value: '남성',
-            label: '남성',
-            children: [
-                {value: '상의',
-                    label: '상의',
-                    children: [
-                        {
-                            value: '셔츠',
-                            label: '셔츠',},],
-                },
-                {
-                    value: '하의',
-                    label: '하의',
-                    children: [
-                        {
-                            value: '바지',
-                            label: '바지',
-                        },
-                    ],
 
-                },
-            ],
-        },
-        {
-            value: '여성',
-            label: '여성',
-            children: [
-                {
-                    value: '상의',
-                    label: '상의',
-                    children: [
-                        {
-                            value: '블라우스',
-                            label: '블라우스',
-                        },
-                    ],
-                },
-                {
-                    value: '하의',
-                    label: '하의',
-                    children: [
-                        {
-                            value: '치마',
-                            label: '치마',
-                        },
-                    ],
-                },
-            ],
-        },
-    ];
 
     const [logged, setLogged] = useState(false); //현재 로그 상태에 따라서 로그인상태인지 아웃상태인지 판단
-    const [nickName, setNickName] = useState('');
+    const dispatch = useDispatch();
+    const nickName = useSelector(state => state.nickName);
 
-    const onChange = (value) => {
-        console.log(value);
-
-    }
+    // const onChange = (value) => {
+    //     console.log(value);
+    //
+    // }
 
     const isLogin = () => { //로그아웃 상태 일 때 로그인이 필요한 기능이라는 alert 메세지
         if (logged === false) {
@@ -99,7 +53,7 @@ function HeaderPage()  {
             }
         }).then(response => {
             sessionStorage.setItem('nickName', response.data.data.nickname)
-            setNickName(sessionStorage.getItem('nickName'))
+            dispatch({type: "NICKNAME", payload: sessionStorage.getItem('nickName')})
         })
             .catch(error => {
                 console.log(error.response.data);
@@ -120,7 +74,7 @@ function HeaderPage()  {
             console.log("로그인 상태!")
             getNickName()
         }
-    })
+    },[])
 
 
     return (
@@ -145,8 +99,13 @@ function HeaderPage()  {
                     <Link to='/' onClick={onLogout} className="link_text">로그아웃</Link>
                 }
 
+                {logged === false ?
+                    <Link to='/' onClick={isLogin} className="link_text">마이페이지</Link>
+                    :
+                    <Link to='/MyPage' onClick={isLogin} className="link_text">마이페이지</Link>
+                }
                 {/*???님 환영합니다.*/}
-                <Link to='/' onClick={isLogin} className="link_text">마이페이지</Link>
+
             </div>
 
             <div className="links_button">
@@ -184,27 +143,13 @@ function HeaderPage()  {
             
 
             {/* 검색창 껍데기 */}
-            <form>
-                <fieldset>
-                  <legend className="visually-hidden"/>
-                  <div className="search_box">
-                    <input type="text" maxLength="225" tabIndex="1" />
-                    <button type="submit" tabIndex="2">
-                      검색
-                    </button>
-                  </div>
-                </fieldset>
-            </form>
+            <div className='SearchBar'>
+                <SearchBar />
+            </div>
 
                {/* 카테고리 껍데기  */}
               <nav>
-                  <Cascader
-                      options={options}
-                      expandTrigger="hover"
-                      onChange={onChange}
-                      placeholder="카테고리"
-                  />
-
+                 <CategoryPage></CategoryPage>
 
               </nav>
 

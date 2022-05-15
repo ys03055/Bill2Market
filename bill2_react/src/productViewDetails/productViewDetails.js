@@ -1,13 +1,14 @@
 import React, {useEffect, useState} from "react";
-import {Form, Image, Input, Button, Divider, Tag, Row, Col, Card, Avatar} from 'antd';
+import {Form, Image, Input, Button, Divider, Tag, Row, Col, Card, Avatar, Rate, Modal} from 'antd';
 import "./productViewDetails.css";
 import axios from "axios";
 import HeaderPage from "../header/header";
 import Meta from "antd/es/card/Meta";
 import {HeartFilled, HeartOutlined} from "@ant-design/icons";
-import {useLocation} from "react-router-dom";
+import {useHistory, useLocation} from "react-router-dom";    //수정부분
+import {render} from "react-dom";
 
-// import {useNavigate} from "react-router-dom"
+import {useNavigate} from "react-router-dom"  //수정부분
 
 
 
@@ -24,7 +25,7 @@ function ProductViewDetailsPage () {
         categoryMiddle: "",
         categorySmall: "",
         contractStatus: "",
-        createDate: "",
+        create_date: "",
         deposit: "",
         endDate: "",
         itemAddress: "",
@@ -35,8 +36,8 @@ function ProductViewDetailsPage () {
         itemTitle: "",
         ownerId: "",
         price: "",
-        startDate: "",
-        updateDate: "",
+        start_Date: "",
+        update_Date: "",
         views: "",
 
 
@@ -52,24 +53,136 @@ function ProductViewDetailsPage () {
 
     const [productBasket, setProductBasket] = useState("");
 
-    // const [productReview, setProductReview] = useState({
-    //     reviewTitle: "",
-    //     reviewContent: ""
-    // });
+    const [isLike, setIsLike] = useState(false);
 
-//
-//
+    const [productReview, setProductReview] = useState([]);
+    const [userReview, setUserReview] = useState([]);
+
+    const [userProduct, setUserProduct] = useState([]);    //수정부분
+    const [userProductDetails, setUserProductDetails] = useState([]); //수정부분
 
     const [visible, setVisible] = useState(false);
 
-    const [onClickBasketButton, setOnClickBasketButton] = useState(false);
+    const [isReviewModalVisible, setIsReviewModalVisible] = useState(false); //수정부분
+
+    const [isProductModalVisible, setIsProductModalVisible] = useState(false); //수정부분
+
+    const [last, setLast] = useState(false); //수정부분
+
+    let [page, setPage] = useState(0); //수정부분
+
+    const showModal = () => {
+        setIsReviewModalVisible(true);   //수정부분
+    };
+
+    const showProductModal = () => {
+        setIsProductModalVisible(true);   //수정부분
+        setPage(0); //수정부분
+        userProductList(); //수정부분
+    };
+
+    const handleOk = () => {
+        setIsReviewModalVisible(false);   //수정부분
+    };
+
+    const handleProductOk = () => {
+        setIsProductModalVisible(false);   //수정부분
+        setUserProduct([]); //수정부분
+
+    };
+
+    const handleCancel = () => {
+        setIsReviewModalVisible(false);   //수정부분
+    };
+
+    const handleProductCancel = () => {
+        setIsProductModalVisible(false);    //수정부분
+        setUserProduct([]);    //수정부분
+
+    };
+
+    const handleProductCancel = () => {
+        setIsProductModalVisible(false);    //수정부분
+        setUserProduct([]);    //수정부분
+    };
+
+
+
+
+    const onClickBasketButton = () => {
+
+        isLike ?
+            delBasket(itemId,isLike)
+            :addBasket(itemId,isLike)
+
+        console.log(isLike)
+    }
+
+    const increasePage = () => {      //수정부분
+        setPage(page+1);         //수정부분
+        console.log(page)         //수정부분
+    }; //수정부분
+
+
+
+    const navigate = useNavigate();  //수정부분
+
+
+
+
+    const toProductViewDetailsPage = (itemId) => {     //수정부분
+        console.log(itemId)    //수정부분
+        setItemId(itemId);     //수정부분
+        handleProductCancel();    //수정부분
+
+
+    }
+
+    const onClickChatButton = (itemId) => {
+        const token = sessionStorage.getItem('token');
+        if (token === null) {
+            alert("로그인 후 사용 가능합니다!")
+        }
+
+        else {
+            navigate("/chat",  {state : itemId});
+        }
+    }
+
+
+
+
+
+
+
+
+
+    const toProductViewDetailsPage = (itemId) => {     //수정부분
+        console.log(itemId)    //수정부분
+        setItemId(itemId);     //수정부분
+        handleProductCancel();    //수정부분
+
+
+    }
+
+    const onClickChatButton = () => {navigate("/chat")}   //꼭 안에 감싸기     //수정부분
+
+
+
+
+
+
 
     // const navigate = useNavigate();
 
-    //조회수 post 해서 1씩 올리는 방식 구현 요청
+
+
     function ItemProduct (){
         console.log(itemId)
-        axios.get("/items/" + itemId)
+        axios.get("/items/" + itemId , {headers: {
+                Authorization: 'Bearer ' + sessionStorage.getItem("token")
+            }})
+
             .then((response) => {
                 if (response.status >= 200 && response.status <= 204) {
                     setProductDetailsView(response.data.data.item)
@@ -77,13 +190,17 @@ function ProductViewDetailsPage () {
                     setProductBasket(response.data.data.basketCount)
                     setProductThumbnail(response.data.data.item.photos[0].itemPhoto)
                     setProductOwnerInfo(response.data.data.ownerInfo)
+                    setIsLike(response.data.data.isLike)
+
 
 
                     console.log(response.data.data);
-                    console.log(response.data.data.item);
-                    console.log(response.data.data.ownerInfo);
-                    console.log(productBasket);
-                    console.log(productPicture);
+                    // console.log(response.data.data.item);
+                    // console.log(response.data.data.ownerInfo);
+                    // console.log(productBasket);
+                    // console.log(productPicture);
+                    // console.log(isLike);
+
 
 
                 }
@@ -92,44 +209,46 @@ function ProductViewDetailsPage () {
                 console.log("fail");
             })
     }
-    useEffect(() => {
-
-        ItemProduct();
-
-    }, []);
 
 
 
 
 
-    const addBasket = (itemId) => {
+
+    const addBasket = (itemId,isLike) => {
         axios.post("http://localhost:8080/baskets?itemId="+itemId,
             {},{headers: {
-                    Authorization: 'Bearer ' + localStorage.getItem("token")
+                    Authorization: 'Bearer ' + sessionStorage.getItem("token")
                 }}
 
 
         ).then(response => {
             console.log("찜하기 등록 성공")
+            setIsLike(true)
+            setProductBasket(productBasket+1)
 
         })
             .catch(error => {
                 console.log(error.response);
+                alert("로그인 후 가능합니다!")
 
             })
     }
 
 
-    const delBasket = (itemId) => {
+    const delBasket = (itemId,isLike) => {
 
         axios.delete("http://localhost:8080/baskets?itemId="+itemId,
             {headers: {
-                    Authorization: 'Bearer ' + localStorage.getItem("token")
+                    Authorization: 'Bearer ' + sessionStorage.getItem("token")
                 }}
 
 
         ).then(response => {
             console.log("찜하기 삭제 성공")
+            setIsLike(false)
+            setProductBasket(productBasket-1)
+
         })
             .catch(error => {
                 console.log(error.response);
@@ -137,33 +256,83 @@ function ProductViewDetailsPage () {
             })
     }
 
-    const onClickBasket = () => {
-        if (onClickBasketButton == false) {
-            addBasket(itemId);
-            setOnClickBasketButton(true);
 
-        }
-        else {
-            delBasket(itemId);
-            setOnClickBasketButton(false);
+    //제품 리뷰
+    const productReviewAxios = () => {       //수정부분
+        axios.get("/items/"+itemId+"/review?page=0")
+            .then((response) => {
+                if (response.status >= 200 && response.status <= 204) {
+                    setProductReview(response.data.data.content);
+                }
+            })
+            .catch(res => {
+                console.log("fail");
+            })
+    }     //수정부분
 
-        }
-    }
+    //판매자 리뷰
+    const userReviewAxios = () => {        //수정부분
+        axios.get("/items/"+itemId+"/review?page=0")       //수정부분
+            .then((response) => {
+                if (response.status >= 200 && response.status <= 204) {
+                    setUserReview(response.data.data.content);
+                }
+            })
+            .catch(res => {
+                console.log("fail");
+            })
+    }     //수정부분
+
+    //판매자 물품 보기
+
+    const userProductList = () => {                            //252줄부터 299줄까지 추가
+        // console.log(productDetailsView.ownerId);
+        axios.get("/items/owner/"+productDetailsView.ownerId+'?page='+page)
+            .then((response) => {
+                if (response.status >= 200 && response.status <= 204) {
+                    setUserProduct(response.data.data.content);
+                    setLast(response.data.data.last);
+                    console.log(response.data.data);
+                    console.log(last)
+                    console.log(userProductDetails);
+                    console.log(page);
+                }
+            })
+            .catch(res => {
+                console.log("fail");
+            })};
+
+    const userProductListAdd = () => {
+        console.log(productDetailsView.ownerId);
+        axios.get("/items/owner/"+productDetailsView.ownerId+'?page='+page )
+            .then((response) => {
+                if (response.status >= 200 && response.status <= 204) {
+                    setUserProduct(userProduct.concat(response.data.data.content));
+                    setLast(response.data.data.last);
+                    console.log(response.data.data);
+                    console.log(last)
+                    console.log(userProductDetails);
+                    console.log(page);
+                }
+            })
+            .catch(res => {
+                console.log("fail");
+            })};
 
 
-    // useEffect(() => {
-    //     axios.get("/items/"+ 8 +"/review")
-    //         .then((response) => {
-    //             if (response.status >= 200 && response.status <= 204) {
-    //                 console.log(response.data.data);
-    //
-    //
-    //             }
-    //         })
-    //         .catch(res => {
-    //             console.log("fail");
-    //         })
-    // }, []);
+
+    useEffect(() => {
+        ItemProduct();
+        userReviewAxios();
+        productReviewAxios();
+
+    }, [itemId]);
+
+    useEffect(() => {
+        if (productDetailsView.ownerId != "")
+        {userProductListAdd();}
+    }, [page]);
+
 
 
 
@@ -173,12 +342,32 @@ function ProductViewDetailsPage () {
     //날짜 변환
     function format(date) {
         return date.getFullYear() + "년 "
-            + date.getMonth() + "월 "
+            + (date.getMonth()+1) + "월 "               //수정부분
             + date.getDate() + "일 "
     }
 
 
-    return (
+
+    //대여 상태 변환
+    const contractStatusFormat = () => {
+        if (productDetailsView.contractStatus === "RENTAL") {
+            return  "대여중";
+        }
+        else if (productDetailsView.contractStatus === "RESERVATION"){
+            return "예약중" ;
+
+        }
+
+        else {
+            return "대여가능" ;
+
+        }
+
+
+    }
+
+
+    return (        //334줄부터 396줄까지 수정사항
         <div>
 
             <header>
@@ -194,64 +383,118 @@ function ProductViewDetailsPage () {
                 <Divider></Divider>
 
                 <Image
-                    preview={{ visible: false }}
-                    width={620} height={400}
-                    src= {productThumbnail}
+                    className="ImageGroup"
+                    preview={{visible: false}}
+                    src={productThumbnail}
                     onClick={() => setVisible(true)}
                 />
-                <div style={{ display: 'none' }}>
-                    <Image.PreviewGroup preview={{ visible, onVisibleChange: vis => setVisible(vis) }}>
+                <div style={{display: 'none'}}>
+                    <Image.PreviewGroup preview={{visible, onVisibleChange: vis => setVisible(vis)}}>
                         {productPicture.map(picture => {
-                            return (
-                                <Image src= {picture.itemPhoto}/>
-                            ) }
+                                return (
+                                    <Image src={picture.itemPhoto}/>
+                                )
+                            }
                         )}
                     </Image.PreviewGroup>
                 </div>
 
                 <Divider></Divider>
+
                 <p>물품 내용 : </p>
                 <p>{productDetailsView.itemContent}</p>
                 <Divider></Divider>
-                <p>등록 날짜 : {format(new Date(productDetailsView.createDate))}</p>
+                <p>등록 날짜 : {format(new Date(productDetailsView.create_date))}</p>
                 <p>품질 : {productDetailsView.itemQuality}</p>
-                <p>대여 상태 : {productDetailsView.contractStatus}</p>
+                <p>대여 상태 : {contractStatusFormat("")}</p>
                 <p>대여 금액 : {productDetailsView.price}원</p>
                 <p>보증금 금액 : {productDetailsView.deposit}원</p>
                 <p>거래 지역 : {productDetailsView.itemAddress}</p>
                 <p>찜한 수 : {productBasket}회</p>
-
-
-                <Card className="productBasketCard"
-                      hoverable
-                      onClick={onClickBasket}>
+                <Card className="productBasketCard">
                     해당 물품 찜하기
                     &nbsp;
-                    {onClickBasketButton ?
-                        <HeartFilled/>:
-                        <HeartOutlined/>
-
-
-
-                    }
+                    {isLike ?
+                        <HeartFilled className="heartFilledButton"
+                                     onClick={ () => {onClickBasketButton()}} /> :
+                        <HeartOutlined className="heartOutButton"
+                                       onClick={ () => {onClickBasketButton()}} />}
 
 
                 </Card>
 
 
-
                 <Card
-                    className="ownerInfoCard"
-                    actions={[<HeartOutlined/>]}>
+                    className="ownerInfoCard">
                     <Meta
                         avatar={<Avatar src="https://joeschmoe.io/api/v1/random"/>}
                         title={productOwnerInfo.nickname}
                         description={trustPoint + productOwnerInfo.trustPoint}
                     />
 
-                    <Button className="chattingButton">
+                    <Button className="chattingButton"        //399줄부터 471줄까지 수정사항
+                            onClick={ () => {onClickChatButton(itemId)}}>
                         채팅하기
                     </Button>
+                    <Button  className="userReviewModal" onClick={showModal}>
+                        판매자 리뷰 보기
+                    </Button>
+                    <Modal title= {"<"+productOwnerInfo.nickname + "님에 대한 리뷰>"}
+                           visible={isReviewModalVisible}
+                           onOk={handleOk}
+                           onCancel={handleCancel}
+                           footer={[
+                               <Button onClick={handleOk}>
+                                   닫기
+                               </Button> ]}>
+                        {userReview.map(review => {
+                                return (
+                                    <Card className="reviewCardChild" title={review.reviewTitle}>
+                                        <Rate className="rate" disabled defaultValue={review.reviewScore} />
+                                        <p className="reviewContent">{review.reviewContent}</p>
+                                        <p>리뷰 작성자 : {review.writer}</p>
+                                        <p>작성일자 : {format(new Date(review.createDate))}</p>
+                                    </Card>
+
+
+                                )
+                            }
+                        )}
+                    </Modal>
+
+                    <Button  className="userProductModal" onClick={ () => {showProductModal()
+                    }}>
+                        판매 물품 보기
+                    </Button>
+                    <Modal
+                        title= {"<"+productOwnerInfo.nickname + "님이 판매중인 물품>"}
+                        visible={isProductModalVisible}
+                        onOk={handleProductOk}
+                        onCancel={handleProductCancel}
+                        footer={[
+                            <Button onClick={handleProductOk}>
+                                닫기
+                            </Button> ]}>
+                        {userProduct.map(product => {
+                                return (
+                                    <Card className="userProductCardChild"
+                                          title={product.itemTitle}
+                                          hoverable
+                                          onClick={ () => {toProductViewDetailsPage(product.itemId) }}>
+                                        <img className="productImage" src={product.itemPhoto}/>
+                                        <p className="createDate">작성일자 : {format(new Date(product.createDate))}</p>
+
+                                    </Card>
+                                )
+                            }
+                        )}
+
+                        {last === true?
+                            <Button disabled>더보기</Button>:
+                            <Button onClick={increasePage}>더보기</Button>
+                        }
+
+                    </Modal>
 
                 </Card>
 
@@ -262,9 +505,25 @@ function ProductViewDetailsPage () {
 
                     className="productReviews"
                 >
-                    <p> 제품 리뷰 제목: </p>
-                    <p> 제품 리뷰 내용: </p>
+                    <Card
+                        className="reviewCard"              //473줄부터 482줄까지 수정사항
+                        title="<제품 리뷰>">
+                        {productReview.map(review => {
+                                return (
+                                    <Card className="reviewCardChild" title={review.reviewTitle}>
+                                        <Rate className="rate" disabled defaultValue={review.reviewScore} />
+                                        <p className="reviewContent">{review.reviewContent}</p>
+                                        <p>리뷰 작성자 : {review.writer}</p>
+                                        <p>작성일자 : {format(new Date(review.createDate))}</p>
+                                    </Card>
 
+
+                                )              //수정부분
+                            }              //수정부분
+                        )}
+
+
+                    </Card>
                 </Form.Item>
 
 
@@ -281,4 +540,3 @@ function ProductViewDetailsPage () {
 
 
 export default ProductViewDetailsPage;
-
