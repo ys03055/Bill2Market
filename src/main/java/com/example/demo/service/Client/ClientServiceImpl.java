@@ -9,6 +9,7 @@ import com.example.demo.model.client.Role;
 import com.example.demo.model.client.SnsType;
 import com.example.demo.model.item.Item;
 import com.example.demo.model.response.CommonResult;
+import com.example.demo.model.review.ItemReviewResponseDTO;
 import com.example.demo.model.review.ReviewResponseDTO;
 import com.example.demo.repository.ClientRepository;
 import com.example.demo.repository.ItemRepository;
@@ -96,7 +97,12 @@ public class ClientServiceImpl implements ClientService{
         Item item = itemRepository.findById(itemId).orElseThrow(ItemNotFoundException::new);
         return reviewRepository.findSliceByClientIndex(item.getOwnerId(), PageRequest.of(page,10));
     }
-
+    
+    @Override
+    public Slice<ItemReviewResponseDTO> getItemReviewByOwnerIndex(Integer clientIndex, Integer page){
+        return reviewRepository.findSliceAllByClientIndex(clientIndex, PageRequest.of(page,10));
+    }
+    
     @Override
     public Client findById(Integer clientIndex) {
         Client client = clientRepository.findById(clientIndex).orElseThrow(ClientNotFoundException::new);
