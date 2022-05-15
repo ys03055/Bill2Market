@@ -19,7 +19,7 @@ import java.time.LocalDate;
 @Entity(name="Chat")
 @NamedNativeQuery(
         name = "chatList",
-        query = "SELECT Chat.item_id, Chat.chat_id, Chat.file_name, Client.nickname, " +
+        query = "SELECT Chat.item_id,  Chat.chat_id, Chat.file_name, Client.nickname, " +
                 "CASE WHEN Chat.owner_index = :client_index THEN Chat.lenter_index " +
                 "ELSE Chat.owner_index END as opponentIndex " +
                 "FROM Chat " +

@@ -12,5 +12,4 @@ public class ChatListResponseDTO {
     private Integer opponentIndex;
     private String fileName ;
     private String nickname;
-
 }
