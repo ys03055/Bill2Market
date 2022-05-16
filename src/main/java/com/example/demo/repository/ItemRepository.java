@@ -1,5 +1,6 @@
 package com.example.demo.repository;
 
+
 import com.example.demo.model.item.*;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -24,4 +25,7 @@ public interface ItemRepository extends JpaRepository<Item, Integer> {
     @Modifying
     @Query(value = "update Item set views = views + 1 where itemId = :itemId")
     public void updateViews(@Param("itemId")Integer itemId);
+
+    @Query(name = "ItemsMeByClientIndex", nativeQuery = true)
+    public Slice<ItemMeListResponseDTO> findItemsMeByClientIndex(@Param("client_index") Integer clientIndex, Pageable page);
 }

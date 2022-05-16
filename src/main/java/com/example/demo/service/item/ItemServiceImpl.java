@@ -146,6 +146,10 @@ public class ItemServiceImpl implements ItemService{
     }
 
     @Override
+    public Slice<ItemMeListResponseDTO> findItemsMe(Integer clientIndex, Integer page) {
+
+        return itemRepository.findItemsMeByClientIndex(clientIndex, PageRequest.of(page,10));
+    }
     public Slice<ItemOwnerResponseDTO> findItemListByClientIndex(Integer clientIndex, Pageable pageable) {
 
         return itemRepository.findByOwnerId(clientIndex, pageable);
