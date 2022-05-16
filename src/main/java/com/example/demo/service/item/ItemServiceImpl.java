@@ -150,4 +150,8 @@ public class ItemServiceImpl implements ItemService{
 
         return itemRepository.findItemsMeByClientIndex(clientIndex, PageRequest.of(page,10));
     }
+    public Slice<ItemOwnerResponseDTO> findItemListByClientIndex(Integer clientIndex, Pageable pageable) {
+
+        return itemRepository.findByOwnerId(clientIndex, pageable);
+    }
 }

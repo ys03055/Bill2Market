@@ -1,13 +1,19 @@
 import { combineReducers } from 'redux'
-import searchCategoryReducer from './reducers/searchCategory.js'
-import LocationReducer from "./reducers/latitude";
+import searchTextReducer from './reducers/searchText.js'
+import searchCategoryReducer from "./reducers/searchCategory";
 import LatitudeReducer from "./reducers/latitude";
 import LongitudeReducer from "./reducers/longitude";
+import allCategoryReducer from "./reducers/allCategory";
+import nickNameReducer from "./reducers/nickName";
 
 const rootReducer = combineReducers({
-	value: searchCategoryReducer,
-	latitude: LatitudeReducer,
-	longitude: LongitudeReducer
+    searchText: searchTextReducer,
+    allCate : allCategoryReducer,
+    value: searchCategoryReducer,
+    latitude: LatitudeReducer,
+    longitude: LongitudeReducer,
+    nickName: nickNameReducer
+
 })
 
 export default rootReducer

@@ -35,8 +35,8 @@ public class StompHandler implements ChannelInterceptor {
 
         }
         else if (StompCommand.UNSUBSCRIBE == accessor.getCommand()){
-            Authentication auth = jwtTokenProvider.getAuthentication(token);
             String[] chatIdAndToken = accessor.getFirstNativeHeader("id").split("/");
+            Authentication auth = jwtTokenProvider.getAuthentication(chatIdAndToken[1]);
             messageService.unSubscribe(message, auth.getName(), chatIdAndToken);
         }
         return message;

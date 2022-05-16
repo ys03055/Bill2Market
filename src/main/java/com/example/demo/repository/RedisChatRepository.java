@@ -46,7 +46,8 @@ public class RedisChatRepository {
             if(userCount == 0){ // 혼자 있었을 경우
                 valueOps.set(LAST_USER + "_" + chatId, clientIndex);
             }else if(userCount == 1){ // 둘이 있었을 경우
-                valueOps.set(LAST_USER + "_" + chatId, hashOpsUserInfo.values(USER_COUNT + "_" + chatId).get(0));
+                System.out.println(hashOpsUserInfo.values(USER_COUNT + "_" + chatId).get(0));
+                valueOps.set(LAST_USER + "_" + chatId, (String)hashOpsUserInfo.keys(USER_COUNT + "_" + chatId).stream().toArray()[0]);
             }
         }catch (Exception e){
             log.error(e.getMessage());

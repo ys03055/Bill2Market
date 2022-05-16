@@ -5,8 +5,9 @@ import SignUpPage from "./signUp/signUp";
 import SnsSignUpPage from "./signUp/snsSignUp";
 import WritePage from "./write/write";
 import ProductViewDetailsPage from "./productViewDetails/productViewDetails";
-import ChatPage from "./chat/chat";
+import SearchPage from "./search/search";
 import CategorySearchPage from "./categorySearch/categorySearch";
+import MyPage from "./myPage/myPage";
 
 function Routers() {
     return (
@@ -19,8 +20,9 @@ function Routers() {
                     <Route path = "/signUp" element={<SignUpPage />} />
                     <Route path = "/write" element={<WritePage />} />
                     <Route path = "/productViewDetails" element={<ProductViewDetailsPage />} />
-                    <Route path = "/chat" element={<ChatPage />} />
                     <Route path = "/categorySearch" element={<CategorySearchPage />} />
+                    <Route path = "/search" element={<SearchPage />} />
+                    <Route path = "/MyPage" element={<MyPage />} />
                 </Routes>
             </BrowserRouter>
         </div>

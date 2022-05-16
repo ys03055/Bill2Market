@@ -8,7 +8,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 
 public interface ItemService {
     public Slice<SimpleItem> findItemList(ItemSearchRequestDTO itemSearchRequestDTO, Integer clientIndex);
@@ -18,5 +17,5 @@ public interface ItemService {
     public Slice<SimpleItem> findByCategory(Integer clientIndex, ItemSearchRequestDTO itemSearchRequestDTO);
     public Slice<SimpleItem> findItemByQuery(ItemSearchRequestDTO itemSearchRequestDTO, Integer clientIndex);
     public Slice<ItemMeListResponseDTO> findItemsMe(Integer clientIndex, Integer page);
-
+    public Slice<ItemOwnerResponseDTO> findItemListByClientIndex(Integer clientIndex, Pageable pageable);
 }
