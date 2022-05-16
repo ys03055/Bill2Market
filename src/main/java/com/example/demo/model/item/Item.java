@@ -39,6 +39,7 @@ import java.util.List;
                         "ORDER BY Item.contract_status, Item.create_date DESC ",
                 resultSetMapping = "ItemMeListResponseDTOMapping"
         ),
+        @NamedNativeQuery(
                 name = "ItemOwnerByOwnerId",
                 query = "SELECT owner_id, item_title, price, deposit, item_address, contract_status, create_date, is_main, item_photo, Item.item_id " +
                         "FROM Item " +
