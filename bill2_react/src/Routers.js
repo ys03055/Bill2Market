@@ -8,6 +8,7 @@ import ProductViewDetailsPage from "./productViewDetails/productViewDetails";
 import SearchPage from "./search/search";
 import CategorySearchPage from "./categorySearch/categorySearch";
 import MyPage from "./myPage/myPage";
+import ChatPage from "./chat/chat";
 
 function Routers() {
     return (
@@ -23,6 +24,7 @@ function Routers() {
                     <Route path = "/categorySearch" element={<CategorySearchPage />} />
                     <Route path = "/search" element={<SearchPage />} />
                     <Route path = "/MyPage" element={<MyPage />} />
+                    <Route path = "/chat" element={<ChatPage />} />
                 </Routes>
             </BrowserRouter>
         </div>
