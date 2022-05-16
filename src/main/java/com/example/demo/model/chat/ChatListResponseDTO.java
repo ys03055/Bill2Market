@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 public class ChatListResponseDTO {
 
-    private Integer itemId;
+    private Integer itemId; //itemId추가
     private Integer chatId;
     private Integer opponentIndex;
     private String fileName ;
