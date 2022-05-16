@@ -17,6 +17,7 @@ function CategorySearchPage()  {
     let [page, setPage] = useState(0);
     const [last, setLast] = useState(false);
     const [categoryitemList, setCategoryitemList] = useState([]);
+    const [categoryitemMap, setCategoryItemMap] = useState(new Map());
 
     //더보기시 page값 늘려주는 함수
     const increasePage = () => {
@@ -26,11 +27,14 @@ function CategorySearchPage()  {
 
     useEffect(() => {
 
-        onCategory(latitude, longitude)
+        addCategory(latitude, longitude)
     }, [value,orderType]);
+    useEffect(() => {
+        setCategoryitemList([...categoryitemMap.values()])
 
+    },[categoryitemMap])
     //onchange 시에 물품 부르는 함수
-    const onCategory = (latitude, longitude) => {
+    const onCategory = (latitude, longitude, index) => {
 
         let url = 'http://localhost:8080/items/search-category?categoryBig='+value[0]
 
@@ -40,7 +44,7 @@ function CategorySearchPage()  {
         if(value[2] != undefined && value[2].charAt(2)!='0'){
             url+='&categorySmall='+value[2]
         }
-        url+='&latitude='+latitude+'&longitude='+longitude+'&orderType='+orderType+'&page=0'
+        url+='&latitude='+latitude+'&longitude='+longitude+'&orderType='+orderType+'&page='+index
         axios.get( url,
             {headers: {
                     Authorization: 'Bearer ' + sessionStorage.getItem("token")
@@ -50,7 +54,7 @@ function CategorySearchPage()  {
             .then((response) => {
                 if (response.status >= 200 && response.status <= 204) {
 
-                    setCategoryitemList(response.data.data.content);
+                    setCategoryItemMap((prev)=>new Map(prev).set(index,response.data.data.content))
                     setLast(response.data.data.last);
 
 
@@ -82,7 +86,7 @@ function CategorySearchPage()  {
             .then((response) => {
                 if (response.status >= 200 && response.status <= 204) {
 
-                    setCategoryitemList(categoryitemList.concat(response.data.data.content));
+                    setCategoryItemMap((prev)=>new Map([...prev,[page,response.data.data.content]]))
                     setLast(response.data.data.last);
 
 
@@ -95,20 +99,20 @@ function CategorySearchPage()  {
     };
 
     //찜하기
-    const addBasket2 = (itemId,isLike) => { //찜하기가 안된상태에서 찜하기를 눌렀을때
+    const addBasket2 = (itemId,index) => { //찜하기가 안된상태에서 찜하기를 눌렀을때
 
         axios.post("http://localhost:8080/baskets?itemId="+itemId,
             {},{headers: {
                     Authorization: 'Bearer ' + sessionStorage.getItem("token")
                 }}
         ).then(response => {
-            onCategory(latitude, longitude);
+            onCategory(latitude, longitude, index);
         })
             .catch(error => {
                 console.log(error.response);
             })
     }
-    const delBasket2 = (itemId,isLike) => { //찜하기가 안된상태에서 찜하기를 눌렀을때
+    const delBasket2 = (itemId,index) => { //찜하기가 안된상태에서 찜하기를 눌렀을때
 
         axios.delete("http://localhost:8080/baskets?itemId="+itemId,
             {headers: {
@@ -116,7 +120,7 @@ function CategorySearchPage()  {
                 }}
         ).then(response => {
 
-            onCategory(latitude, longitude);
+            onCategory(latitude, longitude, index);
         })
             .catch(error => {
 
@@ -127,7 +131,7 @@ function CategorySearchPage()  {
     //날짜 포맷
     function format  (date) {
 
-        return date.getFullYear() + "년 " + date.getMonth() + "월 " + date.getDate() + "일 " + date.getHours() + "시" ;
+        return date.getFullYear() + "년 " + (("00"+(date.getMonth() + 1))).slice(-2) + "월 " + (("00"+date.getDate()).slice(-2)) + "일 " + date.getHours() + "시" ;
 
     }
     //거리순, 고가순, 저가순, 최신순 버튼함수
@@ -158,7 +162,7 @@ function CategorySearchPage()  {
         setPage(0)
 
     }
-
+    console.log(categoryitemList)
     return (
 
         <Fragment>
@@ -194,10 +198,12 @@ function CategorySearchPage()  {
                     </div>
                     <Row  gutter={24}>
 
-                        {categoryitemList.map(categoryitem => {
+                        {categoryitemList.map((list,index) => {
 
 
                             return (
+                                   list.map((categoryitem)=>{
+                                       return(
 
                                 <Col span={4.5} className="col">
                                     <Card  hoverable
@@ -206,15 +212,15 @@ function CategorySearchPage()  {
 
                                         {categoryitem.isLike?
 
-                                            <HeartFilled onClick ={()=>{delBasket2(categoryitem.itemId,categoryitem.isLike)
+                                            <HeartFilled onClick ={()=>{delBasket2(categoryitem.itemId,index)
                                             }}></HeartFilled>:
-                                            <HeartOutlined onClick ={()=>addBasket2(categoryitem.itemId,categoryitem.isLike)}></HeartOutlined>
+                                            <HeartOutlined onClick ={()=>addBasket2(categoryitem.itemId,index)}></HeartOutlined>
                                         }
 
                                         <span> <h2 className="title"> 제목: {categoryitem.itemTitle}</h2>
-                                            {categoryitem.contractStatus === "GENERAL" ?
+                                            {categoryitem.contractStatus === "0" ?
                                                 <p ></p>:
-                                                categoryitem.contractStatus === "RENTAL" ?
+                                                categoryitem.contractStatus === "2" ?
                                                     <p className="rental">대여중</p>:
                                                     <p className="reservation">예약중</p>}</span>
                                         <p>게시일: {format(new Date(categoryitem.createDate))}</p>
@@ -230,7 +236,7 @@ function CategorySearchPage()  {
                                     </Card>
                                 </Col>
                             )
-                        })}
+                                   }))})}
                     </Row>
 
                 </div>

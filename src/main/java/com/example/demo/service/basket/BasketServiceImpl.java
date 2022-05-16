@@ -4,10 +4,13 @@ import com.example.demo.exception.basket.BasketNotFoundException;
 import com.example.demo.exception.basket.DuplicateBasketException;
 import com.example.demo.exception.item.ItemNotFoundException;
 import com.example.demo.model.basket.Basket;
+import com.example.demo.model.basket.BasketMyListResponseDTO;
 import com.example.demo.model.basket.BasketPK;
 import com.example.demo.repository.BasketRepository;
 import com.example.demo.repository.ItemRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
@@ -34,6 +37,12 @@ public class BasketServiceImpl implements BasketService{
     public void deleteBasket(int clientIndex, int itemId) {
         basketRepository.delete(basketRepository.findById(new BasketPK(clientIndex, itemId))
                 .orElseThrow(BasketNotFoundException::new));
+    }
+
+    @Override
+    public Slice<BasketMyListResponseDTO> findMyBasketList(Integer ownerId, Integer page) {
+
+        return basketRepository.findBasketListByClientIndex(ownerId, PageRequest.of(page, 10));
     }
 
 }

@@ -145,4 +145,9 @@ public class ItemServiceImpl implements ItemService{
         return new SliceImpl<>(content, pageable, hasNext);
     }
 
+    @Override
+    public Slice<ItemOwnerResponseDTO> findItemListByClientIndex(Integer clientIndex, Pageable pageable) {
+
+        return itemRepository.findByOwnerId(clientIndex, pageable);
+    }
 }

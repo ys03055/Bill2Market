@@ -12,4 +12,6 @@ public interface ContractService {
     public Contract modifyContract(Integer contractId, Integer contractStatus);
     public Contract modifyContract(Integer contractId, String endDate);
     public Slice<ContractIBorrowedResponseDTO> findBorrowedItemList(Integer clientIndex, Integer page);
+    public void scheduleContractOneDayBeforeExpireDate();
+    public void scheduleContractExpireDate();
 }

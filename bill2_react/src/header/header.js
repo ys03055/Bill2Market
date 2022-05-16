@@ -4,6 +4,9 @@ import {NavLink, Link} from "react-router-dom";
 import {Cascader} from "antd";
 import axios from "axios";
 import CategoryPage from "../categorySearch/category";
+import SearchBar from "../search/searchBar";
+import MyPage from "../myPage/myPage";
+import {useDispatch, useSelector} from "react-redux";
 
 
 function HeaderPage()  {
@@ -11,7 +14,8 @@ function HeaderPage()  {
 
 
     const [logged, setLogged] = useState(false); //현재 로그 상태에 따라서 로그인상태인지 아웃상태인지 판단
-    const [nickName, setNickName] = useState('');
+    const dispatch = useDispatch();
+    const nickName = useSelector(state => state.nickName);
 
     // const onChange = (value) => {
     //     console.log(value);
@@ -49,7 +53,7 @@ function HeaderPage()  {
             }
         }).then(response => {
             sessionStorage.setItem('nickName', response.data.data.nickname)
-            setNickName(sessionStorage.getItem('nickName'))
+            dispatch({type: "NICKNAME", payload: sessionStorage.getItem('nickName')})
         })
             .catch(error => {
                 console.log(error.response.data);
@@ -95,8 +99,13 @@ function HeaderPage()  {
                     <Link to='/' onClick={onLogout} className="link_text">로그아웃</Link>
                 }
 
+                {logged === false ?
+                    <Link to='/' onClick={isLogin} className="link_text">마이페이지</Link>
+                    :
+                    <Link to='/MyPage' onClick={isLogin} className="link_text">마이페이지</Link>
+                }
                 {/*???님 환영합니다.*/}
-                <Link to='/' onClick={isLogin} className="link_text">마이페이지</Link>
+
             </div>
 
             <div className="links_button">
@@ -134,17 +143,9 @@ function HeaderPage()  {
             
 
             {/* 검색창 껍데기 */}
-            <form>
-                <fieldset>
-                  <legend className="visually-hidden"/>
-                  <div className="search_box">
-                    <input type="text" maxLength="225" tabIndex="1" />
-                    <button type="submit" tabIndex="2">
-                      검색
-                    </button>
-                  </div>
-                </fieldset>
-            </form>
+            <div className='SearchBar'>
+                <SearchBar />
+            </div>
 
                {/* 카테고리 껍데기  */}
               <nav>

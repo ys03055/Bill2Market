@@ -9,6 +9,10 @@ import com.example.demo.service.item.ItemService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -39,6 +43,13 @@ public class ItemController {
     public CommonResult itemDetail(@PathVariable("item-id") Integer itemId){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         return responseService.getSingleResult(itemService.findItemOne(itemId, (!auth.getName().equals("anonymousUser"))? Integer.parseInt(auth.getName()) : -1000));
+    }
+
+    @ApiOperation(value = "사용자 판매 목록 조회", notes = "판매자가 판매한 목록들을 조회한다.")
+    @GetMapping("/owner/{client-index}")
+    public CommonResult ownerItemDetail(@PathVariable("client-index") Integer clientIndex,
+                                        @RequestParam Integer page){
+        return responseService.getSingleResult(itemService.findItemListByClientIndex(clientIndex, PageRequest.of(page,10)));
     }
 
     @ApiOperation(value = "물품 리뷰 조회", notes = "해당 물품의 리뷰를 조회한다.")
