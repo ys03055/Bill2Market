@@ -18,7 +18,7 @@ import java.time.LocalDate;
 @Builder
 @Entity(name="Chat")
 @NamedNativeQuery(
-        name = "chatList", //itemId 추가
+        name = "chatList", //itemId추가
         query = "SELECT Chat.item_id,  Chat.chat_id, Chat.file_name, Client.nickname, " +
                 "CASE WHEN Chat.owner_index = :client_index THEN Chat.lenter_index " +
                 "ELSE Chat.owner_index END as opponentIndex " +
