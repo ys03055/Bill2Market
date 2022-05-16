@@ -31,6 +31,15 @@ import java.util.List;
                 resultSetMapping = "SimpleItemMapping"
         ),
         @NamedNativeQuery(
+                name = "ItemsMeByClientIndex",
+                query = "SELECT Item.item_id, Item.item_title, Item.price, Item.deposit, Item.item_address, Item.contract_status , Item.create_date, Item_Photo.is_main, Item_Photo.item_photo " +
+                        "FROM Item LEFT JOIN Item_Photo " +
+                        "ON Item.item_id = Item_Photo.item_id " +
+                        "WHERE Item.owner_id = :client_index AND Item_Photo.is_main = 1 " +
+                        "ORDER BY Item.contract_status, Item.create_date DESC ",
+                resultSetMapping = "ItemMeListResponseDTOMapping"
+        ),
+        @NamedNativeQuery(
                 name = "ItemOwnerByOwnerId",
                 query = "SELECT owner_id, item_title, price, deposit, item_address, contract_status, create_date, is_main, item_photo, Item.item_id " +
                         "FROM Item " +
@@ -72,6 +81,23 @@ import java.util.List;
         )
 )
 @SqlResultSetMapping(
+        name = "ItemMeListResponseDTOMapping",
+        classes = @ConstructorResult(
+                targetClass = ItemMeListResponseDTO.class,
+                columns = {
+                        @ColumnResult(name = "item_id", type = Integer.class),
+                        @ColumnResult(name = "item_title", type = String.class),
+                        @ColumnResult(name = "price", type = Integer.class),
+                        @ColumnResult(name = "deposit", type = Integer.class),
+                        @ColumnResult(name = "item_address", type = String.class),
+                        @ColumnResult(name = "contract_status", type = String.class),
+                        @ColumnResult(name = "create_date", type = LocalDate.class),
+                        @ColumnResult(name = "item_photo", type = String.class),
+                        @ColumnResult(name = "is_main", type = Boolean.class)
+                }
+        )
+)
+@SqlResultSetMapping(
         name = "ItemOwnerDTOMapping",
         classes = @ConstructorResult(
                 targetClass = ItemOwnerResponseDTO.class,
@@ -99,11 +125,10 @@ import java.util.List;
                         @ColumnResult(name = "price", type = Integer.class),
                         @ColumnResult(name = "deposit", type = Integer.class),
                         @ColumnResult(name = "item_address", type = String.class),
-                        @ColumnResult(name = "item_photo", type = String.class),
                         @ColumnResult(name = "contract_status", type = String.class),
                         @ColumnResult(name = "create_date", type = LocalDate.class),
-                        @ColumnResult(name = "is_main", type = Boolean.class),
-
+                        @ColumnResult(name = "item_photo", type = String.class),
+                        @ColumnResult(name = "is_main", type = Boolean.class)
                 }
         )
 )

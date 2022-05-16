@@ -12,6 +12,31 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Builder
 @Entity(name="Contract")
+@NamedNativeQuery(
+        name = "ContractIBorrowedByClientIndex",
+        query="SELECT Item.item_id, Item.item_title, Item.price, Item.deposit, Item.item_address, Item_Photo.item_photo, Contract.contract_status, Contract.start_date " +
+                "FROM Contract LEFT JOIN Chat ON Contract.chat_id=Chat.chat_id LEFT JOIN Item ON Chat.item_id = Item.item_id LEFT JOIN Item_Photo ON Item.item_id = Item_Photo.item_id " +
+                "WHERE Chat.lenter_index = :client_index AND is_main=1 " +
+                "ORDER BY Contract.contract_status,Contract.start_date DESC ",
+        resultSetMapping = "ItemIBorrowedMapping"
+
+)
+@SqlResultSetMapping(
+        name = "ItemIBorrowedMapping",
+        classes = @ConstructorResult(
+                targetClass = ContractIBorrowedResponseDTO.class,
+                columns = {
+                        @ColumnResult(name = "item_id", type = Integer.class),
+                        @ColumnResult(name = "item_title", type = String.class),
+                        @ColumnResult(name = "price", type = Integer.class),
+                        @ColumnResult(name = "deposit", type = Integer.class),
+                        @ColumnResult(name = "item_address", type = String.class),
+                        @ColumnResult(name = "item_photo", type = String.class),
+                        @ColumnResult(name = "contract_status", type = String.class),
+                        @ColumnResult(name = "start_date", type = LocalDate.class)
+                }
+        ))
+
 public class Contract {
     @Id
     @Column(name = "contract_id")
