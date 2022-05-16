@@ -84,4 +84,11 @@ public class ContractController {
         return responseService.getSuccessfulResult();
     }
 
+    @ApiOperation(value = "빌린 물품 조회", notes = "내가 계약한(빌린) 물품들을 조회한다.")
+    @GetMapping("/me")
+    public CommonResult myItemBorrowedList(Integer page){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        return responseService.getSingleResult(contractService.findBorrowedItemList(Integer.parseInt(auth.getName()), page));
+    }
+
 }
