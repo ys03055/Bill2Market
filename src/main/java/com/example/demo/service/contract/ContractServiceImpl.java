@@ -3,17 +3,17 @@ package com.example.demo.service.contract;
 import com.example.demo.exception.chat.ChatNotFoundException;
 import com.example.demo.exception.contract.ContractNotFoundException;
 import com.example.demo.model.chat.Chat;
+import com.example.demo.model.contract.*;
 import com.example.demo.model.chat.ChatMessage;
 import com.example.demo.model.chat.MessageType;
-import com.example.demo.model.contract.Contract;
-import com.example.demo.model.contract.ContractRequestDTO;
-import com.example.demo.model.contract.ContractScheduleDTO;
-import com.example.demo.model.contract.ContractType;
 import com.example.demo.repository.ChatRepository;
 import com.example.demo.repository.ContractRepository;
 import com.example.demo.repository.ContractRepositoryCustom;
 import com.example.demo.service.chat.MessageService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -63,6 +63,12 @@ public class ContractServiceImpl implements ContractService{
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         contract.setEndDate(LocalDate.parse(endDate, formatter));
         return contractRepository.save(contract);
+    }
+
+    @Override
+    public Slice<ContractIBorrowedResponseDTO> findBorrowedItemList(Integer clientIndex, Integer page) {
+
+        return contractRepository.findContractsByClientIndex(clientIndex, PageRequest.of(page, 10));
     }
 
     @Async

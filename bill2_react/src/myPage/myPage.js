@@ -6,6 +6,7 @@ import axios from "axios";
 import MyLendListPage from "./myLendList";
 import MyBorrowListPage from "./myBorrowList";
 import MyBasketListPage from "./myBasketList";
+import MyItemReview from "./myItemReview";
 
 function MyPage () {
     const dispatch = useDispatch();
@@ -105,7 +106,7 @@ function MyPage () {
                 <li className="tabTitle" onClick={()=>tabHandler(3)}>후기</li>
             ),
             myContent:(
-                <div>후기</div>
+                <div><MyItemReview/></div>
             )
         }
     ]
