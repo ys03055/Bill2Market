@@ -198,7 +198,7 @@ public class OpenBankServiceImpl implements OpenBankService{
                 .req_client_account_num(openBankProperties.getAccountNum())
                 .tran_amt(String.valueOf(transferRequestDTO.paymentAmount()))
                 .tran_dtime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")))
-                .req_client_num("BILL_MARKET" + clientIndex)
+                .req_client_num("BILL2MARKET" + clientIndex)
                 .transfer_purpose("TR")
                 .recv_client_name(openBankProperties.getName())
                 .recv_client_bank_code(openBankProperties.getBankCode())
