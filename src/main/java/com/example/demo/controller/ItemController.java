@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.model.item.ItemSaveRequestDTO;
 import com.example.demo.model.item.ItemSearchRequestDTO;
 import com.example.demo.model.response.CommonResult;
+import com.example.demo.model.review.ItemReviewRequestDTO;
 import com.example.demo.repository.ClientRepository;
 import com.example.demo.service.ResponseService;
 import com.example.demo.service.item.ItemService;
@@ -86,6 +87,14 @@ public class ItemController {
     public CommonResult searchItemList(ItemSearchRequestDTO itemSearchRequestDTO){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         return responseService.getSingleResult(itemService.findItemByQuery(itemSearchRequestDTO, (!auth.getName().equals("anonymousUser"))? Integer.parseInt(auth.getName()) : -1000));
+    }
+
+    @ApiOperation(value = "물품 리뷰 작성", notes = "해당 물품의 리뷰를 작성한다.")
+    @PostMapping("/review")
+    public CommonResult writeItemReview(@RequestBody ItemReviewRequestDTO itemReviewRequestDTO){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        itemService.saveItemReview(Integer.parseInt(auth.getName()), itemReviewRequestDTO);
+        return responseService.getSuccessfulResult();
     }
 
 }

@@ -2,8 +2,14 @@ package com.example.demo.service.item;
 
 import com.example.demo.exception.client.ClientNotFoundException;
 import com.example.demo.exception.client.InputNullException;
+import com.example.demo.exception.contract.ContractNotFoundException;
 import com.example.demo.model.Document;
 import com.example.demo.model.KakaoAddress;
+import com.example.demo.model.contract.Contract;
+import com.example.demo.model.contract.ReviewWrite;
+import com.example.demo.model.review.ItemReviewRequestDTO;
+import com.example.demo.model.review.Review;
+import com.example.demo.model.review.ReviewType;
 import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Value;
 import com.example.demo.exception.item.ItemNotFoundException;
@@ -24,6 +30,8 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
+
+import javax.transaction.Transactional;
 import java.io.IOException;
 import java.net.URI;
 import java.util.List;
@@ -39,6 +47,8 @@ public class ItemServiceImpl implements ItemService{
     private final ReviewRepository reviewRepository;
     private final ItemRepository itemRepository;
     private final ItemRepositoryCustom itemRepositoryCustom;
+    private final ContractRepository contractRepository;
+    private final ContractRepositoryCustom contractRepositoryCustom;
     private final Gson gson;
     private final RestTemplate restTemplate;
     private final ElasticItemRepository elasticItemRepository;
@@ -153,5 +163,25 @@ public class ItemServiceImpl implements ItemService{
     public Slice<ItemOwnerResponseDTO> findItemListByClientIndex(Integer clientIndex, Pageable pageable) {
 
         return itemRepository.findByOwnerId(clientIndex, pageable);
+    }
+
+    @Transactional
+    @Override
+    public void saveItemReview(Integer clientIndex, ItemReviewRequestDTO itemReviewRequestDTO) {
+        Integer contractId = contractRepositoryCustom.getContractIdByItemIdAndLenterIndex(itemReviewRequestDTO.getItemId(), clientIndex);
+        reviewRepository.save(Review.builder()
+                .contractId(contractId)
+                .reviewItem(itemReviewRequestDTO.getItemId())
+                .reviewWriter(clientIndex)
+                .reviewType(ReviewType.ITEM)
+                .reviewScore(itemReviewRequestDTO.getReviewScore())
+                .reviewTitle(itemReviewRequestDTO.getReviewTitle())
+                .reviewContent(itemReviewRequestDTO.getReviewContent())
+                .reviewStatus(0)
+                .build());
+
+        Contract contract = contractRepository.findById(contractId).orElseThrow(ContractNotFoundException::new);
+        contract.setReviewWrite(ReviewWrite.WRITE);
+        contractRepository.save(contract);
     }
 }

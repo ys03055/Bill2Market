@@ -1,6 +1,7 @@
 package com.example.demo.service.item;
 
 import com.example.demo.model.item.*;
+import com.example.demo.model.review.ItemReviewRequestDTO;
 import com.example.demo.model.review.ReviewResponseDTO;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -18,4 +19,5 @@ public interface ItemService {
     public Slice<SimpleItem> findItemByQuery(ItemSearchRequestDTO itemSearchRequestDTO, Integer clientIndex);
     public Slice<ItemMeListResponseDTO> findItemsMe(Integer clientIndex, Integer page);
     public Slice<ItemOwnerResponseDTO> findItemListByClientIndex(Integer clientIndex, Pageable pageable);
+    public void saveItemReview(Integer clientIndex, ItemReviewRequestDTO itemReviewRequestDTO);
 }
