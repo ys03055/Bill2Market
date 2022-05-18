@@ -48,12 +48,24 @@ public class Contract {
     private Chat chat;
     @Column(name = "contract_date")
     private LocalDate contractDate;
+    @Column(name = "contract_status")
+    @Enumerated(value = EnumType.ORDINAL)
+    private ContractType contractStatus;
+    @Column(name = "price")
+    private Integer price;
+    @Column(name = "deposit")
+    private Integer deposit;
+    @Column(name = "billpay_status")
+    private Integer billpayStatus;
+    @Column(name = "permission_status")
+    private Integer permissionStatus;
+    @Column(name = "retrieve_status")
+    private Integer retrieveStatus;
     @Column(name = "start_date")
     private LocalDate startDate;
     @Column(name = "end_date")
     private LocalDate endDate;
-    @Column(name = "contract_status")
-    @Enumerated(value = EnumType.ORDINAL)
-    private ContractType contractStatus;
+    @Column(name = "review_write")
+    private Integer reviewWrite;
 
 }

@@ -14,7 +14,8 @@ public class ResponseService {
     @Getter
     public enum CommonResponse {
         SUCCESS(0, "성공하였습니다."),
-        NEED_NICKNAME(1, "닉네임 입력 필요");
+        NEED_NICKNAME(1, "닉네임 입력 필요"),
+        NEED_ACCOUNt(2, "계좌 등록 필요");
 
         int code;
         String message;
@@ -74,6 +75,15 @@ public class ResponseService {
         result.setSuccess(false);
         result.setCode(CommonResponse.NEED_NICKNAME.getCode());
         result.setMessage(CommonResponse.NEED_NICKNAME.getMessage());
+    }
+
+    public <T> SingleResult<T> getNeedAccount(T uri){
+        SingleResult<T> result = new SingleResult<T>();
+        result.setData(uri);
+        result.setSuccess(true);
+        result.setCode(CommonResponse.NEED_ACCOUNt.getCode());
+        result.setMessage(CommonResponse.NEED_ACCOUNt.getMessage());
+        return result;
     }
 
 }
