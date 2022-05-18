@@ -168,7 +168,7 @@ public class ItemServiceImpl implements ItemService{
     @Transactional
     @Override
     public void saveItemReview(Integer clientIndex, ItemReviewRequestDTO itemReviewRequestDTO) {
-        Integer contractId = contractRepositoryCustom.getContractIdByItemIdAndLenterIndex(itemReviewRequestDTO.getItemId(), clientIndex);
+        Integer contractId = contractRepositoryCustom.getContractIdByItemIdAndLenterIndex(itemReviewRequestDTO.getItemId(), clientIndex).orElseThrow(ContractNotFoundException::new);
         reviewRepository.save(Review.builder()
                 .contractId(contractId)
                 .reviewItem(itemReviewRequestDTO.getItemId())
@@ -180,7 +180,7 @@ public class ItemServiceImpl implements ItemService{
                 .reviewStatus(0)
                 .build());
 
-        Contract contract = contractRepository.findById(contractId).orElseThrow(ContractNotFoundException::new);
+        Contract contract = contractRepository.findById(contractId).get();
         contract.setReviewWrite(ReviewWrite.WRITE);
         contractRepository.save(contract);
     }

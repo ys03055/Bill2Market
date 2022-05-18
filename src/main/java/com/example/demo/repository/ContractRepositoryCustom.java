@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import static com.example.demo.model.contract.QContract.contract;
 import static com.example.demo.model.chat.QChat.chat;
@@ -59,16 +60,16 @@ public class ContractRepositoryCustom {
                 .execute();
     }
 
-    public Integer getContractIdByItemIdAndLenterIndex(Integer itemId, Integer clientIndex){
-        return jpaQueryFactory.select(contract.contractId)
-                .from(contract)
-                .innerJoin(contract.chat, chat)
-                .on(chat.chatId.eq(contract.chat.chatId)
-                        .and(chat.lenter.clientIndex.eq(clientIndex)))
-                .innerJoin(chat.item, item)
-                .on(chat.item.itemId.eq(item.itemId)
-                        .and(item.itemId.eq(itemId)))
-                .fetchOne();
+    public Optional<Integer> getContractIdByItemIdAndLenterIndex(Integer itemId, Integer clientIndex){
+         return Optional.ofNullable(jpaQueryFactory.select(contract.contractId)
+                 .from(contract)
+                 .innerJoin(contract.chat, chat)
+                 .on(chat.chatId.eq(contract.chat.chatId)
+                         .and(chat.lenter.clientIndex.eq(clientIndex)))
+                 .innerJoin(chat.item, item)
+                 .on(chat.item.itemId.eq(item.itemId)
+                         .and(item.itemId.eq(itemId)))
+                 .fetchOne());
     }
 
     private NumberTemplate<Integer> dateDiff(LocalDate endDate){
