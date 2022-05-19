@@ -19,6 +19,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
 
@@ -91,7 +92,7 @@ public class ItemController {
 
     @ApiOperation(value = "물품 리뷰 작성", notes = "해당 물품의 리뷰를 작성한다.")
     @PostMapping("/review")
-    public CommonResult writeItemReview(@RequestBody ItemReviewRequestDTO itemReviewRequestDTO){
+    public CommonResult writeItemReview(@Valid @RequestBody ItemReviewRequestDTO itemReviewRequestDTO){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         itemService.saveItemReview(Integer.parseInt(auth.getName()), itemReviewRequestDTO);
         return responseService.getSuccessfulResult();

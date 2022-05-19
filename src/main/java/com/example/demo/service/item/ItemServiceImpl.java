@@ -3,6 +3,7 @@ package com.example.demo.service.item;
 import com.example.demo.exception.client.ClientNotFoundException;
 import com.example.demo.exception.client.InputNullException;
 import com.example.demo.exception.contract.ContractNotFoundException;
+import com.example.demo.exception.review.DuplicateItemReviewException;
 import com.example.demo.model.Document;
 import com.example.demo.model.KakaoAddress;
 import com.example.demo.model.contract.Contract;
@@ -168,6 +169,9 @@ public class ItemServiceImpl implements ItemService{
     @Transactional
     @Override
     public void saveItemReview(Integer clientIndex, ItemReviewRequestDTO itemReviewRequestDTO) {
+        if(reviewRepository.existsByReviewWriterAndReviewItem(clientIndex, itemReviewRequestDTO.getItemId()))
+            throw new DuplicateItemReviewException();
+
         Integer contractId = contractRepositoryCustom.getContractIdByItemIdAndLenterIndex(itemReviewRequestDTO.getItemId(), clientIndex).orElseThrow(ContractNotFoundException::new);
         reviewRepository.save(Review.builder()
                 .contractId(contractId)

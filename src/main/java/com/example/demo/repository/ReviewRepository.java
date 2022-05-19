@@ -21,4 +21,6 @@ public interface ReviewRepository extends JpaRepository<Review, Integer> {
 
     @Query(name = "ItemReviewByOwnerId", nativeQuery = true)
     public Slice<ItemReviewResponseDTO> findSliceAllByClientIndex(@Param("client_index") Integer clientIndex, Pageable page);
+
+    public boolean existsByReviewWriterAndReviewItem(Integer reviewWriter, Integer reviewItem);
 }
