@@ -6,7 +6,6 @@ import com.example.demo.model.bank.*;
 import com.example.demo.model.contract.Contract;
 import com.example.demo.repository.BillyPayRepository;
 import com.example.demo.repository.ContractRepository;
-import com.example.demo.repository.ContractRepositoryCustom;
 import com.example.demo.repository.RedisOpenBankRepository;
 import com.example.demo.util.OpenBankUtil;
 import com.google.gson.Gson;
@@ -210,7 +209,9 @@ public class OpenBankServiceImpl implements OpenBankService{
 
         if (response.getStatusCode() == HttpStatus.OK){
             WithdrawalResponseDTO withdrawalResponseDTO = gson.fromJson(response.getBody(), WithdrawalResponseDTO.class);
-            System.out.println(withdrawalResponseDTO.toString());
+            if(withdrawalResponseDTO.getTran_amt() == null)
+                throw new OpenBankTransferErrorException();
+
             contract.setPrice(transferRequestDTO.getPrice());
             contract.setDeposit(transferRequestDTO.getDeposit());
             contractRepository.save(contract);
