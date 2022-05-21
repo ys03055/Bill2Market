@@ -18,15 +18,17 @@ import java.time.LocalDate;
 @Builder
 @Entity(name="Chat")
 @NamedNativeQuery(
-        name = "chatList", //itemId추가
-        query = "SELECT Chat.item_id,  Chat.chat_id, Chat.file_name, Client.nickname, " +
+        name = "chatList", //itemId추가 + contractId 추가
+        query = "SELECT Contract.contract_id, Chat.item_id,  Chat.chat_id, Chat.file_name, Client.nickname, " +
                 "CASE WHEN Chat.owner_index = :client_index THEN Chat.lenter_index " +
                 "ELSE Chat.owner_index END as opponentIndex " +
                 "FROM Chat " +
                 "INNER JOIN Client ON Client.client_index = CASE WHEN Chat.owner_index = :client_index THEN Chat.lenter_index " +
                 "ELSE Chat.owner_index END " +
+                "INNER JOIN Contract ON Chat.chat_id =  Contract.chat_id " +
                 "WHERE Chat.owner_index = :client_index OR Chat.lenter_index = :client_index " +
                 "ORDER BY Chat.item_id DESC ",
+        
         resultSetMapping = "chatListMapping"
 )
 @SqlResultSetMapping(
@@ -34,6 +36,7 @@ import java.time.LocalDate;
         classes = @ConstructorResult(
                 targetClass = ChatListResponseDTO.class,
                 columns = {
+                        @ColumnResult(name = "contract_id", type = Integer.class),
                         @ColumnResult(name = "item_id", type = Integer.class),
                         @ColumnResult(name = "chat_id", type = Integer.class),
                         @ColumnResult(name = "opponentIndex", type = Integer.class),

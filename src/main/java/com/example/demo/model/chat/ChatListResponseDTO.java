@@ -7,6 +7,7 @@ import lombok.Data;
 @Data
 public class ChatListResponseDTO {
 
+    private Integer contractId; //contractId 추가
     private Integer itemId; //itemId 추가
     private Integer chatId;
     private Integer opponentIndex;
