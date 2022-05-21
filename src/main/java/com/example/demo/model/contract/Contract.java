@@ -14,7 +14,7 @@ import java.time.LocalDate;
 @Entity(name="Contract")
 @NamedNativeQuery(
         name = "ContractIBorrowedByClientIndex",
-        query="SELECT Item.item_id, Item.item_title, Item.price, Item.deposit, Item.item_address, Item_Photo.item_photo, Contract.contract_status, Contract.start_date " +
+        query="SELECT Item.item_id, Item.item_title, Item.price, Item.deposit, Item.item_address, Item_Photo.item_photo, Contract.contract_status, Contract.start_date, Contract.review_write " +
                 "FROM Contract LEFT JOIN Chat ON Contract.chat_id=Chat.chat_id LEFT JOIN Item ON Chat.item_id = Item.item_id LEFT JOIN Item_Photo ON Item.item_id = Item_Photo.item_id " +
                 "WHERE Chat.lenter_index = :client_index AND is_main=1 " +
                 "ORDER BY Contract.contract_status,Contract.start_date DESC ",
@@ -33,7 +33,8 @@ import java.time.LocalDate;
                         @ColumnResult(name = "item_address", type = String.class),
                         @ColumnResult(name = "item_photo", type = String.class),
                         @ColumnResult(name = "contract_status", type = String.class),
-                        @ColumnResult(name = "start_date", type = LocalDate.class)
+                        @ColumnResult(name = "start_date", type = LocalDate.class),
+                        @ColumnResult(name = "review_write", type = Integer.class)
                 }
         ))
 
@@ -55,5 +56,7 @@ public class Contract {
     @Column(name = "contract_status")
     @Enumerated(value = EnumType.ORDINAL)
     private ContractType contractStatus;
+    @Column(name = "review_write")
+    private ReviewWrite reviewWrite;
 
 }
