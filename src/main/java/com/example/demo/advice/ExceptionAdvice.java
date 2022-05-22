@@ -7,7 +7,7 @@ import com.example.demo.exception.chat.ChatFileCreateFailedException;
 import com.example.demo.exception.chat.ChatNotFoundException;
 import com.example.demo.exception.client.*;
 import com.example.demo.exception.common.HttpFailException;
-import com.example.demo.exception.contract.ContractNotFoundException;
+import com.example.demo.exception.contract.*;
 import com.example.demo.exception.item.ItemNotFoundException;
 import com.example.demo.exception.review.DuplicateItemReviewException;
 import com.example.demo.model.response.CommonResult;
@@ -118,6 +118,30 @@ public class ExceptionAdvice {
         return responseService.getFailResult(ExceptionList.CONTRACT_NOT_FOUND.getCode(), ExceptionList.CONTRACT_NOT_FOUND.getMessage());
     }
 
+    @ExceptionHandler(OpenBankTokenErrorException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    protected CommonResult openBankTokenError(){
+        return responseService.getFailResult(ExceptionList.OPEN_BANK_TOKEN_ERROR.getCode(), ExceptionList.OPEN_BANK_TOKEN_ERROR.getMessage());
+    }
+
+    @ExceptionHandler(OpenBankUserInfoException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    protected CommonResult openBankUserInfoError(){
+        return responseService.getFailResult(ExceptionList.OPEN_BANK_USERINFO_ERROR.getCode(), ExceptionList.OPEN_BANK_USERINFO_ERROR.getMessage());
+    }
+
+    @ExceptionHandler(OpenBankTransferErrorException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    protected CommonResult openBankTransferError(){
+        return responseService.getFailResult(ExceptionList.OPEN_BANK_TRANSFER_ERROR.getCode(), ExceptionList.OPEN_BANK_TRANSFER_ERROR.getMessage());
+    }
+
+    @ExceptionHandler(OpenBankCSRFErrorException.class)
+    @ResponseStatus
+    protected CommonResult openBankCSRFError(){
+        return responseService.getFailResult(ExceptionList.OPEN_BANK_CSRF_ERROR.getCode(), ExceptionList.OPEN_BANK_CSRF_ERROR.getMessage());
+    }
+      
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     protected CommonResult blankDataError(MethodArgumentNotValidException e){

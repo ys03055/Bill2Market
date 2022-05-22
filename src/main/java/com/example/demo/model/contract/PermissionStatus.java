@@ -5,5 +5,4 @@ public enum PermissionStatus {
     OWNERACCEPT, // 판매자 계약 수락
     LENTERACCEPT, //구매자 계약 수락
     ALLACCEPT // 판매자, 구매자 계약 수락
-
 }

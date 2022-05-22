@@ -22,6 +22,10 @@ public enum ExceptionList {
     CHAT_NOT_FOUND(-1011, "존재하지 않는 채팅입니다."),
     CHATFILE_CREATE_FAIL(-1012, "채팅 파일 생성에 실패하였습니다."),
     CONTRACT_NOT_FOUND(-1013, "해당 계약이 존재하지 않습니다."),
+    OPEN_BANK_TOKEN_ERROR(-1020,"은행 토큰 획득에 실패하였습니다."),
+    OPEN_BANK_USERINFO_ERROR(-1021, "은행에서 사용자 정보를 불러오는데 실패하였습니다."),
+    OPEN_BANK_TRANSFER_ERROR(-1022, "결제에 실패하였습니다."),
+    OPEN_BANK_CSRF_ERROR(-1023, "잘못된 경로로 시도하였습니다. 다시 시도해주세요."),
     DUPLICATE_ITEM_REVIEW(-1031, "이미 해당 물품의 리뷰를 작성하였습니다.");
 
     private final int code;
