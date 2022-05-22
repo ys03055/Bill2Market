@@ -1,5 +1,6 @@
 package com.example.demo.model.review;
 
+import com.example.demo.model.item.BaseEntity;
 import lombok.*;
 
 import javax.persistence.*;
@@ -73,7 +74,7 @@ import java.util.Date;
                         @ColumnResult(name = "item_title", type = String.class)
                 }
         ))
-public class Review {
+public class Review extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -96,10 +97,6 @@ public class Review {
     private String reviewTitle;
     @Column(name = "review_content")
     private String reviewContent;
-    @Column(name = "create_date")
-    private Date createDate;
-    @Column(name = "update_date")
-    private Date updateDate;
     @Column(name = "review_status")
     private Integer reviewStatus;
 }

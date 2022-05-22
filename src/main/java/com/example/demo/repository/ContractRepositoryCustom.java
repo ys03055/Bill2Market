@@ -12,10 +12,12 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import static com.example.demo.model.contract.QContract.contract;
 import static com.example.demo.model.chat.QChat.chat;
 import static com.example.demo.model.client.QClient.client;
+import static com.example.demo.model.item.QItem.item;
 
 @Repository
 @RequiredArgsConstructor
@@ -46,7 +48,7 @@ public class ContractRepositoryCustom {
                 ))
                 .from(contract)
                 .innerJoin(contract.chat, chat)
-                .on(chat.chatId.eq(chat.chatId))
+                .on(chat.chatId.eq(contract.chat.chatId))
                 .innerJoin(chat.owner, client)
                 .on(chat.owner.clientIndex.eq(client.clientIndex));
     }
@@ -56,6 +58,18 @@ public class ContractRepositoryCustom {
                 .set(contract.contractStatus, contractType)
                 .where(contract.contractId.eq(contractId))
                 .execute();
+    }
+
+    public Optional<Integer> getContractIdByItemIdAndLenterIndex(Integer itemId, Integer clientIndex){
+         return Optional.ofNullable(jpaQueryFactory.select(contract.contractId)
+                 .from(contract)
+                 .innerJoin(contract.chat, chat)
+                 .on(chat.chatId.eq(contract.chat.chatId)
+                         .and(chat.lenter.clientIndex.eq(clientIndex)))
+                 .innerJoin(chat.item, item)
+                 .on(chat.item.itemId.eq(item.itemId)
+                         .and(item.itemId.eq(itemId)))
+                 .fetchOne());
     }
 
     private NumberTemplate<Integer> dateDiff(LocalDate endDate){

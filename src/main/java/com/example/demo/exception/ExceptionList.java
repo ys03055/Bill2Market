@@ -26,6 +26,7 @@ public enum ExceptionList {
     OPEN_BANK_USERINFO_ERROR(-1021, "은행에서 사용자 정보를 불러오는데 실패하였습니다."),
     OPEN_BANK_TRANSFER_ERROR(-1022, "결제에 실패하였습니다."),
     OPEN_BANK_CSRF_ERROR(-1023, "잘못된 경로로 시도하였습니다. 다시 시도해주세요.");
+    DUPLICATE_ITEM_REVIEW(-1031, "이미 해당 물품의 리뷰를 작성하였습니다.");
 
     private final int code;
     private final String message;

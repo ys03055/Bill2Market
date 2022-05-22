@@ -16,5 +16,4 @@ public class DepositForClientDTO {
     private String lenterNickname;
     private String ownerFintechId;
     private String lenterFintechId;
-
 }

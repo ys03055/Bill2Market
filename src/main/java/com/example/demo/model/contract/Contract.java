@@ -1,6 +1,7 @@
 package com.example.demo.model.contract;
 
 import com.example.demo.model.chat.Chat;
+import com.example.demo.model.client.Client;
 import lombok.*;
 import javax.persistence.*;
 import java.time.LocalDate;
