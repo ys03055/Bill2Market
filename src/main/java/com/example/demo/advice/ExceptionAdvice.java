@@ -140,6 +140,7 @@ public class ExceptionAdvice {
     @ResponseStatus
     protected CommonResult openBankCSRFError(){
         return responseService.getFailResult(ExceptionList.OPEN_BANK_CSRF_ERROR.getCode(), ExceptionList.OPEN_BANK_CSRF_ERROR.getMessage());
+    }
       
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
