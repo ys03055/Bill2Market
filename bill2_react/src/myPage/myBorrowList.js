@@ -1,15 +1,19 @@
 import React, {Fragment, useEffect, useState} from "react";
 import "./myBorrowList.css";
 import {Link, useNavigate} from "react-router-dom";
-import {Card, Col, Row, Avatar, Button, Badge} from 'antd';
+import {Card, Col, Row, Avatar, Button, Badge, Modal, Input, Form, Rate} from 'antd';
 import { HeartOutlined,HeartFilled, BorderOutlined } from '@ant-design/icons';
 import Meta from "antd/es/card/Meta";
 import axios from "axios";
 import moment from "moment";
 import ProductViewDetailsPage from "../productViewDetails/productViewDetails";
 import {useSelector, useDispatch, batch} from "react-redux";
+import {FormInstance} from "antd";
+
+
 
 function MyBorrowListPage() {
+
 
     // const latitude = useSelector(state=> state.latitude)
     // const longitude = useSelector(state=> state.longitude)
@@ -18,6 +22,7 @@ function MyBorrowListPage() {
     const [last, setLast] = useState(false);
     const [myBorrowItemList, setMyBorrowItemList] = useState([]);
     // const [createDate, setCreateDate] = useState([moment().format('YYYY 년 MM월 DD일 HH시')]);
+    const [currentIndex, setCurrentIndex] = useState(0);
 
     const navigate = useNavigate();
 
@@ -63,44 +68,86 @@ function MyBorrowListPage() {
     };
 
 
-    // const addBasket = (itemId,isLike) => { //찜하기가 안된상태에서 찜하기를 눌렀을때
-    //
-    //     axios.post("http://localhost:8080/baskets?itemId="+itemId,
-    //         {},{headers: {
-    //                 Authorization: 'Bearer ' + sessionStorage.getItem("token")
-    //             }}
-    //
-    //
-    //     ).then(response => {
-    //         onSubmit(latitude, longitude);
-    //     })
-    //         .catch(error => {
-    //             console.log(error.response);
-    //         })
-    // }
-    //
-    // const delBasket = (itemId,isLike) => { //찜하기가 안된상태에서 찜하기를 눌렀을때
-    //
-    //     axios.delete("http://localhost:8080/baskets?itemId="+itemId,
-    //         {headers: {
-    //                 Authorization: 'Bearer ' + sessionStorage.getItem("token")
-    //             }}
-    //
-    //
-    //     ).then(response => {
-    //         onSubmit(latitude, longitude);
-    //     })
-    //         .catch(error => {
-    //             console.log(error.response);
-    //         })
-    // }
+
 
     function format  (date) {
 
         return date.getFullYear() + "년 " + (("00"+(date.getMonth() + 1))).slice(-2) + "월 " + (("00"+date.getDate()).slice(-2)) + "일 " + date.getHours() + "시" ;
 
     }
+    const [isModalVisible, setIsModalVisible] = useState(false);
 
+    const showModal = (index) => {
+        setIsModalVisible(true);
+        setCurrentIndex(index);
+        console.log(currentIndex);
+    };
+
+    const handleOk = () => {
+        setIsModalVisible(false);
+    };
+
+    const handleCancel = () => {
+        setIsModalVisible(false);
+        onLending();
+
+    };
+
+    const onFinish = (values) => {
+        console.log('Success:', values);
+    };
+
+    const onFinishFailed = (errorInfo) => {
+        console.log('Failed: 내용을 입력해주세요', errorInfo);
+    };
+
+    const [reviewId, setReviewId] = useState();
+    const [title, setTitle] = useState("");
+    const [content, setContent] = useState("");
+    const [reviewScore, setReviewScore] = useState(3);
+    const setTitleChange = (e) => { setTitle(e.target.value); };
+    const setContentChange = (e) => { setContent(e.target.value); };
+
+    function setReviewScoreChange (reviewScore){
+        setReviewScore(reviewScore);
+    }
+
+    const onSubmit = (index) => {
+
+        const data = {
+            "itemId": myBorrowItemList[index].itemId,
+            "reviewContent": content,
+            "reviewScore": reviewScore,
+            "reviewTitle": title
+
+        }
+        const option = {
+            url : '/items/review',
+            method: 'POST',
+            headers: {
+                Authorization: 'Bearer ' + sessionStorage.getItem("token"),
+            },
+            data: data
+
+        }
+
+        axios(option)
+            .then(res=>{
+                console.log(res.data);
+                setIsModalVisible(false);
+                onLending();
+            }).catch(res=>{
+
+                alert(res.response.data.message);
+
+
+
+
+
+        });
+
+    };
+    console.log(reviewScore)
 
     return (
         <Fragment>
@@ -109,7 +156,7 @@ function MyBorrowListPage() {
 
                 <Row  gutter={24}>
 
-                    {myBorrowItemList.map(borrowitem => {
+                    {myBorrowItemList.map((borrowitem, index) => {
 
 
                         return (
@@ -137,6 +184,15 @@ function MyBorrowListPage() {
                                     {/*<p>대여상태: {item.contractStatus}</p>*/}
 
                                     <img className="phoneImage" src={borrowitem.itemPhoto}/>
+                                    {borrowitem.reviewWrite === 0?
+                                        <Button className="modalButton" onClick={() =>{showModal(index)}}>
+                                            리뷰 작성하기
+                                        </Button>
+                                        :
+                                        <Button className="modalButton" disabled> 리뷰 작성완료</Button>
+                                    }
+
+
 
 
                                 </Card>
@@ -144,7 +200,92 @@ function MyBorrowListPage() {
                         )
                     })}
                 </Row>
+                <Modal
+                    title="리뷰 작성하기"
+                    visible={isModalVisible}
+                    // onOk={handleOk}
+                    onCancel={handleCancel}
+                    footer={[
+                        <Button onClick={handleCancel}>취소</Button>,
+                        <Button onClick={(myBorrowItemList.length==0)?
+                                null:
+                                () => {onSubmit(currentIndex)}}>
+                                등록
+                            </Button>
 
+                    ]}>
+
+
+                    <Card  className="itemReviewCard">
+                        <row>
+                            <div className="reviewImage">
+                                <img className="reviewphoneImage" src={
+                                    (myBorrowItemList.length==0)?
+                                        "":
+                                    myBorrowItemList[currentIndex].itemPhoto}/>
+                            </div>
+                            <div className="reviewText">
+                                <h2 className="title">제목: {
+                                    (myBorrowItemList.length==0)?
+                                        ""
+                                        : myBorrowItemList[currentIndex].itemTitle
+
+                                }</h2>
+                                <p>대여일: {(myBorrowItemList.length==0)?
+                                    "":
+                                    format(new Date(myBorrowItemList[currentIndex].startDate))}</p>
+                                <p>대여료: {(myBorrowItemList.length==0)?
+                                    "" :
+                                    myBorrowItemList[currentIndex].price}</p>
+                                <p>보증금: {(myBorrowItemList.length==0)?
+                                    "" :
+                                    myBorrowItemList[currentIndex].deposit}</p>
+                            </div>
+                        </row>
+
+                    </Card>
+                    <p className="scoreText">별점을 남겨주세요!</p>
+                    <Rate className="scoreStar" onChange={setReviewScoreChange} value={reviewScore}/>
+                    <Form
+                        name="basic"
+                        labelCol={{ span: 8 }}
+                        wrapperCol={{ span: 16 }}
+                        // initialValues={{ remember: true }}
+                        onFinish={onFinish}
+                        onFinishFailed={onFinishFailed}
+                        autoComplete="off">
+                        <Card className="reviewCard">
+                            <Form.Item
+                                className="reviewTitle"
+                                name = "reviewTitle"
+                                rules={[{required: true, message: '제목을 입력해주세요!'}]}>
+
+                                <Input.TextArea
+                                    rows={5}
+                                    placeholder="제목"
+                                    size="small"
+                                    showCount
+                                    maxLength={30}
+                                    onChange={setTitleChange}
+                                />
+                            </Form.Item>
+                            <Form.Item
+                                className="reviewContent"
+                                name = "reviewContent"
+                                rules={[{required: true, message: '내용을 입력해주세요!'}]}>
+
+                                <Input.TextArea
+                                    rows={5}
+                                    placeholder="리뷰를 작성해주세요"
+                                    size="large"
+                                    showCount
+                                    maxLength={1000}
+                                    onChange={setContentChange}
+                                />
+                            </Form.Item>
+                        </Card>
+                    </Form>
+                </Modal>
             </div>
             {last === true?
                 <Button disabled>더보기</Button>:
