@@ -57,6 +57,7 @@ public class Contract {
     @Enumerated(value = EnumType.ORDINAL)
     private ContractType contractStatus;
     @Column(name = "review_write")
+    @Enumerated(value = EnumType.ORDINAL)
     private ReviewWrite reviewWrite;
 
 }
