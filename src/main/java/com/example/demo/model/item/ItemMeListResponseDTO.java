@@ -1,16 +1,15 @@
-package com.example.demo.model.basket;
+package com.example.demo.model.item;
 
-import io.swagger.models.auth.In;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 
 import java.time.LocalDate;
 
-@Data
-@Getter
 @AllArgsConstructor
-public class BasketMyListResponseDTO {
+@Getter
+@Data
+public class ItemMeListResponseDTO {
 
     private Integer itemId;
     private String itemTitle;
@@ -21,6 +20,5 @@ public class BasketMyListResponseDTO {
     private LocalDate createDate;
     private String itemPhoto;
     private Boolean isMain;
-
 
 }
