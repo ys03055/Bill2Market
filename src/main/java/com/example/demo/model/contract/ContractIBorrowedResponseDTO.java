@@ -19,5 +19,6 @@ public class ContractIBorrowedResponseDTO {
     private String itemPhoto;
     private String contractStatus;
     private LocalDate startDate;
+    private Integer reviewWrite;
 
 }

@@ -12,6 +12,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Builder
 @Entity(name="Contract")
+
 @NamedNativeQueries({
         @NamedNativeQuery(
                 name = "findClientInfo",
@@ -63,7 +64,8 @@ import java.time.LocalDate;
                         @ColumnResult(name = "item_address", type = String.class),
                         @ColumnResult(name = "item_photo", type = String.class),
                         @ColumnResult(name = "contract_status", type = String.class),
-                        @ColumnResult(name = "start_date", type = LocalDate.class)
+                        @ColumnResult(name = "start_date", type = LocalDate.class),
+                        @ColumnResult(name = "review_write", type = Integer.class)
                 }
         )
 )
