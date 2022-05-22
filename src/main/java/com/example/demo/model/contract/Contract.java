@@ -19,6 +19,7 @@ import java.time.LocalDate;
                 "WHERE Chat.lenter_index = :client_index AND is_main=1 " +
                 "ORDER BY Contract.contract_status,Contract.start_date DESC ",
         resultSetMapping = "ItemIBorrowedMapping"
+)
 
 @NamedNativeQueries({
         @NamedNativeQuery(
