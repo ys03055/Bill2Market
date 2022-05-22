@@ -4,6 +4,9 @@ import com.example.demo.config.OpenBankProperties;
 import com.example.demo.exception.contract.*;
 import com.example.demo.model.bank.*;
 import com.example.demo.model.contract.Contract;
+import com.example.demo.model.contract.DepositForClientDTO;
+import com.example.demo.model.contract.DepositInfoDTO;
+import com.example.demo.model.contract.DepositInfoReqListDTO;
 import com.example.demo.repository.BillyPayRepository;
 import com.example.demo.repository.ContractRepository;
 import com.example.demo.repository.RedisOpenBankRepository;
@@ -22,6 +25,8 @@ import javax.transaction.Transactional;
 import java.net.URI;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -208,6 +213,7 @@ public class OpenBankServiceImpl implements OpenBankService{
         ResponseEntity<String> response = restTemplate.postForEntity(uri, requestParams, String.class);
 
         if (response.getStatusCode() == HttpStatus.OK){
+            log.info(response.getBody());
             WithdrawalResponseDTO withdrawalResponseDTO = gson.fromJson(response.getBody(), WithdrawalResponseDTO.class);
             if(withdrawalResponseDTO.getTran_amt() == null)
                 throw new OpenBankTransferErrorException();
@@ -223,6 +229,133 @@ public class OpenBankServiceImpl implements OpenBankService{
                 );
         }else{
             log.error(response.getBody());
+            throw new OpenBankTransferErrorException();
+        }
+    }
+
+    @Override
+    public AccountTokenResponseDTO tokenRequestDTO() { // 금융결제원 API를 통한 토큰발급
+        URI uri = UriComponentsBuilder
+                .fromUriString(openBankProperties.getBaseUrl())
+                .path("/oauth/2.0/token")
+                .encode()
+                .build()
+                .toUri();
+
+        MultiValueMap<String, String> requestParams = new LinkedMultiValueMap<>();
+        requestParams.add("client_id", openBankProperties.getClientId());
+        requestParams.add("client_secret", openBankProperties.getClientSecret());
+        requestParams.add("scope", "oob");
+        requestParams.add("grant_type", "client_credentials");
+
+        ResponseEntity<String> responseEntity = restTemplate.postForEntity(uri, requestParams, String.class);
+        System.out.println(responseEntity.getBody());
+        AccountTokenResponseDTO tokenResponseDTO = null;
+        if(responseEntity.getStatusCode() == HttpStatus.OK){
+            tokenResponseDTO = gson.fromJson(responseEntity.getBody(), AccountTokenResponseDTO.class);
+
+        }else throw new OpenBankTokenErrorException();
+
+        System.out.println(tokenResponseDTO);
+        return tokenResponseDTO;
+    }
+
+    @Override
+    public void depositLenterTransfer(Integer contractId, Integer clientIndex) {//빌리페이 계좌 -> 사용자 계좌: lenter에게 보증금 환급
+
+        DepositForClientDTO lenterTemp = contractRepository.findLenterByContractId(contractId).orElseThrow(ContractNotFoundException::new);
+
+        List<DepositInfoReqListDTO> reqList = new ArrayList<>();
+        DepositInfoReqListDTO depositInfoReqListDTO = new DepositInfoReqListDTO();
+        depositInfoReqListDTO.setTran_no("1");
+        depositInfoReqListDTO.setBank_tran_id(OpenBankUtil.getRandBankTranId(openBankProperties.getInstitutionCode()));
+        depositInfoReqListDTO.setFintech_use_num(openBankProperties.getFintechId());
+        depositInfoReqListDTO.setPrint_content("보증금환급");
+        depositInfoReqListDTO.setTran_amt(lenterTemp.getPrice().toString());
+        depositInfoReqListDTO.setReq_client_name(lenterTemp.getLenterNickname());
+        depositInfoReqListDTO.setReq_client_num("BILL2MARKET" + lenterTemp.getLenterIndex());
+        depositInfoReqListDTO.setReq_client_fintech_use_num(lenterTemp.getLenterFintechId());
+        depositInfoReqListDTO.setTransfer_purpose("TR");
+
+        reqList.add(depositInfoReqListDTO);
+
+        URI uri = UriComponentsBuilder
+                .fromUriString(openBankProperties.getBaseUrl())
+                .path("/v2.0/transfer/deposit/fin_num")
+                .encode()
+                .build()
+                .toUri();
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("Authorization", "Bearer"+ tokenRequestDTO().getAccess_token());
+
+        DepositInfoDTO depositInfoDTO = DepositInfoDTO.builder()
+                .cntr_account_type("N")
+                .cntr_account_num(openBankProperties.getAccountNum())
+                .wd_pass_phrase("NONE")
+                .wd_print_content("보증금 반납")
+                .name_check_option("off")
+                .tran_dtime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")))
+                .req_cnt("1")
+                .req_list(reqList)
+                .build();
+
+        HttpEntity<String> httpEntity = new HttpEntity<String>(gson.toJson(depositInfoDTO), httpHeaders);
+        ResponseEntity<String> responseEntity = restTemplate.postForEntity(uri, httpEntity, String.class);
+
+        System.out.println("depositLenterTransfer: " + responseEntity.getBody());
+
+        if(responseEntity.getStatusCode() != HttpStatus.OK){
+            throw new OpenBankTransferErrorException();
+        }
+    }
+
+    @Override
+    public void depositOwnerTransfer(Integer contractId, Integer clientIndex) { // 빌리페이 계좌 -> 사용자 계좌: owner에게 대여료 전송
+
+        DepositForClientDTO ownerTemp = contractRepository.findLenterByContractId(contractId).orElseThrow(ContractNotFoundException::new);
+
+        List<DepositInfoReqListDTO> reqList = new ArrayList<>();
+        DepositInfoReqListDTO depositInfoReqListDTO = new DepositInfoReqListDTO();
+        depositInfoReqListDTO.setTran_no("1");
+        depositInfoReqListDTO.setBank_tran_id(OpenBankUtil.getRandBankTranId(openBankProperties.getInstitutionCode()));
+        depositInfoReqListDTO.setFintech_use_num(openBankProperties.getFintechId());
+        depositInfoReqListDTO.setPrint_content("대여료전송");
+        depositInfoReqListDTO.setTran_amt(ownerTemp.getDeposit().toString());
+        depositInfoReqListDTO.setReq_client_name(ownerTemp.getOwnerNickname());
+        depositInfoReqListDTO.setReq_client_num("BILL2MARKET" + ownerTemp.getOwnerIndex());
+        depositInfoReqListDTO.setReq_client_fintech_use_num(ownerTemp.getOwnerFintechId());
+        depositInfoReqListDTO.setTransfer_purpose("ST");
+
+        reqList.add(depositInfoReqListDTO);
+
+        URI uri = UriComponentsBuilder
+                .fromUriString(openBankProperties.getBaseUrl())
+                .path("/v2.0/transfer/deposit/fin_num")
+                .encode()
+                .build()
+                .toUri();
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("Authorization", "Bearer"+ tokenRequestDTO().getAccess_token());
+
+        DepositInfoDTO depositInfoDTO = DepositInfoDTO.builder()
+                .cntr_account_type("N")
+                .cntr_account_num(openBankProperties.getAccountNum())
+                .wd_pass_phrase("NONE")
+                .wd_print_content("대여료전송")
+                .name_check_option("off")
+                .tran_dtime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")))
+                .req_cnt("1")
+                .req_list(reqList)
+                .build();
+
+        HttpEntity<String> httpEntity = new HttpEntity<String>(gson.toJson(depositInfoDTO), httpHeaders);
+        ResponseEntity<String> responseEntity = restTemplate.postForEntity(uri, httpEntity, String.class);
+
+        System.out.println("depositOwnerTransfer: " + responseEntity.getBody());
+
+        if(responseEntity.getStatusCode() != HttpStatus.OK){
             throw new OpenBankTransferErrorException();
         }
     }

@@ -110,20 +110,29 @@ public class ContractController {
     @RequestMapping("/account/first/lenter")
     public void accountFirstLenter(@RequestParam String code, @RequestParam("client_info") String clientIndex, @RequestParam String state, HttpServletResponse response) throws IOException {
         openBankService.registerUserInfoToken(code, Integer.parseInt(clientIndex), state);
-        response.sendRedirect("http://127.0.0.1:5501/test.html");
+        response.sendRedirect("http://localhost:3000/loading");
     }
 
     @ApiIgnore
     @RequestMapping("/account/first/owner")
     public void accountFirstOwner(@RequestParam String code, @RequestParam("client_info") String clientIndex, @RequestParam String state, HttpServletResponse response) throws IOException {
         openBankService.registerUserInfoToken(code, Integer.parseInt(clientIndex), state);
-        response.sendRedirect("http://127.0.0.1:5501/test2.html");
+        response.sendRedirect("http://localhost:3000/blank");
     }
 
     @PostMapping("/transfer")
     public CommonResult transfer(@RequestBody TransferRequestDTO transferRequestDTO) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         return responseService.getSingleResult(openBankService.transfer(Integer.parseInt(auth.getName()), transferRequestDTO));
+    }
+
+    @ApiOperation(value = "보증금 돌려주기 구현", notes = "빌리페이 계좌에서 사용자 계좌에 이체된 보증금을 돌려준다.")
+    @PostMapping("/deposit")
+    public CommonResult contractDeposit(@RequestParam("contract-id")Integer contractId, Integer clientIndex){
+        openBankService.tokenRequestDTO();
+        openBankService.depositLenterTransfer(contractId, clientIndex);
+        openBankService.depositOwnerTransfer(contractId, clientIndex);
+        return responseService.getSuccessfulResult();
     }
 
 }

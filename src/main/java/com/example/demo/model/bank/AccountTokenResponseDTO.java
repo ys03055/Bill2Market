@@ -16,4 +16,5 @@ public class AccountTokenResponseDTO {
     private String refresh_token;
     private String scope;
     private String user_seq_no;
+    private String client_use_code;
 }

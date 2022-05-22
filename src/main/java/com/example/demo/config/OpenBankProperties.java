@@ -18,5 +18,6 @@ public class OpenBankProperties {
     private String name;
     private String bankCode;
     private String accountNum;
+    private String fintechId;
 
 }
